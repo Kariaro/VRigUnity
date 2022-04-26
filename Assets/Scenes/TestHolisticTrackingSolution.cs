@@ -57,11 +57,23 @@ namespace HardCoded.VRigUnity {
 		private RotStruct lPinkyPip = RotStruct.identity;
 		private RotStruct lPinkyDip = RotStruct.identity;
 		private RotStruct lPinkyTip = RotStruct.identity;
+
+		private float mouthOpen = 0;
+		private float lEyeOpen = 1;
+		private float rEyeOpen = 1;
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
-		
+		public float GetTriangleArea(Vector3 A, Vector3 B, Vector3 C) {
+			Vector3 AB = new(B.x - A.x, B.y - A.y, B.z - A.z);
+			Vector3 AC = new(C.x - B.x, C.y - A.y, C.z - A.z);
+
+			float P1 = (AB.y * AC.z - AB.z * AC.y);
+			float P2 = (AB.z * AC.x - AB.x * AC.z);
+			float P3 = (AB.x * AC.y - AB.y * AC.x);
+			return 0.5f * Mathf.Sqrt(P1 * P1 + P2 * P2 + P3 * P3);
+		}
 		
 		public int TestInterpolation;
 		public float InterpolationValue = 0.4f; // 0.4 is really good for the current frame interval. Make this adjustable
@@ -167,6 +179,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			Quaternion neckRotation = Quaternion.identity;
+			float mouthOpen = 0;
+			float lEyeOpen = 0;
+			float rEyeOpen = 0;
 			
 			{
 				Vector3 faceUpDir;
@@ -186,6 +201,51 @@ namespace HardCoded.VRigUnity {
 					);
 				}
 
+				{
+					// Mouth
+					// left : 324
+					// right: 78
+					// top  : 13
+					
+					Vector3 a = ConvertPoint(eventArgs.value, 324);
+					Vector3 b = ConvertPoint(eventArgs.value, 78);
+					Vector3 c = ConvertPoint(eventArgs.value, 13);
+					Vector3 m = (a + b) / 2.0f;
+
+					float width = Vector3.Distance(a, b);
+					float height = Vector3.Distance(c, m);
+					float area = GetTriangleArea(a, b, c);
+					float perc = height / width; //2 * (area / (width * height));
+
+					//perc = Mathf.Clamp01(perc);
+					// Debug.Log("w: " + width + ", h: " + height + ", awh: " + area + ", ah: " + (area / width) + ", aw: " + (area / height) + ", a: " + perc);
+
+					mouthOpen = perc;
+				}
+
+				{
+					// Eyes
+					// Right
+					// Top Down: 159 -> 145
+					// Lft Righ: 133 -> 33
+					{
+						float td = Vector3.Distance(ConvertPoint(eventArgs.value, 159), ConvertPoint(eventArgs.value, 145));
+						float lr = Vector3.Distance(ConvertPoint(eventArgs.value, 133), ConvertPoint(eventArgs.value, 33));
+						rEyeOpen = Mathf.Clamp01(Mathf.Clamp01(0.5f - (td / lr)) * 10.0f);
+					}
+
+					// Left
+					// Top Down: 386 -> 374
+					// Lft Righ: 263 -> 362
+					{
+						float td = Vector3.Distance(ConvertPoint(eventArgs.value, 386), ConvertPoint(eventArgs.value, 374));
+						float lr = Vector3.Distance(ConvertPoint(eventArgs.value, 263), ConvertPoint(eventArgs.value, 362));
+						lEyeOpen = Mathf.Clamp01(Mathf.Clamp01(0.5f - (td / lr)) * 10.0f);
+					}
+
+					// Debug.Log("l: " + lEyeOpen + ", r: " + rEyeOpen);
+				}
+
 				//Quaternion rot = Quaternion.FromToRotation(Vector3.up, faceUpDir);
 				Quaternion rot = Quaternion.LookRotation(-forwardDir, faceUpDir);
 				neckRotation = rot;
@@ -198,6 +258,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			this.neckRotation.Set(neckRotation, TimeNow);
+			this.mouthOpen = mouthOpen;
+			this.lEyeOpen = lEyeOpen;
+			this.rEyeOpen = rEyeOpen;
 		}
 
 		private void ComputeFinger(Quaternion rel, Vector3 vMcp, float mul, Vector3 vPip, Vector3 vDip, Vector3 vTip, out Quaternion pip, out Quaternion dip, out Quaternion tip) {
@@ -547,6 +610,10 @@ namespace HardCoded.VRigUnity {
 			rPinkyDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleIntermediate), time);
 			rPinkyTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleDistal), time);
 			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          LeftHand), time);
+
+			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), mouthOpen);
+			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), rEyeOpen);
+			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), lEyeOpen);
 
 			if (sphereParent.childCount < vectorsSize) {
 				for (int i = sphereParent.childCount; i < vectorsSize; i++) {
