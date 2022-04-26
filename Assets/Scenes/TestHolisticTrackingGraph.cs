@@ -202,7 +202,7 @@ namespace HardCoded.VRigUnity {
 			// The orientation of the output image must match that of the input image.
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(imageSource.rotation);
 			var outputRotation = imageSource.rotation;
-			var outputHorizontallyFlipped = !isInverted && imageSource.isHorizontallyFlipped;
+			var outputHorizontallyFlipped = !isInverted && imageSource.isHorizontallyFlipped ^ true;
 			var outputVerticallyFlipped = (imageSource.isVerticallyFlipped) ^ (isInverted && imageSource.isHorizontallyFlipped);
 
 			if ((outputHorizontallyFlipped && outputVerticallyFlipped) || outputRotation == RotationAngle.Rotation180) {

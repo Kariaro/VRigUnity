@@ -16,7 +16,7 @@ namespace HardCoded.VRigUnity {
 		public Transform sphereParent;
 
 
-		private Vector3[] vectors = new Vector3[200];
+		private Vector3[] vectors = new Vector3[800];
 		private int vectorsSize = 0;
 
 		private RotStruct chestRotation = RotStruct.identity;
@@ -31,130 +31,37 @@ namespace HardCoded.VRigUnity {
 		private RotStruct lLowerArm = RotStruct.identity;
 
 		private RotStruct rHand = RotStruct.identity;
+		private RotStruct rIndexPip = RotStruct.identity;
+		private RotStruct rIndexDip = RotStruct.identity;
+		private RotStruct rIndexTip = RotStruct.identity;
+		private RotStruct rMiddlePip = RotStruct.identity;
+		private RotStruct rMiddleDip = RotStruct.identity;
+		private RotStruct rMiddleTip = RotStruct.identity;
+		private RotStruct rRingPip = RotStruct.identity;
+		private RotStruct rRingDip = RotStruct.identity;
+		private RotStruct rRingTip = RotStruct.identity;
+		private RotStruct rPinkyPip = RotStruct.identity;
+		private RotStruct rPinkyDip = RotStruct.identity;
+		private RotStruct rPinkyTip = RotStruct.identity;
+
 		private RotStruct lHand = RotStruct.identity;
+		private RotStruct lIndexPip = RotStruct.identity;
+		private RotStruct lIndexDip = RotStruct.identity;
+		private RotStruct lIndexTip = RotStruct.identity;
+		private RotStruct lMiddlePip = RotStruct.identity;
+		private RotStruct lMiddleDip = RotStruct.identity;
+		private RotStruct lMiddleTip = RotStruct.identity;
+		private RotStruct lRingPip = RotStruct.identity;
+		private RotStruct lRingDip = RotStruct.identity;
+		private RotStruct lRingTip = RotStruct.identity;
+		private RotStruct lPinkyPip = RotStruct.identity;
+		private RotStruct lPinkyDip = RotStruct.identity;
+		private RotStruct lPinkyTip = RotStruct.identity;
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
-		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / 1000000000.0);
+		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
-		protected override void OnStartRun() {
-			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
-			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
-
-			var imageSource = ImageSourceProvider.ImageSource;
-			SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
-			SetupAnnotationController(_holisticAnnotationController, imageSource);
-			SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
-			SetupAnnotationController(_poseRoiAnnotationController, imageSource);
-		}
-
-		private Vector3 ConvertPoint(LandmarkList list, int idx) {
-			Landmark mark = list.Landmark[idx];
-			return new Vector3(-mark.X, mark.Y, mark.Z);
-		}
-
-		private Vector3 ConvertPoint(NormalizedLandmarkList list, int idx) {
-			NormalizedLandmark mark = list.Landmark[idx];
-			return new Vector3(mark.X, mark.Y, mark.Z);
-		}
-
-		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {
-			_poseDetectionAnnotationController.DrawLater(eventArgs.value);
-
-		}
-
-		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			_holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
-
-			Quaternion neckRotation = Quaternion.identity;
-			
-			try {
-				Vector3 faceUpDir;
-				{
-					Vector3 botHead = ConvertPoint(eventArgs.value, 152);
-					Vector3 topHead = ConvertPoint(eventArgs.value, 10);
-
-					// Figure out their position on the eye socket plane
-					faceUpDir = new Vector3(
-						-(topHead.x - botHead.x),
-						-(topHead.y - botHead.y),
-						-(topHead.z - botHead.z)
-					);
-				}
-
-				Quaternion rot = Quaternion.FromToRotation(Vector3.up, faceUpDir);
-				neckRotation = rot;
-			} catch {
-
-			}
-
-			this.neckRotation.Set(neckRotation, TimeNow);
-		}
-
-		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			_holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
-
-		}
-
-		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			_holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
-
-			Quaternion lHand = Quaternion.identity;
-
-			try {
-				Vector3 handUpDir;
-				{
-					Vector3 palm = ConvertPoint(eventArgs.value, 0);
-					Vector3 middleFinger = ConvertPoint(eventArgs.value, 5);
-
-					// Figure out their position on the eye socket plane
-					handUpDir = new Vector3(
-						(middleFinger.x - palm.x),
-						(middleFinger.y - palm.y),
-						(middleFinger.z - palm.z)
-					);
-				}
-
-				Quaternion rot = Quaternion.FromToRotation(Vector3.left, handUpDir);
-				lHand = rot;
-			} catch {
-
-			}
-
-			this.lHand.Set(lHand, TimeNow);
-		}
-
-		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			_holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
-
-			Quaternion rHand = Quaternion.identity;
-
-			try {
-				Vector3 handUpDir;
-				{
-					Vector3 palm = ConvertPoint(eventArgs.value, 0);
-					Vector3 middleFinger = ConvertPoint(eventArgs.value, 5);
-
-					// Figure out their position on the eye socket plane
-					handUpDir = new Vector3(
-						(middleFinger.x - palm.x),
-						(middleFinger.y - palm.y),
-						(middleFinger.z - palm.z)
-					);
-				}
-
-				Quaternion rot = Quaternion.FromToRotation(Vector3.right, handUpDir);
-				rHand = rot;
-			} catch {
-
-			}
-
-			this.rHand.Set(rHand, TimeNow);
-		}
+		
 		
 		public int TestInterpolation;
 		public float InterpolationValue = 0.4f; // 0.4 is really good for the current frame interval. Make this adjustable
@@ -180,30 +87,351 @@ namespace HardCoded.VRigUnity {
 				curr = value;
 			}
 
-			public void UpdateRotation(Transform transform, float time) {
+			private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
 				switch (TestInterpolationStatic) {
 					default: {
-						transform.rotation = Quaternion.Lerp(transform.rotation, curr, TestInterpolationValue);
-						break;
+						return Quaternion.Lerp(current, curr, TestInterpolationValue);
 					}
 					case 1: {
 						float timeLength = currTime - lastTime;
 						float delta = (time - currTime) / timeLength;
-						transform.rotation = Quaternion.Lerp(transform.rotation, curr, delta);
-						break;
+						return Quaternion.Lerp(current, curr, delta);
 					}
 					case 2: {
-						transform.rotation = curr;
-						break;
+						return curr;
 					}
 				}
 			}
+			
+			public void UpdateRotation(Transform transform, float time) {
+				if (time - 1 > currTime) {
+					// If the part was lost we slowly put it back to it's original position
+					transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.identity, 0.1f);
+				} else {
+					transform.rotation = GetUpdatedRotation(transform.rotation, curr, time);
+				}
+			}
+
+			public void UpdateLocalRotation(Transform transform, float time) {
+				transform.localRotation = GetUpdatedRotation(transform.localRotation, curr, time);
+			}
 		}
 
+		protected override void OnStartRun() {
+			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
+			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
+			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
+			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
+			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
+			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
+
+			var imageSource = ImageSourceProvider.ImageSource;
+			SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
+			SetupAnnotationController(_holisticAnnotationController, imageSource);
+			SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
+			SetupAnnotationController(_poseRoiAnnotationController, imageSource);
+		}
+
+		private Vector3 ConvertPoint(LandmarkList list, int idx) {
+			Landmark mark = list.Landmark[idx];
+			return new Vector3(-mark.X, mark.Y, mark.Z);
+		}
+
+		private Vector3 ConvertPoint(NormalizedLandmarkList list, int idx) {
+			NormalizedLandmark mark = list.Landmark[idx];
+			return new Vector3(-mark.X, mark.Y, mark.Z);
+		}
+
+		public float TestA;
+		public float TestB;
+		public float TestC;
+
+		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {
+			_poseDetectionAnnotationController.DrawLater(eventArgs.value);
+		}
+		
+		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			_holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
+		}
+
+		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {
+			_poseRoiAnnotationController.DrawLater(eventArgs.value);
+		}
+
+		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			_holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
+			
+			if (eventArgs.value == null) {
+				return;
+			}
+
+			Quaternion neckRotation = Quaternion.identity;
+			
+			{
+				Vector3 faceUpDir;
+				Vector3 forwardDir;
+				{
+					Vector3 botHead = ConvertPoint(eventArgs.value, 152);
+					Vector3 topHead = ConvertPoint(eventArgs.value, 10);
+					
+					Plane plane = new(ConvertPoint(eventArgs.value, 109), ConvertPoint(eventArgs.value, 338), botHead);
+					forwardDir = plane.normal;
+
+					// Figure out their position on the eye socket plane
+					faceUpDir = new Vector3(
+						-(topHead.x - botHead.x),
+						-(topHead.y - botHead.y),
+						-(topHead.z - botHead.z)
+					);
+				}
+
+				//Quaternion rot = Quaternion.FromToRotation(Vector3.up, faceUpDir);
+				Quaternion rot = Quaternion.LookRotation(-forwardDir, faceUpDir);
+				neckRotation = rot;
+
+				for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
+					vectors[i] = ConvertPoint(eventArgs.value, i);
+				}
+
+				vectorsSize = eventArgs.value.Landmark.Count;
+			}
+
+			this.neckRotation.Set(neckRotation, TimeNow);
+		}
+
+		private void ComputeFinger(Quaternion rel, Vector3 vMcp, float mul, Vector3 vPip, Vector3 vDip, Vector3 vTip, out Quaternion pip, out Quaternion dip, out Quaternion tip) {
+			Vector3 rMcp = rel * (vMcp - vMcp);
+			Vector3 rPip = rel * (vPip - vMcp) - rMcp;
+			Vector3 rDip = rel * (vDip - vMcp) - rMcp;
+			Vector3 rTip = rel * (vTip - vMcp) - rMcp;
+
+			rPip.z = 0.03f;
+			rDip.z = 0.06f;
+			rTip.z = 0.09f;
+
+			// No x
+			rDip.x = rTip.x = 0;
+
+			Vector3 cPip = Quaternion.FromToRotation(Vector3.up, rPip).eulerAngles;
+			Vector3 cDip = Quaternion.FromToRotation(rPip, rDip - rPip).eulerAngles;
+			Vector3 cTip = Quaternion.FromToRotation(rDip, rTip - rDip).eulerAngles;
+			cPip.x = cDip.x = cTip.x = 0; // No yaw
+			cDip.y = cTip.y = 0; // No roll
+			cPip.y = -cPip.y * mul;
+			
+			cPip.z = ((cPip.z + 180) % 360) - 180;
+			cDip.z = ((cDip.z + 180) % 360) - 180;
+			cTip.z = ((cTip.z + 180) % 360) - 180;
+			cPip.z = Mathf.Abs(cPip.z);
+			cDip.z = Mathf.Abs(cDip.z);
+			cTip.z = Mathf.Abs(cTip.z);
+			cPip.z = Mathf.Clamp(cPip.z, 0, 120) * mul;
+			cDip.z = Mathf.Clamp(cDip.z, 0, 120) * mul;
+			cTip.z = Mathf.Clamp(cTip.z, 0, 120) * mul;
+
+			pip = Quaternion.Euler(cPip);
+			dip = Quaternion.Euler(cDip);
+			tip = Quaternion.Euler(cTip);
+			
+			/*
+			Vector3 off = new(0.2f, 0, 0);
+			vectors[0] = (Vector3.zero) + off;
+			vectors[1] = (rPip) + off;
+			vectors[2] = (rDip) + off;
+			vectors[3] = (rTip) + off;
+			vectorsSize = 0;
+			*/
+		}
+
+		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			_holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
+			
+			if (eventArgs.value == null) {
+				return;
+			}
+
+			Quaternion hand = Quaternion.identity;
+			Quaternion indexPip  = Quaternion.identity;
+			Quaternion indexDip  = Quaternion.identity;
+			Quaternion indexTip  = Quaternion.identity;
+			Quaternion middlePip = Quaternion.identity;
+			Quaternion middleDip = Quaternion.identity;
+			Quaternion middleTip = Quaternion.identity;
+			Quaternion ringPip   = Quaternion.identity;
+			Quaternion ringDip   = Quaternion.identity;
+			Quaternion ringTip   = Quaternion.identity;
+			Quaternion pinkyPip  = Quaternion.identity;
+			Quaternion pinkyDip  = Quaternion.identity;
+			Quaternion pinkyTip  = Quaternion.identity;
+
+			{
+				Vector3 handUpDir;
+				Vector3 handForwardDir;
+				{
+					Vector3 palm = ConvertPoint(eventArgs.value, 0);
+					Vector3 indexFinger = ConvertPoint(eventArgs.value, 5);
+					Vector3 middleFinger = ConvertPoint(eventArgs.value, 9);
+					Vector3 ringFinger = ConvertPoint(eventArgs.value, 13);
+					Vector3 pinkyFinger = ConvertPoint(eventArgs.value, 17);
+
+					// Figure out their position on the eye socket plane
+					handUpDir = new Vector3(
+						(middleFinger.x - palm.x),
+						(middleFinger.y - palm.y),
+						(middleFinger.z - palm.z)
+					);
+
+					Plane plane = new(palm, middleFinger, pinkyFinger);
+					handForwardDir = plane.normal;
+					
+					Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
+					ComputeFinger(rotTest, indexFinger, -1,
+						ConvertPoint(eventArgs.value, 6),
+						ConvertPoint(eventArgs.value, 7),
+						ConvertPoint(eventArgs.value, 8),
+						out indexPip, out indexDip, out indexTip);
+					ComputeFinger(rotTest, middleFinger, -1,
+						ConvertPoint(eventArgs.value, 10),
+						ConvertPoint(eventArgs.value, 11),
+						ConvertPoint(eventArgs.value, 12),
+						out middlePip, out middleDip, out middleTip);
+					ComputeFinger(rotTest, ringFinger, -1,
+						ConvertPoint(eventArgs.value, 14),
+						ConvertPoint(eventArgs.value, 15),
+						ConvertPoint(eventArgs.value, 16),
+						out ringPip, out ringDip, out ringTip);
+					ComputeFinger(rotTest, pinkyFinger, -1,
+						ConvertPoint(eventArgs.value, 18),
+						ConvertPoint(eventArgs.value, 19),
+						ConvertPoint(eventArgs.value, 20),
+						out pinkyPip, out pinkyDip, out pinkyTip);
+				}
+
+				Quaternion test = Quaternion.Euler(0, 90, 90);
+				Quaternion rot = Quaternion.LookRotation(handForwardDir, -handUpDir) * test;
+				hand = rot;
+			}
+
+			float time = TimeNow;
+			this.lHand.Set(hand, time);
+			this.lIndexPip.Set(indexPip, time);
+			this.lIndexDip.Set(indexDip, time);
+			this.lIndexTip.Set(indexTip, time);
+			this.lMiddlePip.Set(middlePip, time);
+			this.lMiddleDip.Set(middleDip, time);
+			this.lMiddleTip.Set(middleTip, time);
+			this.lRingPip.Set(ringPip, time);
+			this.lRingDip.Set(ringDip, time);
+			this.lRingTip.Set(ringTip, time);
+			this.lPinkyPip.Set(pinkyPip, time);
+			this.lPinkyDip.Set(pinkyDip, time);
+			this.lPinkyTip.Set(pinkyTip, time);
+		}
+
+		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			_holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
+
+			if (eventArgs.value == null) {
+				return;
+			}
+
+			Quaternion hand = Quaternion.identity;
+			Quaternion indexPip  = Quaternion.identity;
+			Quaternion indexDip  = Quaternion.identity;
+			Quaternion indexTip  = Quaternion.identity;
+			Quaternion middlePip = Quaternion.identity;
+			Quaternion middleDip = Quaternion.identity;
+			Quaternion middleTip = Quaternion.identity;
+			Quaternion ringPip   = Quaternion.identity;
+			Quaternion ringDip   = Quaternion.identity;
+			Quaternion ringTip   = Quaternion.identity;
+			Quaternion pinkyPip  = Quaternion.identity;
+			Quaternion pinkyDip  = Quaternion.identity;
+			Quaternion pinkyTip  = Quaternion.identity;
+
+			{
+				Vector3 handUpDir;
+				Vector3 handForwardDir;
+				{
+					Vector3 palm = ConvertPoint(eventArgs.value, 0);
+					Vector3 indexFinger = ConvertPoint(eventArgs.value, 5);
+					Vector3 middleFinger = ConvertPoint(eventArgs.value, 9);
+					Vector3 ringFinger = ConvertPoint(eventArgs.value, 13);
+					Vector3 pinkyFinger = ConvertPoint(eventArgs.value, 17);
+
+					// Figure out their position on the eye socket plane
+					handUpDir = new Vector3(
+						(middleFinger.x - palm.x),
+						(middleFinger.y - palm.y),
+						(middleFinger.z - palm.z)
+					);
+
+					Plane plane = new(palm, middleFinger, pinkyFinger);
+					handForwardDir = plane.normal;
+					
+					Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
+					ComputeFinger(rotTest, indexFinger, 1,
+						ConvertPoint(eventArgs.value, 6),
+						ConvertPoint(eventArgs.value, 7),
+						ConvertPoint(eventArgs.value, 8),
+						out indexPip, out indexDip, out indexTip);
+					ComputeFinger(rotTest, middleFinger, 1,
+						ConvertPoint(eventArgs.value, 10),
+						ConvertPoint(eventArgs.value, 11),
+						ConvertPoint(eventArgs.value, 12),
+						out middlePip, out middleDip, out middleTip);
+					ComputeFinger(rotTest, ringFinger, 1,
+						ConvertPoint(eventArgs.value, 14),
+						ConvertPoint(eventArgs.value, 15),
+						ConvertPoint(eventArgs.value, 16),
+						out ringPip, out ringDip, out ringTip);
+					ComputeFinger(rotTest, pinkyFinger, 1,
+						ConvertPoint(eventArgs.value, 18),
+						ConvertPoint(eventArgs.value, 19),
+						ConvertPoint(eventArgs.value, 20),
+						out pinkyPip, out pinkyDip, out pinkyTip);
+				}
+
+				Quaternion test = Quaternion.Euler(0, 90, -90);
+				Quaternion rot = Quaternion.LookRotation(handForwardDir, -handUpDir);
+				hand = rot * test;
+				
+				{
+					Vector3 palm = ConvertPoint(eventArgs.value, 0);
+
+					for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
+						Vector3 point = ConvertPoint(eventArgs.value, i);
+						//vectors[i] = Quaternion.Inverse(rot) * (point - palm);
+					}
+
+					//vectorsSize = eventArgs.value.Landmark.Count;
+				}
+			}
+
+			float time = TimeNow;
+			this.rHand.Set(hand, time);
+			this.rIndexPip.Set(indexPip, time);
+			this.rIndexDip.Set(indexDip, time);
+			this.rIndexTip.Set(indexTip, time);
+			this.rMiddlePip.Set(middlePip, time);
+			this.rMiddleDip.Set(middleDip, time);
+			this.rMiddleTip.Set(middleTip, time);
+			this.rRingPip.Set(ringPip, time);
+			this.rRingDip.Set(ringDip, time);
+			this.rRingTip.Set(ringTip, time);
+			this.rPinkyPip.Set(pinkyPip, time);
+			this.rPinkyDip.Set(pinkyDip, time);
+			this.rPinkyTip.Set(pinkyTip, time);
+		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
 			_poseWorldLandmarksAnnotationController.DrawLater(eventArgs.value);
 			
+			if (eventArgs.value == null) {
+				return;
+			}
+
 			Quaternion chestRotation = Quaternion.identity;
 			Quaternion hipsRotation = Quaternion.identity;
 			Vector3 hipsPosition = Vector3.zero;
@@ -262,12 +490,6 @@ namespace HardCoded.VRigUnity {
 					rot = Quaternion.FromToRotation(vRigA, vRigC);
 					lLowerArm = rot;
 				}
-
-				for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
-					vectors[i] = ConvertPoint(eventArgs.value, i);
-				}
-
-				vectorsSize = eventArgs.value.Landmark.Count;
 			} catch {
 				// Catch all exceptions
 			}
@@ -283,25 +505,48 @@ namespace HardCoded.VRigUnity {
 			this.lLowerArm.Set(lLowerArm, TimeNow);
 		}
 
-		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {
-			_poseRoiAnnotationController.DrawLater(eventArgs.value);
-
-		}
-
 		void FixedUpdate() {
 			TestInterpolationStatic = TestInterpolation;
 			TestInterpolationValue = InterpolationValue;
 			float time = TimeNow;
 			//animator.GetBoneTransform(HumanBodyBones.Head).Rotate(Vector3.up, 0.5f);
 
+			// All transformations are inverted from left to right because the VMR
+			// models do not allow for mirroring.
 			chestRotation.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Chest), time);
 			rUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightUpperArm), time);
 			rLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightLowerArm), time);
 			lUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftUpperArm), time);
 			lLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
 			neckRotation.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Neck), time);
-			lHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightHand), time);
-			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftHand), time);
+			
+			lHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          RightHand), time);
+			lIndexPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexProximal), time);
+			lIndexDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexIntermediate), time);
+			lIndexTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexDistal), time);
+			lMiddlePip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.RightMiddleProximal), time);
+			lMiddleDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.RightMiddleIntermediate), time);
+			lMiddleTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.RightMiddleDistal), time);
+			lRingPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  RightRingProximal), time);
+			lRingDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  RightRingIntermediate), time);
+			lRingTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  RightRingDistal), time);
+			lPinkyPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightLittleProximal), time);
+			lPinkyDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightLittleIntermediate), time);
+			lPinkyTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightLittleDistal), time);
+
+			rIndexPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexProximal), time);
+			rIndexDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexIntermediate), time);
+			rIndexTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexDistal), time);
+			rMiddlePip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.LeftMiddleProximal), time);
+			rMiddleDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.LeftMiddleIntermediate), time);
+			rMiddleTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.LeftMiddleDistal), time);
+			rRingPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  LeftRingProximal), time);
+			rRingDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  LeftRingIntermediate), time);
+			rRingTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones.  LeftRingDistal), time);
+			rPinkyPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleProximal), time);
+			rPinkyDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleIntermediate), time);
+			rPinkyTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleDistal), time);
+			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          LeftHand), time);
 
 			if (sphereParent.childCount < vectorsSize) {
 				for (int i = sphereParent.childCount; i < vectorsSize; i++) {

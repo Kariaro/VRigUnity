@@ -44,22 +44,6 @@ namespace HardCoded.VRigUnity {
 
 		protected abstract override void OnStartRun();
 
-		/*protected override void OnStartRun() {
-			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
-			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
-
-			var imageSource = ImageSourceProvider.ImageSource;
-			SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
-			SetupAnnotationController(_holisticAnnotationController, imageSource);
-			SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
-			SetupAnnotationController(_poseRoiAnnotationController, imageSource);
-		}*/
-
 		protected override void AddTextureFrameToInputStream(TextureFrame textureFrame) {
 			graphRunner.AddTextureFrameToInputStream(textureFrame);
 		}
@@ -73,12 +57,17 @@ namespace HardCoded.VRigUnity {
 			LandmarkList poseWorldLandmarks = null;
 			NormalizedRect poseRoi = null;
 
+			if (false) {
+				yield return new WaitUntil(() => { return true; });
+			}
+			/*
 			if (runningMode == RunningMode.Sync) {
 				var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, true);
 			} else if (runningMode == RunningMode.NonBlockingSync) {
 				yield return new WaitUntil(() =>
 					graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, false));
 			}
+			*/
 
 			_poseDetectionAnnotationController.DrawNow(poseDetection);
 			_holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);

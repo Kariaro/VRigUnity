@@ -319,7 +319,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 54668405}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.6, y: 1, z: -8.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -361,7 +361,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -2169.937, y: -162.97986}
+  m_AnchoredPosition: {x: -2170, y: -163}
   m_SizeDelta: {x: 640, y: 480}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &163869799
@@ -553,6 +553,11 @@ MonoBehaviour:
   animator: {fileID: 1035270768}
   sphereMesh: {fileID: 1911285522}
   sphereParent: {fileID: 54668406}
+  TestInterpolation: 0
+  InterpolationValue: 0.4
+  TestA: 0
+  TestB: 0
+  TestC: 0
 --- !u!1001 &276417656
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2579,6 +2584,7 @@ GameObject:
   - component: {fileID: 1911285526}
   - component: {fileID: 1911285525}
   - component: {fileID: 1911285524}
+  - component: {fileID: 1911285527}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -2595,7 +2601,7 @@ Transform:
   m_GameObject: {fileID: 1911285522}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2664,6 +2670,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1911285522}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1911285527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911285522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59584a149c1bade449922099b0e48aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1936307553
 GameObject:
   m_ObjectHideFlags: 0
