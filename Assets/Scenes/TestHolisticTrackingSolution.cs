@@ -8,12 +8,32 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class TestHolisticTrackingSolution : HolisticSolutionBase {
 		[Header("Rig")]
+		[SerializeField] protected GameObject vrmModel;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
+		[SerializeField] protected GUIScript guiScript;
 
 		[Header("Debug")]
 		public GameObject sphereMesh;
 		public Transform sphereParent;
+
+		public bool SetVrmModel(GameObject gameObject) {
+			VRMBlendShapeProxy blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();
+			Animator animator = gameObject.GetComponent<Animator>();
+
+			if (animator == null || blendShapeProxy == null) {
+				return false;
+			}
+
+			if (vrmModel != null) {
+				GameObject.Destroy(vrmModel);
+			}
+
+			this.vrmModel = gameObject;
+			this.blendShapeProxy = blendShapeProxy;
+			this.animator = animator;
+			return true;
+		}
 
 
 		private Vector3[] vectors = new Vector3[800];
@@ -573,6 +593,9 @@ namespace HardCoded.VRigUnity {
 			TestInterpolationValue = InterpolationValue;
 			float time = TimeNow;
 			//animator.GetBoneTransform(HumanBodyBones.Head).Rotate(Vector3.up, 0.5f);
+
+			// Apply the model transform
+			vrmModel.transform.position = guiScript.GetModelTransform();
 
 			// All transformations are inverted from left to right because the VMR
 			// models do not allow for mirroring.
