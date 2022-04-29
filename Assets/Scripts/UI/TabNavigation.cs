@@ -13,13 +13,7 @@ namespace HardCoded.VRigUnity {
 			// Only if this object is selected we should calculate navigation
 			GameObject currentObject = EventSystem.current.currentSelectedGameObject;
 
-			if (elements == null) {
-				return;
-			}
-
-			int idx = elements.FindIndex(0, elements.Count, e => e.gameObject == currentObject);
-
-
+			int idx = elements?.FindIndex(0, elements.Count, e => (e != null ? e.gameObject : null) == currentObject) ?? -1;
 			if (idx != -1 && Input.GetKeyDown(KeyCode.Tab)) {
 				bool isDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 				int newIdx = idx - (isDown ? 1 : -1);
