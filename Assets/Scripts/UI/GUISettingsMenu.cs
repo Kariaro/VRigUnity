@@ -53,5 +53,13 @@ namespace HardCoded.VRigUnity {
 
 			settings.SetModelTransform(x, y, z);
 		}
+
+		public void SetBackgroundColor(Color color) {
+			settings.SetBackgroundColor(color);
+		}
+
+		public void SetShowCamera(bool show) {
+			settings.SetShowCamera(show);
+		}
 	}
 }
