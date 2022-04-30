@@ -1,6 +1,5 @@
 using Mediapipe.Unity;
-using Mediapipe.Unity.UI;
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -8,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class TestImageSourceConfig : ModalContents {
+	public class GUICameraConfigWindow : MonoBehaviour {
 		private const string _SourcePath                = "Scroll View/Viewport/Contents/Source/Dropdown";
 		private const string _ResolutionPath            = "Scroll View/Viewport/Contents/Resolution/Dropdown";
 		private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
@@ -18,23 +17,29 @@ namespace HardCoded.VRigUnity {
 		private TMP_Dropdown _resolutionInput;
 		private Toggle _isHorizontallyFlippedInput;
 
-		private bool _isChanged;
-
-		private void Start() {
-			_solution = GameObject.Find("Solution").GetComponent<Solution>();
+		void Start() {
+			_solution = SolutionUtils.GetSolution();
 			InitializeContents();
 		}
 
-		public override void Exit() {
-			GetModal().CloseAndResume(_isChanged);
+		private void InitializeContents() {
+			ReloadContents();
 		}
 
-		private void InitializeContents() {
+		public void ReloadContents() {
+			StartCoroutine(UpdateContents());
+		}
+
+		private IEnumerator UpdateContents() {
+			WebCamSource webCamSource = _solution.bootstrap.GetComponent<WebCamSource>();
+			ImageSourceProvider.ImageSource = webCamSource;
+			yield return webCamSource.UpdateSources();
+			
 			InitializeSource();
 			InitializeResolution();
 			InitializeIsHorizontallyFlipped();
 
-			ImageSourceProvider.ImageSource = _solution.bootstrap.GetImageSource(ImageSourceType.WebCamera);
+			yield return null;
 		}
 
 		private void InitializeSource() {
@@ -44,7 +49,7 @@ namespace HardCoded.VRigUnity {
 
 			var imageSource = ImageSourceProvider.ImageSource;
 			var sourceNames = imageSource.sourceCandidateNames;
-
+			
 			if (sourceNames == null) {
 				_sourceInput.enabled = false;
 				return;
@@ -62,7 +67,7 @@ namespace HardCoded.VRigUnity {
 
 			_sourceInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectSource(_sourceInput.value);
-				_isChanged = true;
+				_solution.Play();
 				InitializeResolution();
 			});
 		}
@@ -92,7 +97,7 @@ namespace HardCoded.VRigUnity {
 
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
-				_isChanged = true;
+				_solution.Play();
 			});
 		}
 
@@ -103,7 +108,6 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
-				_isChanged = true;
 			});
 		}
 	}

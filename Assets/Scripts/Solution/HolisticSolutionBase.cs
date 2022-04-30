@@ -57,22 +57,11 @@ namespace HardCoded.VRigUnity {
 			LandmarkList poseWorldLandmarks = null;
 			NormalizedRect poseRoi = null;
 
-			if (false) {
-				yield return new WaitUntil(() => { return true; });
-			}
-			/*
-			if (runningMode == RunningMode.Sync) {
-				var _ = graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, true);
-			} else if (runningMode == RunningMode.NonBlockingSync) {
-				yield return new WaitUntil(() =>
-					graphRunner.TryGetNext(out poseDetection, out poseLandmarks, out faceLandmarks, out leftHandLandmarks, out rightHandLandmarks, out poseWorldLandmarks, out poseRoi, false));
-			}
-			*/
-
 			_poseDetectionAnnotationController.DrawNow(poseDetection);
 			_holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);
 			_poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
 			_poseRoiAnnotationController.DrawNow(poseRoi);
+			yield return null;
 		}
 	}
 }
