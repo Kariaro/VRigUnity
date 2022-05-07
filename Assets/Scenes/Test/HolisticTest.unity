@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 275874976}
   - component: {fileID: 275874975}
   - component: {fileID: 275874970}
-  - component: {fileID: 275874974}
+  - component: {fileID: 275874977}
   - component: {fileID: 275874973}
   m_Layer: 0
   m_Name: Solution
@@ -492,22 +492,6 @@ MonoBehaviour:
   - width: 176
     height: 144
     frameRate: 30
---- !u!114 &275874974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275874966}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d846393f8d9f20fa64b924b0d95e68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultImageSource: 0
-  _preferableInferenceMode: 0
-  _assetLoaderType: 2
-  _enableGlog: 1
 --- !u!114 &275874975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,11 +523,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cfe681175a913848b21b465618cb95a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bootstrap: {fileID: 275874974}
+  bootstrap: {fileID: 0}
   screen: {fileID: 1197972573}
   graphRunner: {fileID: 275874975}
   textureFramePool: {fileID: 275874970}
-  runningMode: 0
   _worldAnnotationArea: {fileID: 1936307554}
   _poseDetectionAnnotationController: {fileID: 462278167}
   _holisticAnnotationController: {fileID: 462278166}
@@ -560,6 +543,21 @@ MonoBehaviour:
   TestA: 0
   TestB: 0
   TestC: 0
+--- !u!114 &275874977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275874966}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3bb2c5c2d9ad6d44a4f7f5ae55782b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _preferableInferenceMode: 0
+  _assetLoaderType: 2
+  _enableGlog: 1
 --- !u!1001 &276417656
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1492,6 +1490,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8571076842338426121, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8571076842338426122, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
       propertyPath: m_Camera
       value: 
@@ -1604,7 +1606,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8571076843237194833, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
 --- !u!224 &705621526 stripped
 RectTransform:
@@ -2323,6 +2326,24 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 1
   m_ShadowAngle: 0
+--- !u!1 &1368835647 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8571076843237194837, guid: 140d1d2c406167c50819d89f86d9092e, type: 3}
+  m_PrefabInstance: {fileID: 705621525}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1368835654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368835647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c6861056de77b74bae53c60d9803c0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _solution: {fileID: 275874976}
 --- !u!1 &1625996802
 GameObject:
   m_ObjectHideFlags: 0

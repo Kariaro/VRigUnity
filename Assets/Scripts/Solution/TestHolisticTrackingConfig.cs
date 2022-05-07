@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mediapipe.Unity.UI;
-using Mediapipe.Unity;
 
+// TODO: Remove this class
 namespace HardCoded.VRigUnity {
 	public class TestHolisticTrackingConfig : ModalContents {
 		private const string _ModelComplexityPath = "Scroll View/Viewport/Contents/Model Complexity/Dropdown";
@@ -64,7 +64,7 @@ namespace HardCoded.VRigUnity {
 
 		public void SetTimeoutMillisec() {
 			if (int.TryParse(_timeoutMillisecInput.text, out var value)) {
-				_solution.timeoutMillisec = value;
+				_solution.TimeoutMillisec = value;
 				_isChanged = true;
 			}
 		}
@@ -76,8 +76,6 @@ namespace HardCoded.VRigUnity {
 			InitializeMinDetectionConfidence();
 			InitializeMinTrackingConfidence();
 			InitializeTimeoutMillisec();
-
-			_solution.runningMode = RunningMode.Async;
 		}
 
 		private void InitializeModelComplexity() {
@@ -123,7 +121,7 @@ namespace HardCoded.VRigUnity {
 
 		private void InitializeTimeoutMillisec() {
 			_timeoutMillisecInput = gameObject.transform.Find(_TimeoutMillisecPath).gameObject.GetComponent<InputField>();
-			_timeoutMillisecInput.text = _solution.timeoutMillisec.ToString();
+			_timeoutMillisecInput.text = _solution.TimeoutMillisec.ToString();
 			_timeoutMillisecInput.onValueChanged.AddListener(delegate { SetTimeoutMillisec(); });
 		}
 	}

@@ -9,7 +9,7 @@ using Mediapipe.Unity;
 using Mediapipe;
 
 namespace HardCoded.VRigUnity {
-	public class TestHolisticTrackingGraph : GraphRunner {
+	public class TestHolisticTrackingGraph : TestGraphRunner {
 		public enum ModelComplexity {
 			Lite = 0,
 			Full = 1,
@@ -110,8 +110,16 @@ namespace HardCoded.VRigUnity {
 			AddTextureFrameToInputStream(_InputStreamName, textureFrame);
 		}
 
-		public bool TryGetNext(out Detection poseDetection, out NormalizedLandmarkList poseLandmarks, out NormalizedLandmarkList faceLandmarks, out NormalizedLandmarkList leftHandLandmarks,
-													 out NormalizedLandmarkList rightHandLandmarks, out LandmarkList poseWorldLandmarks, out NormalizedRect poseRoi, bool allowBlock = true) {
+		public bool TryGetNext(
+			out Detection poseDetection,
+			out NormalizedLandmarkList poseLandmarks,
+			out NormalizedLandmarkList faceLandmarks,
+			out NormalizedLandmarkList leftHandLandmarks,
+			out NormalizedLandmarkList rightHandLandmarks,
+			out LandmarkList poseWorldLandmarks,
+			out NormalizedRect poseRoi,
+			bool allowBlock = true
+		) {
 			var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
 			var r1 = TryGetNext(_poseDetectionStream, out poseDetection, allowBlock, currentTimestampMicrosec);
 			var r2 = TryGetNext(_poseLandmarksStream, out poseLandmarks, allowBlock, currentTimestampMicrosec);
@@ -124,8 +132,7 @@ namespace HardCoded.VRigUnity {
 			return r1 || r2 || r3 || r4 || r5 || r6 || r7;
 		}
 
-		protected override IList<WaitForResult> RequestDependentAssets()
-		{
+		protected override IList<WaitForResult> RequestDependentAssets() {
 			return new List<WaitForResult> {
 				WaitForAsset("face_detection_short_range.bytes"),
 				WaitForAsset(refineFaceLandmarks ? "face_landmark_with_attention.bytes" : "face_landmark.bytes"),
@@ -149,13 +156,13 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
-			_poseDetectionStream = new OutputStream<DetectionPacket, Detection>(calculatorGraph, _PoseDetectionStreamName, true, timeoutMicrosec);
-			_poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _PoseLandmarksStreamName, true, timeoutMicrosec);
-			_faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _FaceLandmarksStreamName, true, timeoutMicrosec);
-			_leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _LeftHandLandmarksStreamName, true, timeoutMicrosec);
-			_rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(calculatorGraph, _RightHandLandmarksStreamName, true, timeoutMicrosec);
-			_poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(calculatorGraph, _PoseWorldLandmarksStreamName, true, timeoutMicrosec);
-			_poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(calculatorGraph, _PoseRoiStreamName, true, timeoutMicrosec);
+			_poseDetectionStream = new OutputStream<DetectionPacket, Detection>(CalculatorGraph, _PoseDetectionStreamName, true, TimeoutMicrosec);
+			_poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _PoseLandmarksStreamName, true, TimeoutMicrosec);
+			_faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _FaceLandmarksStreamName, true, TimeoutMicrosec);
+			_leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _LeftHandLandmarksStreamName, true, TimeoutMicrosec);
+			_rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _RightHandLandmarksStreamName, true, TimeoutMicrosec);
+			_poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(CalculatorGraph, _PoseWorldLandmarksStreamName, true, TimeoutMicrosec);
+			_poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(CalculatorGraph, _PoseRoiStreamName, true, TimeoutMicrosec);
 
 			using (var validatedGraphConfig = new ValidatedGraphConfig()) {
 				var status = validatedGraphConfig.Initialize(config);
@@ -189,7 +196,7 @@ namespace HardCoded.VRigUnity {
 					}
 				}
 
-				return calculatorGraph.Initialize(cannonicalizedConfig);
+				return CalculatorGraph.Initialize(cannonicalizedConfig);
 			}
 		}
 
@@ -197,8 +204,6 @@ namespace HardCoded.VRigUnity {
 			var sidePacket = new SidePacket();
 
 			SetImageTransformationOptions(sidePacket, imageSource);
-
-			// TODO: refactoring
 			// The orientation of the output image must match that of the input image.
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(imageSource.rotation);
 			var outputRotation = imageSource.rotation;

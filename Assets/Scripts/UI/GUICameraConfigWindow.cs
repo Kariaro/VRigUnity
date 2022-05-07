@@ -12,7 +12,7 @@ namespace HardCoded.VRigUnity {
 		private const string _ResolutionPath            = "Scroll View/Viewport/Contents/Resolution/Dropdown";
 		private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
 
-		private Solution _solution;
+		private TestSolution _solution;
 		private TMP_Dropdown _sourceInput;
 		private TMP_Dropdown _resolutionInput;
 		private Toggle _isHorizontallyFlippedInput;

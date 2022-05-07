@@ -35,6 +35,10 @@ namespace HardCoded.VRigUnity {
 			return true;
 		}
 
+		protected override void RenderCurrentFrame(TextureFrame textureFrame) {
+			guiScript.DrawImage(textureFrame);
+		}
+
 
 		private Vector3[] vectors = new Vector3[800];
 		private int vectorsSize = 0;

@@ -5,7 +5,7 @@ using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public abstract class HolisticSolutionBase : ImageSourceSolution<TestHolisticTrackingGraph> {
+	public abstract class HolisticSolutionBase : TestImageSourceSolution<TestHolisticTrackingGraph> {
 		[SerializeField] protected RectTransform _worldAnnotationArea;
 		[SerializeField] protected DetectionAnnotationController _poseDetectionAnnotationController;
 		[SerializeField] protected HolisticLandmarkListAnnotationController _holisticAnnotationController;

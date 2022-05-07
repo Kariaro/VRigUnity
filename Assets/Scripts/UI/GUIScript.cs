@@ -15,7 +15,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] Image worldBackgroundColor;
 		[SerializeField] RawImage worldBackgroundImage;
 
-		private Solution solution;
+		private TestSolution solution;
 		private bool showWebCamImage;
 		private WebCamSource webCamSource;
 
@@ -58,6 +58,25 @@ namespace HardCoded.VRigUnity {
 			showWebCamImage = show;
 		}
 
+		public void DrawImage(TextureFrame textureFrame) {
+			Debug.Log("Testing??");
+			if (showWebCamImage) {
+				WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
+				Texture2D tex = worldBackgroundImage.texture as Texture2D;
+
+				if (!(tex is Texture2D)) {
+					if (tex == null || tex.width != texture.width || tex.height != texture.height) {
+						tex = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+						worldBackgroundImage.texture = tex;
+					}
+				}
+
+				Debug.Log("Draw Image");
+				textureFrame.CopyTexture(tex);
+			}
+		}
+
+		/*
 		void LateUpdate() {
 			if (showWebCamImage) {
 				WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
@@ -77,5 +96,6 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 		}
+		*/
 	}
 }
