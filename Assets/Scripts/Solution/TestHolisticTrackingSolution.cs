@@ -2,6 +2,7 @@ using Mediapipe;
 using Mediapipe.Unity;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using VRM;
 
@@ -83,10 +84,17 @@ namespace HardCoded.VRigUnity {
 		private RotStruct lPinkyTip = RotStruct.identity;
 
 		private float mouthOpen = 0;
-		private float lEyeOpen = 1;
-		private float rEyeOpen = 1;
+
+		public FaceData.RollingAverage lEyeOpen = new(FaceConfig.EAR_FRAMES);
+		public FaceData.RollingAverage rEyeOpen = new(FaceConfig.EAR_FRAMES);
+
+		public FaceData.RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
+		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
+		public Material defaultMat;
+		public Material highlightMat;
+		public bool keep = false;
 		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
 		public float GetTriangleArea(Vector3 A, Vector3 B, Vector3 C) {
@@ -174,9 +182,14 @@ namespace HardCoded.VRigUnity {
 			return new Vector3(-mark.X, mark.Y, mark.Z);
 		}
 
+		private Vector3 ConvertPoint2(NormalizedLandmarkList list, int idx) {
+			NormalizedLandmark mark = list.Landmark[idx];
+			return new Vector3(-mark.X * 2, mark.Y, mark.Z);
+		}
+
 		private Vector3 ConvertPoint(NormalizedLandmarkList list, int idx) {
 			NormalizedLandmark mark = list.Landmark[idx];
-			return new Vector3(-mark.X, mark.Y, mark.Z);
+			return new Vector3(-mark.X * 2, mark.Y, mark.Z);
 		}
 
 		public float TestA;
@@ -206,6 +219,8 @@ namespace HardCoded.VRigUnity {
 			float mouthOpen = 0;
 			float lEyeOpen = 0;
 			float rEyeOpen = 0;
+			Vector2 lEyeIris = Vector2.zero;
+			Vector2 rEyeIris = Vector2.zero;
 			
 			{
 				Vector3 faceUpDir;
@@ -248,24 +263,21 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					// Eyes
-					// Right
-					// Top Down: 159 -> 145
-					// Lft Righ: 133 -> 33
-					{
-						float td = Vector3.Distance(ConvertPoint(eventArgs.value, 159), ConvertPoint(eventArgs.value, 145));
-						float lr = Vector3.Distance(ConvertPoint(eventArgs.value, 133), ConvertPoint(eventArgs.value, 33));
-						rEyeOpen = Mathf.Clamp01(Mathf.Clamp01(0.5f - (td / lr)) * 10.0f);
-					}
+					lEyeOpen = FacePoints.CalculateEyeAspectRatio(
+						Array.ConvertAll(FacePoints.LeftEyeEAR, i => ConvertPoint(eventArgs.value, i))
+					);
 
-					// Left
-					// Top Down: 386 -> 374
-					// Lft Righ: 263 -> 362
-					{
-						float td = Vector3.Distance(ConvertPoint(eventArgs.value, 386), ConvertPoint(eventArgs.value, 374));
-						float lr = Vector3.Distance(ConvertPoint(eventArgs.value, 263), ConvertPoint(eventArgs.value, 362));
-						lEyeOpen = Mathf.Clamp01(Mathf.Clamp01(0.5f - (td / lr)) * 10.0f);
-					}
+					rEyeOpen = FacePoints.CalculateEyeAspectRatio(
+						Array.ConvertAll(FacePoints.RightEyeEAR, i => ConvertPoint(eventArgs.value, i))
+					);
+
+					lEyeIris = FacePoints.CalculateIrisPosition(
+						Array.ConvertAll(FacePoints.LeftEyeIrisPoint, i => ConvertPoint(eventArgs.value, i))
+					);
+
+					rEyeIris = FacePoints.CalculateIrisPosition(
+						Array.ConvertAll(FacePoints.RightEyeIrisPoint, i => ConvertPoint(eventArgs.value, i))
+					);
 
 					// Debug.Log("l: " + lEyeOpen + ", r: " + rEyeOpen);
 				}
@@ -274,17 +286,22 @@ namespace HardCoded.VRigUnity {
 				Quaternion rot = Quaternion.LookRotation(-forwardDir, faceUpDir);
 				neckRotation = rot;
 
-				for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
-					vectors[i] = ConvertPoint(eventArgs.value, i);
+				if (!keep) {
+					for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
+						Vector3 vec = ConvertPoint(eventArgs.value, i);
+						vec = -vec;
+						vectors[i] = vec;
+					}
+					vectorsSize = eventArgs.value.Landmark.Count;
 				}
-
-				vectorsSize = eventArgs.value.Landmark.Count;
 			}
 
 			this.neckRotation.Set(neckRotation, TimeNow);
 			this.mouthOpen = mouthOpen;
-			this.lEyeOpen = lEyeOpen;
-			this.rEyeOpen = rEyeOpen;
+			this.lEyeOpen.Add(lEyeOpen);
+			this.rEyeOpen.Add(rEyeOpen);
+			this.lEyeIris.Add(lEyeIris);
+			this.rEyeIris.Add(rEyeIris);
 		}
 
 		private void ComputeFinger(Quaternion rel, Vector3 vMcp, float mul, Vector3 vPip, Vector3 vDip, Vector3 vTip, out Quaternion pip, out Quaternion dip, out Quaternion tip) {
@@ -639,8 +656,31 @@ namespace HardCoded.VRigUnity {
 			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          LeftHand), time);
 
 			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), mouthOpen);
-			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), rEyeOpen);
-			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), lEyeOpen);
+
+			float rEyeTest = blendShapeProxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L));
+			float lEyeTest = blendShapeProxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R));
+			float rEyeValue = (rEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
+			float lEyeValue = (lEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
+			rEyeValue = (rEyeValue + rEyeTest * 2) / 3.0f;
+			lEyeValue = (lEyeValue + lEyeTest * 2) / 3.0f;
+
+			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), rEyeValue);
+			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), lEyeValue);
+
+			// TODO: Update this code to make it more correct
+			//animator.GetBoneTransform(HumanBodyBones.Neck).transform.rotation = Quaternion.identity;
+			animator.GetBoneTransform(HumanBodyBones.LeftEye).transform.localRotation = Quaternion.Euler(
+				(rEyeIris.Average().y - 0.14f) * -30,
+				rEyeIris.Average().x * -30,
+				0
+			);
+			animator.GetBoneTransform(HumanBodyBones.RightEye).transform.localRotation = Quaternion.Euler(
+				(lEyeIris.Average().y - 0.14f) * -30,
+				lEyeIris.Average().x * -30,
+				0
+			);
+
+			// Debug.Log(rEyeIris.Average());
 
 			if (sphereParent.childCount < vectorsSize) {
 				for (int i = sphereParent.childCount; i < vectorsSize; i++) {
@@ -649,7 +689,21 @@ namespace HardCoded.VRigUnity {
 				}
 			} else {
 				for (int i = 0; i < vectorsSize; i++) {
-					sphereParent.GetChild(i).localPosition = vectors[i];
+					Transform obj = sphereParent.GetChild(i);
+					obj.localPosition = vectors[i];
+					obj.gameObject.GetComponent<MeshRenderer>().material = defaultMat;
+				}
+
+				foreach (int i in FacePoints.LeftEye) {
+					if (i >= sphereParent.childCount) continue;
+					Transform obj = sphereParent.GetChild(i);
+					obj.gameObject.GetComponent<MeshRenderer>().material = highlightMat;
+				}
+
+				foreach (int i in FacePoints.RightEye) {
+					if (i >= sphereParent.childCount) continue;
+					Transform obj = sphereParent.GetChild(i);
+					obj.gameObject.GetComponent<MeshRenderer>().material = highlightMat;
 				}
 			}
 		}

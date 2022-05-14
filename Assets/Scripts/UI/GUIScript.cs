@@ -54,12 +54,11 @@ namespace HardCoded.VRigUnity {
 
 		public void SetShowCamera(bool show) {
 			worldBackgroundImage.texture = null;
-			worldBackgroundImage.color = show ? Color.white : Color.clear;
+			worldBackgroundImage.color = show ? new Color(1, 1, 1, 0.5f) : Color.clear;
 			showWebCamImage = show;
 		}
 
 		public void DrawImage(TextureFrame textureFrame) {
-			Debug.Log("Testing??");
 			if (showWebCamImage) {
 				WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
 				Texture2D tex = worldBackgroundImage.texture as Texture2D;
@@ -70,8 +69,19 @@ namespace HardCoded.VRigUnity {
 						worldBackgroundImage.texture = tex;
 					}
 				}
+				
+				float w = (UnityEngine.Screen.width / (float)UnityEngine.Screen.height);
+				float d = (texture.height / (float)texture.width) * w * 0.5f;
 
-				Debug.Log("Draw Image");
+				if (d < 0.5) {
+					worldBackgroundImage.rectTransform.anchorMin = new Vector2(0, 0.5f - d);
+					worldBackgroundImage.rectTransform.anchorMax = new Vector2(1, 0.5f + d);
+				} else {
+					d = ((texture.width / (float)texture.height) / w) * 0.5f;
+					worldBackgroundImage.rectTransform.anchorMin = new Vector2(0.5f - d, 0);
+					worldBackgroundImage.rectTransform.anchorMax = new Vector2(0.5f + d, 1);
+				}
+
 				textureFrame.CopyTexture(tex);
 			}
 		}

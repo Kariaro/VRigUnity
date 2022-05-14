@@ -2018,7 +2018,6 @@ MonoBehaviour:
   inputFieldModelX: {fileID: 5948449643165702184}
   inputFieldModelY: {fileID: 8574496277208793887}
   inputFieldModelZ: {fileID: 8905191894946002}
-  worldBackgroundColor: {fileID: 0}
 --- !u!114 &231270192605157780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2157,8 +2156,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6264682806128194954}
-        m_TargetAssemblyTypeName: HardCoded.VRigUnity.GUISettingsMenu, Assembly-CSharp
-        m_MethodName: HideMenu
+        m_TargetAssemblyTypeName: HardCoded.VRigUnity.GUIModalScript, Assembly-CSharp
+        m_MethodName: Hide
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

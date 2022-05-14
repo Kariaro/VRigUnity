@@ -8,18 +8,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUISettingsMenu : MonoBehaviour {
+	public class GUISettingsMenu : GUIModalScript {
 		[SerializeField] GUIScript settings;
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
-
-		public void ShowMenu() {
-			gameObject.SetActive(true);
-		}
-
-		public void HideMenu() {
-			gameObject.SetActive(false);
+		
+		public override bool IsBlockingParent() {
+			return false;
 		}
 
 		public void SelectModel() {
