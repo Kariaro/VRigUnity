@@ -9,7 +9,7 @@ namespace HardCoded.VRigUnity {
 		private Image buttonImage;
 		private bool isCameraShowing;
 
-		[SerializeField] Color toggleOnColor  = new(0, 0.7830189f, 0.35044f);    // 0x00C859
+		[SerializeField] Color toggleOnColor  = new(0.08009967f, 0.6792453f, 0.3454931f); // 0x14AD58
 		[SerializeField] Color toggleOffColor = new(0.6981132f, 0, 0.03523935f); // 0xB30009
 
 		void Start() {
