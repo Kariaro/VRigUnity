@@ -12,17 +12,9 @@ using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class TestBootstrap : MonoBehaviour {
-		[System.Serializable]
-		public enum AssetLoaderType {
-			StreamingAssets,
-			AssetBundle,
-			Local,
-		}
-
 		private const string _TAG = nameof(TestBootstrap);
 
 		[SerializeField] private InferenceMode _preferableInferenceMode;
-		[SerializeField] private AssetLoaderType _assetLoaderType;
 		[SerializeField] private bool _enableGlog = true;
 
 		public InferenceMode inferenceMode { get; private set; }
@@ -50,32 +42,10 @@ namespace HardCoded.VRigUnity {
 				Glog.Initialize("MediaPipeUnityPlugin");
 				_isGlogInitialized = true;
 			}
-
+			
+			// %appdata%\..\LocalLow\DefaultCompany\VRigUnity
 			Logger.Info(_TAG, "Initializing AssetLoader...");
-			// TODO: Create a custom asset manager without MediapipeUnity
-			switch (_assetLoaderType) {
-				case AssetLoaderType.AssetBundle: {
-					AssetLoader.Provide(new AssetBundleResourceManager("mediapipe"));
-					break;
-				}
-				case AssetLoaderType.StreamingAssets: {
-					AssetLoader.Provide(new StreamingAssetsResourceManager());
-					break;
-				}
-				case AssetLoaderType.Local: {
-#if UNITY_EDITOR
-					AssetLoader.Provide(new LocalResourceManager());
-					break;
-#else
-					Logger.Error("LocalResourceManager is only supported on UnityEditor");
-					yield break;
-#endif
-				}
-				default: {
-					Logger.Error($"AssetLoaderType is unknown: {_assetLoaderType}");
-					yield break;
-				}
-			}
+			AssetLoader.Provide(new TestAssetResourceManager());
 
 			DecideInferenceMode();
 			if (inferenceMode == InferenceMode.GPU) {

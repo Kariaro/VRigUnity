@@ -563,7 +563,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _preferableInferenceMode: 0
-  _assetLoaderType: 0
   _enableGlog: 0
 --- !u!1001 &276417656
 PrefabInstance:

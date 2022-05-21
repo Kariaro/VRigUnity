@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
@@ -59,7 +60,20 @@ namespace HardCoded.VRigUnity {
 			LogWithLevel(LogLevel.Debug, tag, obj);
 		}
 
+		public static void Exception(Exception e) {
+			LogWithLevel(LogLevel.Error, null, e);
+		}
+
+		public static void Exception(string tag, Exception e) {
+			LogWithLevel(LogLevel.Error, tag, e);
+		}
+
 		public static void LogWithLevel(LogLevel level, string tag, object obj) {
+			if (obj is Exception) {
+				UnityEngine.Debug.LogException(obj as Exception);
+				return;
+			}
+
 			string msg;
 			// TODO: Include timestamp
 			if (tag != null) {
@@ -67,7 +81,7 @@ namespace HardCoded.VRigUnity {
 			} else {
 				msg = string.Format("[{0}]: {1}", level, obj);
 			}
-
+				
 			// TODO: Print this to stdout always
 			UnityEngine.Debug.LogWarning(msg);
 		}
