@@ -5,6 +5,7 @@ using UniGLTF;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO: Is this file needed?
 namespace HardCoded.VRigUnity {
 	public abstract class GUIModalScript : MonoBehaviour {
 		protected bool IsVisible => gameObject.activeSelf;

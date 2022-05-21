@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// TODO: Remove this file?
 namespace HardCoded.VRigUnity {
 	public class TestModal : MonoBehaviour {
 		[SerializeField] private TestSolution _solution;

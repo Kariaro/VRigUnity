@@ -8,6 +8,8 @@ namespace HardCoded.VRigUnity {
 
 		public TestBootstrap bootstrap;
 		protected bool isPaused;
+
+		// List of debug transforms
 		public Transform[] debugTransforms;
 
 		protected virtual IEnumerator Start() {
@@ -48,23 +50,12 @@ namespace HardCoded.VRigUnity {
 
 		protected static void ReadFromImageSource(ImageSource imageSource, TextureFrame textureFrame) {
 			// TODO: This is always a webcam
-			var sourceTexture = imageSource.GetCurrentTexture();
+			var sourceTexture = imageSource.GetCurrentTexture() as WebCamTexture;
 
 			// For some reason, when the image is coiped on GPU, latency tends to be high.
 			// So even when OpenGL ES is available, use CPU to copy images.
 			// var textureType = sourceTexture.GetType();
-			
-			textureFrame.ReadTextureFromOnCPU((WebCamTexture)sourceTexture);
-			
-			/*
-			if (textureType == typeof(WebCamTexture)) {
-				textureFrame.ReadTextureFromOnCPU((WebCamTexture)sourceTexture);
-			} else if (textureType == typeof(Texture2D)) {
-				textureFrame.ReadTextureFromOnCPU((Texture2D)sourceTexture);
-			} else {
-				textureFrame.ReadTextureFromOnCPU(sourceTexture);
-			}
-			*/
+			textureFrame.ReadTextureFromOnCPU(sourceTexture);
 		}
 
 		protected TestBootstrap FindBootstrap() {

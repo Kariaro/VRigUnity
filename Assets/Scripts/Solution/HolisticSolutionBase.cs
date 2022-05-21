@@ -2,7 +2,6 @@ using Mediapipe;
 using Mediapipe.Unity;
 using System.Collections;
 using UnityEngine;
-using VRM;
 
 namespace HardCoded.VRigUnity {
 	public abstract class HolisticSolutionBase : TestImageSourceSolution<TestHolisticTrackingGraph> {
@@ -12,16 +11,19 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
 		[SerializeField] protected NormalizedRectAnnotationController _poseRoiAnnotationController;
 
+		// Always 'Full'
 		public TestHolisticTrackingGraph.ModelComplexity ModelComplexity {
 			get => graphRunner.modelComplexity;
 			set => graphRunner.modelComplexity = value;
 		}
 
+		// Always 'true'
 		public bool SmoothLandmarks {
 			get => graphRunner.smoothLandmarks;
 			set => graphRunner.smoothLandmarks = value;
 		}
 
+		// Always 'true'
 		public bool RefineFaceLandmarks {
 			get => graphRunner.refineFaceLandmarks;
 			set => graphRunner.refineFaceLandmarks = value;
@@ -49,18 +51,18 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override IEnumerator WaitForNextValue() {
-			Detection poseDetection = null;
-			NormalizedLandmarkList faceLandmarks = null;
-			NormalizedLandmarkList poseLandmarks = null;
-			NormalizedLandmarkList leftHandLandmarks = null;
-			NormalizedLandmarkList rightHandLandmarks = null;
-			LandmarkList poseWorldLandmarks = null;
-			NormalizedRect poseRoi = null;
+			//Detection poseDetection = null;
+			//NormalizedLandmarkList faceLandmarks = null;
+			//NormalizedLandmarkList poseLandmarks = null;
+			//NormalizedLandmarkList leftHandLandmarks = null;
+			//NormalizedLandmarkList rightHandLandmarks = null;
+			//LandmarkList poseWorldLandmarks = null;
+			//NormalizedRect poseRoi = null;
 
-			_poseDetectionAnnotationController.DrawNow(poseDetection);
-			_holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);
-			_poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
-			_poseRoiAnnotationController.DrawNow(poseRoi);
+			//_poseDetectionAnnotationController.DrawNow(poseDetection);
+			//_holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);
+			//_poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
+			//_poseRoiAnnotationController.DrawNow(poseRoi);
 			yield return null;
 		}
 	}

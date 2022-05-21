@@ -1,52 +1,39 @@
-// Copyright (c) 2021 homuler
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 using Mediapipe;
 using Mediapipe.Unity;
 using System.Collections;
-using System.IO;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class TestBootstrap : MonoBehaviour {
 		private const string _TAG = nameof(TestBootstrap);
-
+		
 		[SerializeField] private InferenceMode _preferableInferenceMode;
-		[SerializeField] private bool _enableGlog = true;
 
 		public InferenceMode inferenceMode { get; private set; }
 		public bool IsFinished { get; private set; }
-		private bool _isGlogInitialized;
+		private CustomAssetManager _assetManager;
 
 		private void OnEnable() {
 			var _ = StartCoroutine(Init());
+		}
+
+		public CustomAssetManager GetAssetManager() {
+			return _assetManager;
 		}
 
 		private IEnumerator Init() {
 			// TODO: Is this logger needed?
 			Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
 
+			// TODO: Remove global config manager?
 			Logger.Info(_TAG, "Setting global flags...");
 			GlobalConfigManager.SetFlags();
-
-			if (_enableGlog) {
-				if (Glog.LogDir != null) {
-					if (!Directory.Exists(Glog.LogDir)) {
-						Directory.CreateDirectory(Glog.LogDir);
-					}
-					Logger.Verbose(_TAG, $"Glog will output files under {Glog.LogDir}");
-				}
-				Glog.Initialize("MediaPipeUnityPlugin");
-				_isGlogInitialized = true;
-			}
 			
 			// %appdata%\..\LocalLow\DefaultCompany\VRigUnity
-			Logger.Info(_TAG, "Initializing AssetLoader...");
-			AssetLoader.Provide(new TestAssetResourceManager());
-
+			// https://github.com/mrayy/UnityCam
+			Logger.Info(_TAG, "Initializing AssetManager...");
+			_assetManager = new CustomAssetManager();
+			
 			DecideInferenceMode();
 			if (inferenceMode == InferenceMode.GPU) {
 				Logger.Info(_TAG, "Initializing GPU resources...");
@@ -68,6 +55,7 @@ namespace HardCoded.VRigUnity {
 			if (_preferableInferenceMode == InferenceMode.GPU) {
 				Logger.Warning(_TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
 			}
+
 			inferenceMode = InferenceMode.CPU;
 #else
 			inferenceMode = _preferableInferenceMode;
@@ -76,11 +64,6 @@ namespace HardCoded.VRigUnity {
 
 		private void OnApplicationQuit() {
 			GpuManager.Shutdown();
-
-			if (_isGlogInitialized) {
-				Glog.Shutdown();
-			}
-
 			Protobuf.ResetLogHandler();
 		}
 	}

@@ -5,16 +5,16 @@ using System.IO;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class TestAssetResourceManager : ResourceManager {
-		private static readonly string _TAG = nameof(TestAssetResourceManager);
+	public class CustomAssetManager : ResourceManager {
+		private static readonly string _TAG = nameof(CustomAssetManager);
+		
+		public override PathResolver pathResolver => PathToResourceAsFile;
+		public override ResourceProvider resourceProvider => GetResourceContents;
 
 		private static string _CachePathRoot;
 		private static string _AssetPathRoot;
 
-		public override PathResolver pathResolver => PathToResourceAsFile;
-		public override ResourceProvider resourceProvider => GetResourceContents;
-
-		public TestAssetResourceManager() : base() {
+		public CustomAssetManager() : base() {
 			_AssetPathRoot = Path.Combine(Application.streamingAssetsPath, "mediapipe");
 			_CachePathRoot = Path.Combine(Application.persistentDataPath, "mediapipe");
 		}

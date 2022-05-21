@@ -1,7 +1,4 @@
-﻿using Mediapipe.Unity;
-using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class SolutionUtils {
@@ -12,6 +9,10 @@ namespace HardCoded.VRigUnity {
 			}
 
 			return gameObject.GetComponent<TestSolution>();
+		}
+
+		public static CustomAssetManager GetAssetManager() {
+			return GetBootstrap().GetAssetManager();
 		}
 
 		public static TestBootstrap GetBootstrap() {

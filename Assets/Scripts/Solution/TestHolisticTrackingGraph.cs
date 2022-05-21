@@ -16,9 +16,9 @@ namespace HardCoded.VRigUnity {
 			Heavy = 2,
 		}
 
-		public ModelComplexity modelComplexity = ModelComplexity.Lite;
-		public bool refineFaceLandmarks = false;
-		public bool smoothLandmarks = true;     // true
+		public ModelComplexity modelComplexity = ModelComplexity.Full;
+		public bool refineFaceLandmarks = true;
+		public bool smoothLandmarks = true;
 
 		private float _minDetectionConfidence = 0.7f; // 0.7
 		public float MinDetectionConfidence {

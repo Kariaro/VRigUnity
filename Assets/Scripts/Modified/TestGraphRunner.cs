@@ -1,9 +1,3 @@
-// Copyright (c) 2021 homuler
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 using Mediapipe;
 using Mediapipe.Unity;
 using System;
@@ -14,6 +8,7 @@ using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
+// Default RunningMode is 'Async';
 // TODO: Simplify file
 namespace HardCoded.VRigUnity {
 	public abstract class TestGraphRunner : MonoBehaviour {
@@ -34,7 +29,6 @@ namespace HardCoded.VRigUnity {
 		private static readonly GlobalInstanceTable<int, TestGraphRunner> _InstanceTable = new GlobalInstanceTable<int, TestGraphRunner>(5);
 		private static readonly Dictionary<IntPtr, int> _NameTable = new Dictionary<IntPtr, int>();
 
-		// protected RunningMode runningMode { get; private set; } = RunningMode.Async;
 		private bool _isRunning = false;
 
 		public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
@@ -203,6 +197,8 @@ namespace HardCoded.VRigUnity {
 
 		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
+
+			// TODO: Check if this code can be removed?
 			Rotation = imageSource.rotation.Reverse();
 			var inputRotation = Rotation;
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(Rotation);
@@ -223,10 +219,10 @@ namespace HardCoded.VRigUnity {
 			sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
 		}
 
-
 		// TODO: Find a way of requesting these assets from source?
+		// TODO: Remove unused calls
 		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {
-			return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
+			return new WaitForResult(this, SolutionUtils.GetAssetManager().PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
 		}
 
 		protected WaitForResult WaitForAsset(string assetName, long timeoutMillisec, bool overwrite = false) {
@@ -234,7 +230,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, bool overwrite = false) {
-			return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite));
+			return new WaitForResult(this, SolutionUtils.GetAssetManager().PrepareAssetAsync(assetName, uniqueKey, overwrite));
 		}
 
 		protected WaitForResult WaitForAsset(string assetName, bool overwrite = false) {
