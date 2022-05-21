@@ -13,6 +13,8 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
+		[SerializeField] GameObject cameraConfigWindow;
+		[SerializeField] GameObject backgroundConfigWindow;
 		
 		public override bool IsBlockingParent() {
 			return false;
@@ -56,6 +58,14 @@ namespace HardCoded.VRigUnity {
 
 		public void SetShowCamera(bool show) {
 			settings.SetShowCamera(show);
+		}
+
+		public void OpenCameraSettings() {
+			cameraConfigWindow.SetActive(true);
+		}
+
+		public void OpenBackgroundSettings() {
+			backgroundConfigWindow.SetActive(true);
 		}
 	}
 }

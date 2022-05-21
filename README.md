@@ -1,12 +1,14 @@
 # VRigUnity
 Test rig unity project.
 
+Some of the dependencies only support **Windows**.
 
 ## Dependencies
 [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
 + [OpenCV 3.4.16](https://opencv.org/releases/)
 
 [UniVRM v0.97.0](https://github.com/vrm-c/UniVRM)
+[UnityCapture](https://github.com/schellingb/UnityCapture)
 
 ## Setup
 

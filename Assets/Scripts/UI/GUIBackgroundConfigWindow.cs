@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUIBackgroundConfigWindow : MonoBehaviour {
-		private const string _BackgroundColorInputPath  = "Scroll View/Viewport/Contents/Background/InputField";
-		private const string _BackgroundColorButtonPath = "Scroll View/Viewport/Contents/Background/Button";
-		private const string _ShowCameraTogglePath      = "Scroll View/Viewport/Contents/ShowCamera/Toggle";
-
-		[SerializeField] private GUISettingsMenu _settingsMenu;
+		private const string _BackgroundColorInputPath  = "Contents/Background/InputField";
+		private const string _BackgroundColorButtonPath = "Contents/Background/Button";
+		private const string _ShowCameraTogglePath      = "Contents/ShowCamera/Toggle";
+		
+		[SerializeField] private GUIScript settings;
 		[SerializeField] private GUIColorPickerWindow _colorPicker;
 		private TMP_InputField _backgroundInput;
 		private Toggle _showCameraToggle;
@@ -39,19 +39,19 @@ namespace HardCoded.VRigUnity {
 
 			_backgroundInput.onValueChanged.AddListener(delegate {
 				if (GUIColorPickerWindow.ToColor(_backgroundInput.text, out Color outColor)) {
-					_settingsMenu.SetBackgroundColor(outColor);
+					settings.SetBackgroundColor(outColor);
 				}
 			});
 
 			_showCameraToggle.onValueChanged.AddListener(delegate {
-				_settingsMenu.SetShowCamera(_showCameraToggle.isOn);
+				settings.SetShowCamera(_showCameraToggle.isOn);
 			});
 		}
 
 		public void PickColor() {
 			_colorPicker.ShowWindow(_backgroundInput.text, (result) => {
 				_backgroundInput.SetTextWithoutNotify(GUIColorPickerWindow.FromColor(result));
-				_settingsMenu.SetBackgroundColor(result);
+				settings.SetBackgroundColor(result);
 			});
 		}
 	}

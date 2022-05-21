@@ -1,6 +1,7 @@
 using Mediapipe.Unity;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -8,14 +9,19 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUICameraConfigWindow : MonoBehaviour {
-		private const string _SourcePath                = "Scroll View/Viewport/Contents/Source/Dropdown";
-		private const string _ResolutionPath            = "Scroll View/Viewport/Contents/Resolution/Dropdown";
-		private const string _IsHorizontallyFlippedPath = "Scroll View/Viewport/Contents/IsHorizontallyFlipped/Toggle";
+		private const string _SourcePath                = "Contents/Source/Dropdown";
+		private const string _ResolutionPath            = "Contents/Resolution/Dropdown";
+		private const string _IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
+		private const string _VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
+		private const string _VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
 
 		private TestSolution _solution;
 		private TMP_Dropdown _sourceInput;
 		private TMP_Dropdown _resolutionInput;
 		private Toggle _isHorizontallyFlippedInput;
+		private Button _virtualCameraInstall;
+		private Button _virtualCameraUninstall;
+
 
 		void Start() {
 			_solution = SolutionUtils.GetSolution();
@@ -38,6 +44,7 @@ namespace HardCoded.VRigUnity {
 			InitializeSource();
 			InitializeResolution();
 			InitializeIsHorizontallyFlipped();
+			InitializeVirtualCamera();
 
 			yield return null;
 		}
@@ -113,6 +120,27 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
+			});
+		}
+
+		private void InitializeVirtualCamera() {
+			_virtualCameraInstall = gameObject.transform.Find(_VirtualCameraInstall).gameObject.GetComponent<Button>();
+			_virtualCameraUninstall = gameObject.transform.Find(_VirtualCameraUninstall).gameObject.GetComponent<Button>();
+			
+			#if !UNITY_STANDALONE_WIN
+			#  error Virtual Camera won't work on non linux systems
+			#endif
+
+			_virtualCameraInstall.onClick.RemoveAllListeners();
+			_virtualCameraInstall.onClick.AddListener(delegate {
+				// TODO: Promt the user to install a virtual camera
+				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Install.bat"));
+			});
+
+			_virtualCameraUninstall.onClick.RemoveAllListeners();
+			_virtualCameraUninstall.onClick.AddListener(delegate {
+				// TODO: Prompt the user to uninstall the virtual camera
+				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Uninstall.bat"));
 			});
 		}
 	}

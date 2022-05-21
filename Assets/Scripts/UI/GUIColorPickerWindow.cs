@@ -12,7 +12,7 @@ namespace HardCoded.VRigUnity {
 		private const string _RedSliderPath   = "Contents/Red";
 		private const string _GreenSliderPath = "Contents/Green";
 		private const string _BlueSliderPath  = "Contents/Blue";
-		private const string _AlphaSliderPath  = "Contents/Alpha";
+		private const string _AlphaSliderPath = "Contents/Alpha";
 		
 		private TMP_InputField _inputField;
 		private RawImage _rawImage;

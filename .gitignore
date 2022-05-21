@@ -80,4 +80,5 @@ crashlytics-build.properties
 /[Aa]ssets/VRM*
 /[Aa]ssets/VRMShaders*
 Build/
-
+Temp/
+TempFolder/
