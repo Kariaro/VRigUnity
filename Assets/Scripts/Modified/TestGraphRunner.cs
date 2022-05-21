@@ -86,20 +86,20 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public virtual IEnumerator InitializeAsync() {
-			Mediapipe.Unity.Logger.LogInfo(TAG, $"Config Type = {configType}");
+			Logger.Info(TAG, $"Config Type = {configType}");
 
 			InitializeCalculatorGraph().AssertOk();
 			_stopwatch = new Stopwatch();
 			_stopwatch.Start();
 
-			Mediapipe.Unity.Logger.LogInfo(TAG, "Loading dependent assets...");
+			Logger.Info(TAG, "Loading dependent assets...");
 			var assetRequests = RequestDependentAssets();
 			yield return new WaitWhile(() => assetRequests.Any((request) => request.keepWaiting));
 
 			var errors = assetRequests.Where((request) => request.isError).Select((request) => request.error).ToList();
 			if (errors.Count > 0) {
 				foreach (var error in errors) {
-					Mediapipe.Unity.Logger.LogError(TAG, error);
+					Logger.Error(TAG, error);
 				}
 
 				throw new InternalException("Failed to prepare dependent assets");
@@ -118,13 +118,13 @@ namespace HardCoded.VRigUnity {
 				if (_isRunning) {
 					using (var status = CalculatorGraph.CloseAllPacketSources()) {
 						if (!status.Ok()) {
-							Mediapipe.Unity.Logger.LogError(TAG, status.ToString());
+							Logger.Error(TAG, status.ToString());
 						}
 					}
 
 					using (var status = CalculatorGraph.WaitUntilDone()) {
 						if (!status.Ok()) {
-							Mediapipe.Unity.Logger.LogError(TAG, status.ToString());
+							Logger.Error(TAG, status.ToString());
 						}
 					}
 				}
@@ -216,13 +216,15 @@ namespace HardCoded.VRigUnity {
 				inputVerticallyFlipped = !inputVerticallyFlipped;
 			}
 
-			Mediapipe.Unity.Logger.LogDebug($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
+			Logger.Debug($"input_rotation = {inputRotation}, input_horizontally_flipped = {inputHorizontallyFlipped}, input_vertically_flipped = {inputVerticallyFlipped}");
 
 			sidePacket.Emplace("input_rotation", new IntPacket((int)inputRotation));
 			sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
 			sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
 		}
 
+
+		// TODO: Find a way of requesting these assets from source?
 		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {
 			return new WaitForResult(this, AssetLoader.PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
 		}

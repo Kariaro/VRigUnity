@@ -205,7 +205,7 @@ namespace HardCoded.VRigUnity {
 					if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext)) {
 						var options = calculator.Options.GetExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext);
 						options.MinScoreThresh = MinDetectionConfidence;
-						Mediapipe.Unity.Logger.LogInfo(TAG, $"Min Detection Confidence = {MinDetectionConfidence}");
+						Logger.Info(TAG, $"Min Detection Confidence = {MinDetectionConfidence}");
 					}
 				}
 
@@ -213,7 +213,7 @@ namespace HardCoded.VRigUnity {
 					if (calculator.Options.HasExtension(ThresholdingCalculatorOptions.Extensions.Ext)) {
 						var options = calculator.Options.GetExtension(ThresholdingCalculatorOptions.Extensions.Ext);
 						options.Threshold = MinTrackingConfidence;
-						Mediapipe.Unity.Logger.LogInfo(TAG, $"Min Tracking Confidence = {MinTrackingConfidence}");
+						Logger.Info(TAG, $"Min Tracking Confidence = {MinTrackingConfidence}");
 					}
 				}
 
@@ -241,15 +241,15 @@ namespace HardCoded.VRigUnity {
 			sidePacket.Emplace("output_horizontally_flipped", new BoolPacket(outputHorizontallyFlipped));
 			sidePacket.Emplace("output_vertically_flipped", new BoolPacket(outputVerticallyFlipped));
 
-			Mediapipe.Unity.Logger.LogDebug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
+			Logger.Debug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
 
 			sidePacket.Emplace("refine_face_landmarks", new BoolPacket(refineFaceLandmarks));
 			sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
 			sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
 
-			Mediapipe.Unity.Logger.LogInfo(TAG, $"Refine Face Landmarks = {refineFaceLandmarks}");
-			Mediapipe.Unity.Logger.LogInfo(TAG, $"Model Complexity = {modelComplexity}");
-			Mediapipe.Unity.Logger.LogInfo(TAG, $"Smooth Landmarks = {smoothLandmarks}");
+			Logger.Info(TAG, $"Refine Face Landmarks = {refineFaceLandmarks}");
+			Logger.Info(TAG, $"Model Complexity = {modelComplexity}");
+			Logger.Info(TAG, $"Smooth Landmarks = {smoothLandmarks}");
 
 			return sidePacket;
 		}

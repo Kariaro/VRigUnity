@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 			yield return imageSource.Play();
 
 			if (!imageSource.isPrepared) {
-				Mediapipe.Unity.Logger.LogError(TAG, "Failed to start ImageSource, exiting...");
+				Logger.Error(TAG, "Failed to start ImageSource, exiting...");
 				yield break;
 			}
 
@@ -59,7 +59,7 @@ namespace HardCoded.VRigUnity {
 
 			yield return graphInitRequest;
 			if (graphInitRequest.isError) {
-				Mediapipe.Unity.Logger.LogError(TAG, graphInitRequest.error);
+				Logger.Error(TAG, graphInitRequest.error);
 				yield break;
 			}
 

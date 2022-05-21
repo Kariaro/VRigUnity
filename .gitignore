@@ -79,5 +79,5 @@ crashlytics-build.properties
 /[Aa]ssets/UniGLTF*
 /[Aa]ssets/VRM*
 /[Aa]ssets/VRMShaders*
-
+Build/
 

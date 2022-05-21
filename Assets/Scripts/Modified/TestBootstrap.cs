@@ -34,12 +34,10 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private IEnumerator Init() {
-			Mediapipe.Unity.Logger.SetLogger(new MemoizedLogger(100));
-			Mediapipe.Unity.Logger.minLogLevel = Mediapipe.Unity.Logger.LogLevel.Debug;
-
+			// TODO: Is this logger needed?
 			Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
 
-			Mediapipe.Unity.Logger.LogInfo(_TAG, "Setting global flags...");
+			Logger.Info(_TAG, "Setting global flags...");
 			GlobalConfigManager.SetFlags();
 
 			if (_enableGlog) {
@@ -47,13 +45,14 @@ namespace HardCoded.VRigUnity {
 					if (!Directory.Exists(Glog.LogDir)) {
 						Directory.CreateDirectory(Glog.LogDir);
 					}
-					Mediapipe.Unity.Logger.LogVerbose(_TAG, $"Glog will output files under {Glog.LogDir}");
+					Logger.Verbose(_TAG, $"Glog will output files under {Glog.LogDir}");
 				}
 				Glog.Initialize("MediaPipeUnityPlugin");
 				_isGlogInitialized = true;
 			}
 
-			Mediapipe.Unity.Logger.LogInfo(_TAG, "Initializing AssetLoader...");
+			Logger.Info(_TAG, "Initializing AssetLoader...");
+			// TODO: Create a custom asset manager without MediapipeUnity
 			switch (_assetLoaderType) {
 				case AssetLoaderType.AssetBundle: {
 					AssetLoader.Provide(new AssetBundleResourceManager("mediapipe"));
@@ -68,23 +67,23 @@ namespace HardCoded.VRigUnity {
 					AssetLoader.Provide(new LocalResourceManager());
 					break;
 #else
-					Mediapipe.Unity.Logger.LogError("LocalResourceManager is only supported on UnityEditor");
+					Logger.Error("LocalResourceManager is only supported on UnityEditor");
 					yield break;
 #endif
 				}
 				default: {
-					Mediapipe.Unity.Logger.LogError($"AssetLoaderType is unknown: {_assetLoaderType}");
+					Logger.Error($"AssetLoaderType is unknown: {_assetLoaderType}");
 					yield break;
 				}
 			}
 
 			DecideInferenceMode();
 			if (inferenceMode == InferenceMode.GPU) {
-				Mediapipe.Unity.Logger.LogInfo(_TAG, "Initializing GPU resources...");
+				Logger.Info(_TAG, "Initializing GPU resources...");
 				yield return GpuManager.Initialize();
 			}
 
-			Mediapipe.Unity.Logger.LogInfo(_TAG, "Preparing ImageSource...");
+			Logger.Info(_TAG, "Preparing ImageSource...");
 			ImageSourceProvider.ImageSource = GetImageSource();
 
 			IsFinished = true;
@@ -97,7 +96,7 @@ namespace HardCoded.VRigUnity {
 		private void DecideInferenceMode() {
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
 			if (_preferableInferenceMode == InferenceMode.GPU) {
-				Mediapipe.Unity.Logger.LogWarning(_TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
+				Logger.Warning(_TAG, "Current platform does not support GPU inference mode, so falling back to CPU mode");
 			}
 			inferenceMode = InferenceMode.CPU;
 #else
@@ -113,7 +112,6 @@ namespace HardCoded.VRigUnity {
 			}
 
 			Protobuf.ResetLogHandler();
-			Mediapipe.Unity.Logger.SetLogger(null);
 		}
 	}
 }
