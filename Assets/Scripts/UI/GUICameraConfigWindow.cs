@@ -67,7 +67,10 @@ namespace HardCoded.VRigUnity {
 
 			_sourceInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectSource(_sourceInput.value);
-				_solution.Play();
+				if (!_solution.IsPaused()) {
+					_solution.Play();
+				}
+
 				InitializeResolution();
 			});
 		}
@@ -97,7 +100,9 @@ namespace HardCoded.VRigUnity {
 
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
-				_solution.Play();
+				if (!_solution.IsPaused()) {
+					_solution.Play();
+				}
 			});
 		}
 

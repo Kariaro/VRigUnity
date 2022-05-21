@@ -12,8 +12,6 @@ namespace HardCoded.VRigUnity {
 		protected virtual IEnumerator Start() {
 			bootstrap = FindBootstrap();
 			yield return new WaitUntil(() => bootstrap.IsFinished);
-
-			Play();
 		}
 
 		public virtual void Play() {
@@ -30,6 +28,10 @@ namespace HardCoded.VRigUnity {
 
 		public virtual void Stop() {
 			isPaused = true;
+		}
+
+		public bool IsPaused() {
+			return isPaused;
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
