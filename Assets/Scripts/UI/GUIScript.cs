@@ -10,6 +10,7 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class GUIScript : MonoBehaviour {
 		[SerializeField] GUISettingsMenu settingsMenu;
+		[SerializeField] OrbitalCamera orbitalCamera;
 		[SerializeField] Vector3 modelTransform = Vector3.zero;
 		[SerializeField] Image worldBackgroundColor;
 		[SerializeField] RawImage worldBackgroundImage;
@@ -61,6 +62,10 @@ namespace HardCoded.VRigUnity {
 
 		public void SetBackgroundColor(Color color) {
 			worldBackgroundColor.color = color;
+		}
+
+		public void ResetCamera() {
+			orbitalCamera.ResetCamera();
 		}
 
 		public void SetShowCamera(bool show) {

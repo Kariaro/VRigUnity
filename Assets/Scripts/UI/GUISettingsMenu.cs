@@ -52,6 +52,10 @@ namespace HardCoded.VRigUnity {
 			settings.SetBackgroundColor(color);
 		}
 
+		public void ResetCamera() {
+			settings.ResetCamera();
+		}
+
 		public void SetShowCamera(bool show) {
 			settings.SetShowCamera(show);
 		}

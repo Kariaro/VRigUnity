@@ -44,6 +44,9 @@ namespace HardCoded.VRigUnity {
 		private RotStruct rPinkyPip = RotStruct.identity;
 		private RotStruct rPinkyDip = RotStruct.identity;
 		private RotStruct rPinkyTip = RotStruct.identity;
+		private RotStruct rThumbPip = RotStruct.identity;
+		private RotStruct rThumbDip = RotStruct.identity;
+		private RotStruct rThumbTip = RotStruct.identity;
 
 		private RotStruct lHand = RotStruct.identity;
 		private RotStruct lIndexPip = RotStruct.identity;
@@ -259,7 +262,7 @@ namespace HardCoded.VRigUnity {
 					//perc = Mathf.Clamp01(perc);
 					// Debug.Log("w: " + width + ", h: " + height + ", awh: " + area + ", ah: " + (area / width) + ", aw: " + (area / height) + ", a: " + perc);
 
-					mouthOpen = perc;
+					mouthOpen = perc * 2 - 0.1f;
 				}
 
 				{
@@ -306,6 +309,7 @@ namespace HardCoded.VRigUnity {
 			this.rEyeIris.Add(rEyeIris);
 		}
 
+		public Vector3 fixThumbTest = Vector3.zero;
 		public bool fixHand = false;
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			_holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
@@ -382,7 +386,7 @@ namespace HardCoded.VRigUnity {
 						vectors,
 						out pinkyPip, out pinkyDip, out pinkyTip);
 					HandPoints.ComputeThumb(rotTest, -1, 4,
-						ConvertPoint(eventArgs.value, 1),
+						ConvertPoint(eventArgs.value, 0),
 						ConvertPoint(eventArgs.value, 2),
 						ConvertPoint(eventArgs.value, 3),
 						ConvertPoint(eventArgs.value, 4),
@@ -416,21 +420,29 @@ namespace HardCoded.VRigUnity {
 
 			// TODO: Show unrotated hand so that it's fixed in space
 			// TODO: Show fingers and calculate correct rotation
+
+			// TODO: We have the 
 			{
 				Quaternion rev = Quaternion.Inverse(preHand);
 				Vector3 wrist = ConvertPoint(eventArgs.value, 0);
-				Vector3 diff = wrist - (rev * wrist);
 				for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
-					Vector3 vec = ConvertPoint(eventArgs.value, i);
+					Vector3 vec = ConvertPoint(eventArgs.value, i) - wrist;
 					vec = -vec;
 					if (fixHand) {
-						vec = rev * vec - diff;
+						vec = rev * vec;
 					}
+					vec.x *= handPositionScale.x;
+					vec.y *= handPositionScale.y;
+					vec.z *= handPositionScale.z;
+					vec += handPositionOffset;
 					vectors[i] = vec;
 				}
 				vectorsSize = eventArgs.value.Landmark.Count + 20;
 			}
 		}
+
+		public Vector3 handPositionOffset = Vector3.zero;
+		public Vector3 handPositionScale = Vector3.one;
 
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			_holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
@@ -452,6 +464,9 @@ namespace HardCoded.VRigUnity {
 			Quaternion pinkyPip  = Quaternion.identity;
 			Quaternion pinkyDip  = Quaternion.identity;
 			Quaternion pinkyTip  = Quaternion.identity;
+			Quaternion thumbPip  = Quaternion.identity;
+			Quaternion thumbDip  = Quaternion.identity;
+			Quaternion thumbTip  = Quaternion.identity;
 
 			{
 				Vector3 handUpDir;
@@ -474,42 +489,46 @@ namespace HardCoded.VRigUnity {
 					handForwardDir = plane.normal;
 					
 					Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
-					HandPoints.ComputeFinger(rotTest, indexFinger, 1,
+					HandPoints.ComputeFinger2(rotTest, 1, 3,
+						indexFinger,
 						ConvertPoint(eventArgs.value, 6),
 						ConvertPoint(eventArgs.value, 7),
 						ConvertPoint(eventArgs.value, 8),
+						null,
 						out indexPip, out indexDip, out indexTip);
-					HandPoints.ComputeFinger(rotTest, middleFinger, 1,
+					HandPoints.ComputeFinger2(rotTest, 1, 2,
+						middleFinger,
 						ConvertPoint(eventArgs.value, 10),
 						ConvertPoint(eventArgs.value, 11),
 						ConvertPoint(eventArgs.value, 12),
+						null,
 						out middlePip, out middleDip, out middleTip);
-					HandPoints.ComputeFinger(rotTest, ringFinger, 1,
+					HandPoints.ComputeFinger2(rotTest, 1, 1,
+						ringFinger,
 						ConvertPoint(eventArgs.value, 14),
 						ConvertPoint(eventArgs.value, 15),
 						ConvertPoint(eventArgs.value, 16),
+						null,
 						out ringPip, out ringDip, out ringTip);
-					HandPoints.ComputeFinger(rotTest, pinkyFinger, 1,
+					HandPoints.ComputeFinger2(rotTest, 1, 0,
+						pinkyFinger,
 						ConvertPoint(eventArgs.value, 18),
 						ConvertPoint(eventArgs.value, 19),
 						ConvertPoint(eventArgs.value, 20),
+						null,
 						out pinkyPip, out pinkyDip, out pinkyTip);
+					HandPoints.ComputeThumb(rotTest, 1, 4,
+						ConvertPoint(eventArgs.value, 0),
+						ConvertPoint(eventArgs.value, 2),
+						ConvertPoint(eventArgs.value, 3),
+						ConvertPoint(eventArgs.value, 4),
+						null,
+						out thumbPip, out thumbDip, out thumbTip);
 				}
 
 				Quaternion test = Quaternion.Euler(0, 90, -90);
 				Quaternion rot = Quaternion.LookRotation(handForwardDir, -handUpDir);
 				hand = rot * test;
-				
-				{
-					Vector3 palm = ConvertPoint(eventArgs.value, 0);
-
-					for (int i = 0; i < eventArgs.value.Landmark.Count; i++) {
-						Vector3 point = ConvertPoint(eventArgs.value, i);
-						//vectors[i] = Quaternion.Inverse(rot) * (point - palm);
-					}
-
-					//vectorsSize = eventArgs.value.Landmark.Count;
-				}
 			}
 
 			float time = TimeNow;
@@ -526,6 +545,9 @@ namespace HardCoded.VRigUnity {
 			this.rPinkyPip.Set(pinkyPip, time);
 			this.rPinkyDip.Set(pinkyDip, time);
 			this.rPinkyTip.Set(pinkyTip, time);
+			this.rThumbPip.Set(thumbPip, time);
+			this.rThumbDip.Set(thumbDip, time);
+			this.rThumbTip.Set(thumbTip, time);
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
@@ -614,6 +636,11 @@ namespace HardCoded.VRigUnity {
 		public Vector3 ccc = Vector3.zero;
 		public Vector3 ddd = Vector3.zero;
 
+		public bool useCustomAnimZ;
+		public bool useCustomAnimA;
+		public bool useCustomAnimB;
+		public bool useCustomAnimC;
+
 		void FixedUpdate() {
 			TestInterpolationStatic = TestInterpolation;
 			TestInterpolationValue = InterpolationValue;
@@ -632,10 +659,12 @@ namespace HardCoded.VRigUnity {
 			lLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
 			neckRotation.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Neck), time);
 			
-			//lHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          RightHand), time);
-			animator.GetBoneTransform(HumanBodyBones.RightHand).transform.position = rHandPosTest;
-			animator.GetBoneTransform(HumanBodyBones.RightHand).rotation = Quaternion.Euler(ddd);
+			if (useCustomAnimZ) {
+				animator.GetBoneTransform(HumanBodyBones.RightHand).transform.position = rHandPosTest;
+				animator.GetBoneTransform(HumanBodyBones.RightHand).rotation = Quaternion.Euler(ddd);
+			}
 
+			lHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          RightHand), time);
 			lIndexPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexProximal), time);
 			lIndexDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexIntermediate), time);
 			lIndexTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightIndexDistal), time);
@@ -649,14 +678,19 @@ namespace HardCoded.VRigUnity {
 			lPinkyDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightLittleIntermediate), time);
 			lPinkyTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightLittleDistal), time);
 			lThumbPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightThumbProximal), time);
-			//lThumbDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightThumbIntermediate), time);
-			//lThumbTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightThumbDistal), time);
+			lThumbDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightThumbIntermediate), time);
+			lThumbTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. RightThumbDistal), time);
 			
-			//aaa.x = (Time.time * 36) % 360;
-			//animator.GetBoneTransform(HumanBodyBones.RightThumbProximal).localRotation = Quaternion.Euler(aaa);
-			animator.GetBoneTransform(HumanBodyBones.RightThumbIntermediate).localRotation = Quaternion.Euler(bbb);
-			animator.GetBoneTransform(HumanBodyBones.RightThumbDistal).localRotation = Quaternion.Euler(ccc);
-
+			if (useCustomAnimA) animator.GetBoneTransform(HumanBodyBones.RightThumbProximal).localRotation = Quaternion.Euler(aaa);
+			if (useCustomAnimB) animator.GetBoneTransform(HumanBodyBones.RightThumbIntermediate).localRotation = Quaternion.Euler(bbb);
+			if (useCustomAnimC) animator.GetBoneTransform(HumanBodyBones.RightThumbDistal).localRotation = Quaternion.Euler(ccc);
+				
+			{
+				//Quaternion rot2 = Quaternion.FromToRotation(pUp, p2.transform.position - p1.transform.position);
+				//animator.GetBoneTransform(HumanBodyBones. RightThumbProximal).localRotation = rot2;			
+			}
+			
+			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          LeftHand), time);
 			rIndexPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexProximal), time);
 			rIndexDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexIntermediate), time);
 			rIndexTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftIndexDistal), time);
@@ -669,7 +703,9 @@ namespace HardCoded.VRigUnity {
 			rPinkyPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleProximal), time);
 			rPinkyDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleIntermediate), time);
 			rPinkyTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftLittleDistal), time);
-			rHand.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.          LeftHand), time);
+			rThumbPip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftThumbProximal), time);
+			rThumbDip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftThumbIntermediate), time);
+			rThumbTip.UpdateLocalRotation(animator.GetBoneTransform(HumanBodyBones. LeftThumbDistal), time);
 
 			blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), mouthOpen);
 
