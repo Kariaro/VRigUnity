@@ -10,18 +10,19 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class GUIScript : MonoBehaviour {
 		[SerializeField] GUISettingsMenu settingsMenu;
-		[SerializeField] TestHolisticTrackingSolution holisticSolution;
 		[SerializeField] Vector3 modelTransform = Vector3.zero;
 		[SerializeField] Image worldBackgroundColor;
 		[SerializeField] RawImage worldBackgroundImage;
+		[SerializeField] RawImage[] customBackgroundImages;
 
-		private TestSolution solution;
+		private TestHolisticTrackingSolution holisticSolution;
 		private bool showWebCamImage;
 		private WebCamSource webCamSource;
 
 		void Start() {
-			solution = SolutionUtils.GetSolution();
-			webCamSource = solution.GetComponent<WebCamSource>();
+			// There is only one instance of the holistic solution
+			holisticSolution = SolutionUtils.GetSolution() as TestHolisticTrackingSolution;
+			webCamSource = holisticSolution.GetComponent<WebCamSource>();
 		}
 
 		public void LoadVrmModel(string path) {
@@ -35,6 +36,16 @@ namespace HardCoded.VRigUnity {
 				loaded.ShowMeshes();
 
 				holisticSolution.SetVrmModel(loaded.gameObject);
+			}
+		}
+
+		public void LoadCustomImage(string path) {
+			if (File.Exists(path)) {
+				Texture2D tex = new(2, 2);
+				tex.LoadImage(File.ReadAllBytes(path));
+				foreach (RawImage image in customBackgroundImages) {
+					image.texture = tex;
+				}
 			}
 		}
 
@@ -56,6 +67,12 @@ namespace HardCoded.VRigUnity {
 			worldBackgroundImage.texture = null;
 			worldBackgroundImage.color = show ? new Color(1, 1, 1, 0.5f) : Color.clear;
 			showWebCamImage = show;
+		}
+
+		public void SetShowBackgroundImage(bool show) {
+			foreach (RawImage image in customBackgroundImages) {
+				image.color = show ? Color.white : Color.clear;
+			}
 		}
 
 		public void DrawImage(TextureFrame textureFrame) {

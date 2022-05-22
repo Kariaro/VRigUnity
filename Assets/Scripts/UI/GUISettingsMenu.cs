@@ -8,24 +8,20 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUISettingsMenu : GUIModalScript {
+	public class GUISettingsMenu : MonoBehaviour {
 		[SerializeField] GUIScript settings;
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
 		[SerializeField] GameObject cameraConfigWindow;
 		[SerializeField] GameObject backgroundConfigWindow;
-		
-		public override bool IsBlockingParent() {
-			return false;
-		}
 
 		public void SelectModel() {
 			var extensions = new [] {
 				new ExtensionFilter("VRM Files", "vrm"),
-				new ExtensionFilter("All Files", "*" ),
+				new ExtensionFilter("All Fil1es", "*"),
 			};
-			var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
+			var paths = FileDialogUtils.OpenFilePanel("gui.selectmodel", "Open File", "", extensions, false);
 
 			if (paths.Length > 0) {
 				string filePath = paths[0];

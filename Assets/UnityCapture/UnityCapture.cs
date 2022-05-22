@@ -46,8 +46,8 @@ public class UnityCapture : MonoBehaviour
 	[SerializeField] [Tooltip("Check to disable output of warnings")] public bool HideWarnings = false;
 
 	Interface CaptureInterface;
-	Camera camera;
-	[SerializeField] SpriteRenderer rend;
+	Camera captureCamera;
+	[SerializeField] Camera mainCamera;
 
 	void Awake()
 	{
@@ -64,9 +64,9 @@ public class UnityCapture : MonoBehaviour
 	void Start()
 	{
 		CaptureInterface = new Interface(CaptureDevice);
-		camera = GetComponent<Camera>();
-		camera.clearFlags = CameraClearFlags.SolidColor;
-		camera.backgroundColor = Color.clear;
+		captureCamera = GetComponent<Camera>();
+		captureCamera.clearFlags = CameraClearFlags.SolidColor;
+		captureCamera.backgroundColor = Color.clear;
 	}
 
 	void OnDestroy()
@@ -77,14 +77,14 @@ public class UnityCapture : MonoBehaviour
 	private RenderTexture renderTexture;
 	void OnPreRender() {
 		if (renderTexture == null
-		|| renderTexture.width != camera.pixelWidth
-		|| renderTexture.height != camera.pixelHeight) {
+		|| renderTexture.width != mainCamera.pixelWidth
+		|| renderTexture.height != mainCamera.pixelHeight) {
 			if (renderTexture != null) {
 				renderTexture.Release();
 			}
 
-			renderTexture = new RenderTexture(camera.pixelWidth, camera.pixelHeight, 32, RenderTextureFormat.ARGB32);
-			camera.targetTexture = renderTexture;
+			renderTexture = new RenderTexture(mainCamera.pixelWidth, mainCamera.pixelHeight, 32, RenderTextureFormat.ARGB32);
+			captureCamera.targetTexture = renderTexture;
 		}
 	}
 

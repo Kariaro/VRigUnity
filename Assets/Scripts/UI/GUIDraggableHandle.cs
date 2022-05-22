@@ -14,14 +14,16 @@ namespace HardCoded.VRigUnity {
 			_canvas = gameObject.GetComponentInParent<Canvas>();
 		}
 
-		public void OnDrag(PointerEventData eventData) {
-			_parent.anchoredPosition += eventData.delta / _canvas.scaleFactor;
-
-			// Make sure the window is within the correct position
+		void LateUpdate() {
 			CheckPosition();
 		}
 
-		void LateUpdate() {
+		public void OnDrag(PointerEventData eventData) {
+			// TODO: If the Transform is dragged outside the screen it should remember the original
+			//       drag point
+			_parent.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+
+			// Make sure the window is within the correct position
 			CheckPosition();
 		}
 

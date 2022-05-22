@@ -133,13 +133,11 @@ namespace HardCoded.VRigUnity {
 
 			_virtualCameraInstall.onClick.RemoveAllListeners();
 			_virtualCameraInstall.onClick.AddListener(delegate {
-				// TODO: Promt the user to install a virtual camera
 				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Install.bat"));
 			});
 
 			_virtualCameraUninstall.onClick.RemoveAllListeners();
 			_virtualCameraUninstall.onClick.AddListener(delegate {
-				// TODO: Prompt the user to uninstall the virtual camera
 				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Uninstall.bat"));
 			});
 		}

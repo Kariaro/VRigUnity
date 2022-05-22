@@ -2128,6 +2128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _parent: {fileID: 3561225832382982077}
   _canvas: {fileID: 0}
+  _border: 50
 --- !u!1 &3844380769930206227
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,10 +2252,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6264682806128194954}
-        m_TargetAssemblyTypeName: HardCoded.VRigUnity.GUIModalScript, Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
+      - m_Target: {fileID: 3704359271048609436}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
