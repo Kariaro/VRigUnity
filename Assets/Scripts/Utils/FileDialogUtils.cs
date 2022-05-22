@@ -1,11 +1,19 @@
 ﻿using SFB;
+using System.IO;
+using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class FileDialogUtils {
-		// TODO: Save the last used path
-		public static string[] OpenFilePanel(string id, string title, string directory, ExtensionFilter[] extensions, bool multiSelect) {
-			// TODO: Remember the last path used with a key value
-			return StandaloneFileBrowser.OpenFilePanel(title, directory, extensions, multiSelect);
+		public static string[] OpenFilePanelRemember(string id, string title, ExtensionFilter[] extensions, bool multiSelect) {
+			string directory = PlayerPrefs.GetString(id, "");
+
+			string[] result = StandaloneFileBrowser.OpenFilePanel(title, directory, extensions, multiSelect);
+			if (result.Length > 0) {
+				directory = Path.GetDirectoryName(result[0]);
+				PlayerPrefs.SetString(id, directory);
+			}
+
+			return result;
 		}
 	}
 }

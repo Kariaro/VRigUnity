@@ -9,6 +9,8 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] Quaternion defaultRotation;
 		[SerializeField] float defaultDepth = 0.8f;
 		[SerializeField] float dragSpeed = 0.01f;
+		[SerializeField] float minDepth = 0.8f;
+		[SerializeField] float maxDepth = 10.0f;
 		
 		public bool IsShiftDown => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 		public bool IsControlDown => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
@@ -25,7 +27,7 @@ namespace HardCoded.VRigUnity {
 
 		public float Depth {
 			set {
-				currentDepth = Mathf.Clamp(value, 0.8f, 10.0f);
+				currentDepth = Mathf.Clamp(value, minDepth, maxDepth);
 
 				foreach (Transform child in transform) {
 					Vector3 pos = child.localPosition;

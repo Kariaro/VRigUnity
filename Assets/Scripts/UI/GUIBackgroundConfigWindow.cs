@@ -73,8 +73,8 @@ namespace HardCoded.VRigUnity {
 				new ExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
 				new ExtensionFilter("All Files", "*"),
 			};
-			var paths = FileDialogUtils.OpenFilePanel("gui.backgroundconfig", "Open Image", "", extensions, false);
 
+			var paths = FileDialogUtils.OpenFilePanelRemember("gui.backgroundconfig", "Open Image", extensions, false);
 			if (paths.Length > 0) {
 				string filePath = paths[0];
 				settings.LoadCustomImage(filePath);
