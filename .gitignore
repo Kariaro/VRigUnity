@@ -74,10 +74,8 @@ crashlytics-build.properties
 
 # Custom
 
-/[Pp]ackages/com.github.homuler.mediapipe
-/[Aa]ssets/UniGLTF*
-/[Aa]ssets/VRM*
-/[Aa]ssets/VRMShaders*
+# Remove mediapipe resources
+/Packages/com.github.homuler.mediapipe/Runtime/Resources/
 Build/
 Temp/
 TempFolder/
