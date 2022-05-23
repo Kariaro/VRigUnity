@@ -7,7 +7,7 @@ using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class TestHolisticTrackingSolution : HolisticSolutionBase {
+	public class HolisticTrackingSolution : HolisticSolutionBase {
 		[Header("Rig")]
 		[SerializeField] protected GameObject vrmModel;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
@@ -173,7 +173,7 @@ namespace HardCoded.VRigUnity {
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
 			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
 
-			var imageSource = ImageSourceProvider.ImageSource;
+			var imageSource = SolutionUtils.GetImageSource();
 			SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
 			SetupAnnotationController(_holisticAnnotationController, imageSource);
 			SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);

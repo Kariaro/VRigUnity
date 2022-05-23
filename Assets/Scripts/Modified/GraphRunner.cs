@@ -11,7 +11,7 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 // Default RunningMode is 'Async';
 // TODO: Simplify file
 namespace HardCoded.VRigUnity {
-	public abstract class TestGraphRunner : MonoBehaviour {
+	public abstract class GraphRunner : MonoBehaviour {
 		public enum ConfigType {
 			None,
 			CPU,
@@ -26,7 +26,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private TextAsset _openGlEsConfig = null;
 		[SerializeField] private long _timeoutMicrosec = 0;
 
-		private static readonly GlobalInstanceTable<int, TestGraphRunner> _InstanceTable = new GlobalInstanceTable<int, TestGraphRunner>(5);
+		private static readonly GlobalInstanceTable<int, GraphRunner> _InstanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
 		private static readonly Dictionary<IntPtr, int> _NameTable = new Dictionary<IntPtr, int>();
 
 		private bool _isRunning = false;

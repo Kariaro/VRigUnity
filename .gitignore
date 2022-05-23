@@ -75,7 +75,6 @@ crashlytics-build.properties
 # Custom
 
 /[Pp]ackages/com.github.homuler.mediapipe
-/[Aa]ssets/MediaPipeUnity*
 /[Aa]ssets/UniGLTF*
 /[Aa]ssets/VRM*
 /[Aa]ssets/VRMShaders*

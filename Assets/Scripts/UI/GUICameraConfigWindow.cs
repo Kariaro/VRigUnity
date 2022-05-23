@@ -15,7 +15,7 @@ namespace HardCoded.VRigUnity {
 		private const string _VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
 		private const string _VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
 
-		private TestSolution _solution;
+		private Solution _solution;
 		private TMP_Dropdown _sourceInput;
 		private TMP_Dropdown _resolutionInput;
 		private Toggle _isHorizontallyFlippedInput;
@@ -38,7 +38,6 @@ namespace HardCoded.VRigUnity {
 
 		private IEnumerator UpdateContents() {
 			WebCamSource webCamSource = _solution.bootstrap.GetComponent<WebCamSource>();
-			ImageSourceProvider.ImageSource = webCamSource;
 			yield return webCamSource.UpdateSources();
 			
 			InitializeSource();
@@ -54,7 +53,7 @@ namespace HardCoded.VRigUnity {
 			_sourceInput.ClearOptions();
 			_sourceInput.onValueChanged.RemoveAllListeners();
 
-			var imageSource = ImageSourceProvider.ImageSource;
+			var imageSource = SolutionUtils.GetImageSource();
 			var sourceNames = imageSource.sourceCandidateNames;
 			
 			if (sourceNames == null) {
@@ -87,7 +86,7 @@ namespace HardCoded.VRigUnity {
 			_resolutionInput.ClearOptions();
 			_resolutionInput.onValueChanged.RemoveAllListeners();
 
-			var imageSource = ImageSourceProvider.ImageSource;
+			var imageSource = SolutionUtils.GetImageSource();
 			var resolutions = imageSource.availableResolutions;
 
 			if (resolutions == null) {
@@ -116,7 +115,7 @@ namespace HardCoded.VRigUnity {
 		private void InitializeIsHorizontallyFlipped() {
 			_isHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
 
-			var imageSource = ImageSourceProvider.ImageSource;
+			var imageSource = SolutionUtils.GetImageSource();
 			_isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;

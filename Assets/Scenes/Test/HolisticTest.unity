@@ -345,6 +345,8 @@ MonoBehaviour:
   defaultRotation: {x: 0, y: 0, z: 0, w: 0}
   defaultDepth: 0.8
   dragSpeed: 0.005
+  minDepth: 0.1
+  maxDepth: 10
 --- !u!1 &54668405
 GameObject:
   m_ObjectHideFlags: 0

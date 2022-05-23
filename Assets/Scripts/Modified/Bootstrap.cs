@@ -4,20 +4,20 @@ using System.Collections;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class TestBootstrap : MonoBehaviour {
-		private const string _TAG = nameof(TestBootstrap);
+	public class Bootstrap : MonoBehaviour {
+		private const string _TAG = nameof(Bootstrap);
 		
 		[SerializeField] private InferenceMode _preferableInferenceMode;
 
 		public InferenceMode inferenceMode { get; private set; }
 		public bool IsFinished { get; private set; }
-		private CustomAssetManager _assetManager;
+		private AssetManager _assetManager;
 
 		private void OnEnable() {
 			var _ = StartCoroutine(Init());
 		}
 
-		public CustomAssetManager GetAssetManager() {
+		public AssetManager GetAssetManager() {
 			return _assetManager;
 		}
 
@@ -32,7 +32,7 @@ namespace HardCoded.VRigUnity {
 			// %appdata%\..\LocalLow\DefaultCompany\VRigUnity
 			// https://github.com/mrayy/UnityCam
 			Logger.Info(_TAG, "Initializing AssetManager...");
-			_assetManager = new CustomAssetManager();
+			_assetManager = new AssetManager();
 			
 			DecideInferenceMode();
 			if (inferenceMode == InferenceMode.GPU) {
@@ -41,13 +41,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			Logger.Info(_TAG, "Preparing ImageSource...");
-			ImageSourceProvider.ImageSource = GetImageSource();
+			SolutionUtils.GetImageSource().enabled = true;
 
 			IsFinished = true;
-		}
-
-		public ImageSource GetImageSource() {
-			return GetComponent<WebCamSource>();
 		}
 
 		private void DecideInferenceMode() {

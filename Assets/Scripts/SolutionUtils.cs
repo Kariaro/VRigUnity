@@ -1,22 +1,28 @@
-﻿using UnityEngine;
+﻿using Mediapipe.Unity;
+using System;
+using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class SolutionUtils {
-		public static TestSolution GetSolution() {
+		public static HolisticTrackingSolution GetSolution() {
 			GameObject gameObject = GameObject.FindGameObjectWithTag("Solution");
 			if (gameObject == null) {
 				return null;
 			}
 
-			return gameObject.GetComponent<TestSolution>();
+			return gameObject.GetComponent<HolisticTrackingSolution>();
 		}
 
-		public static CustomAssetManager GetAssetManager() {
+		public static AssetManager GetAssetManager() {
 			return GetBootstrap().GetAssetManager();
 		}
 
-		public static TestBootstrap GetBootstrap() {
-			return GetSolution().GetComponent<TestBootstrap>();
+		public static Bootstrap GetBootstrap() {
+			return GetSolution().GetComponent<Bootstrap>();
+		}
+
+		public static WebCamSource GetImageSource() {
+			return GetSolution().GetComponent<WebCamSource>();
 		}
 	}
 }

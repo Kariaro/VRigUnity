@@ -9,7 +9,7 @@ using Mediapipe.Unity;
 using Mediapipe;
 
 namespace HardCoded.VRigUnity {
-	public class TestHolisticTrackingGraph : TestGraphRunner {
+	public class HolisticTrackingGraph : GraphRunner {
 		public enum ModelComplexity {
 			Lite = 0,
 			Full = 1,

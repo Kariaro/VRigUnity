@@ -1,3 +1,4 @@
+using Mediapipe.Unity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 
 // TODO: Update this class to make this more unique to this project
-namespace Mediapipe.Unity {
+namespace HardCoded.VRigUnity {
 	public class WebCamSource : ImageSource {
 		[Tooltip("For the default resolution, the one whose width is closest to this value will be chosen")]
 		[SerializeField] private int _preferableDefaultWidth = 1280;

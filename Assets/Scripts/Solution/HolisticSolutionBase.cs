@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public abstract class HolisticSolutionBase : TestImageSourceSolution<TestHolisticTrackingGraph> {
+	public abstract class HolisticSolutionBase : ImageSourceSolution<HolisticTrackingGraph> {
 		[SerializeField] protected RectTransform _worldAnnotationArea;
 		[SerializeField] protected DetectionAnnotationController _poseDetectionAnnotationController;
 		[SerializeField] protected HolisticLandmarkListAnnotationController _holisticAnnotationController;
@@ -12,7 +12,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected NormalizedRectAnnotationController _poseRoiAnnotationController;
 
 		// Always 'Full'
-		public TestHolisticTrackingGraph.ModelComplexity ModelComplexity {
+		public HolisticTrackingGraph.ModelComplexity ModelComplexity {
 			get => graphRunner.modelComplexity;
 			set => graphRunner.modelComplexity = value;
 		}

@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public abstract class TestSolution : MonoBehaviour {
+	public abstract class Solution : MonoBehaviour {
 		protected virtual string TAG => GetType().Name;
 
-		public TestBootstrap bootstrap;
+		public Bootstrap bootstrap;
 		protected bool isPaused;
 
 		// List of debug transforms
@@ -48,17 +48,13 @@ namespace HardCoded.VRigUnity {
 			annotationController.rotationAngle = imageSource.rotation.Reverse();
 		}
 
-		protected static void ReadFromImageSource(ImageSource imageSource, TextureFrame textureFrame) {
-			// TODO: This is always a webcam
-			var sourceTexture = imageSource.GetCurrentTexture() as WebCamTexture;
-
+		protected static void ReadFromImageSource(WebCamSource imageSource, TextureFrame textureFrame) {
 			// For some reason, when the image is coiped on GPU, latency tends to be high.
 			// So even when OpenGL ES is available, use CPU to copy images.
-			// var textureType = sourceTexture.GetType();
-			textureFrame.ReadTextureFromOnCPU(sourceTexture);
+			textureFrame.ReadTextureFromOnCPU(imageSource.GetCurrentTexture());
 		}
 
-		protected TestBootstrap FindBootstrap() {
+		protected Bootstrap FindBootstrap() {
 			var bootstrap = SolutionUtils.GetBootstrap();
 			bootstrap.enabled = true;
 			return bootstrap;

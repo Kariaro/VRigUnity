@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public abstract class TestImageSourceSolution<T> : TestSolution where T : TestGraphRunner {
+	public abstract class ImageSourceSolution<T> : Solution where T : GraphRunner {
 		[SerializeField] protected Mediapipe.Unity.Screen screen;
 		[SerializeField] protected T graphRunner;
 		[SerializeField] protected TextureFramePool textureFramePool;
@@ -14,6 +14,8 @@ namespace HardCoded.VRigUnity {
 			get => graphRunner.TimeoutMillisec;
 			set => graphRunner.TimeoutMillisec = value;
 		}
+
+		public WebCamSource ImageSourceProvider_ImageSource => SolutionUtils.GetImageSource();
 
 		public override void Play() {
 			if (_coroutine != null) {
@@ -26,24 +28,24 @@ namespace HardCoded.VRigUnity {
 
 		public override void Pause() {
 			base.Pause();
-			ImageSourceProvider.ImageSource.Pause();
+			ImageSourceProvider_ImageSource.Pause();
 		}
 
 		public override void Resume() {
 			base.Resume();
-			var _ = StartCoroutine(ImageSourceProvider.ImageSource.Resume());
+			var _ = StartCoroutine(ImageSourceProvider_ImageSource.Resume());
 		}
 
 		public override void Stop() {
 			base.Stop();
 			StopCoroutine(_coroutine);
-			ImageSourceProvider.ImageSource.Stop();
+			ImageSourceProvider_ImageSource.Stop();
 			graphRunner.Stop();
 		}
 
 		private IEnumerator Run() {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
-			var imageSource = ImageSourceProvider.ImageSource;
+			var imageSource = ImageSourceProvider_ImageSource;
 
 			yield return imageSource.Play();
 

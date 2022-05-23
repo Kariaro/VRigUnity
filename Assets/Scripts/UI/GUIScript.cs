@@ -16,18 +16,28 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] RawImage worldBackgroundImage;
 		[SerializeField] RawImage[] customBackgroundImages;
 
-		private TestHolisticTrackingSolution holisticSolution;
 		private bool showWebCamImage;
 		private WebCamSource webCamSource;
 
 		void Start() {
 			// There is only one instance of the holistic solution
-			holisticSolution = SolutionUtils.GetSolution() as TestHolisticTrackingSolution;
-			webCamSource = holisticSolution.GetComponent<WebCamSource>();
+			webCamSource = SolutionUtils.GetImageSource();
+
+			// TODO: Persistent paths
+			// TODO: Load vrm model if there is a defined one
+			
+			// LoadVrmModel(Settings.GetModelPath());
+			// LoadCustomImage(Settings.GetImagePath());
+			// SetShowBackgroundImage(Settings.IsShowCustomBackground());
 		}
 
 		public void LoadVrmModel(string path) {
-			Debug.Log("Load VRM Model: '" + path + "'");
+			if (!File.Exists(path)) {
+				Logger.Log("Failed to load vrm model '" + path + "'");
+				return;
+			}
+
+			Logger.Log("Load VRM Model: '" + path + "'");
 
 			var data = new GlbFileParser(path).Parse();
 			var vrm = new VRMData(data);
@@ -36,17 +46,20 @@ namespace HardCoded.VRigUnity {
 				loaded.EnableUpdateWhenOffscreen();
 				loaded.ShowMeshes();
 
-				holisticSolution.SetVrmModel(loaded.gameObject);
+				SolutionUtils.GetSolution().SetVrmModel(loaded.gameObject);
 			}
 		}
 
 		public void LoadCustomImage(string path) {
-			if (File.Exists(path)) {
-				Texture2D tex = new(2, 2);
-				tex.LoadImage(File.ReadAllBytes(path));
-				foreach (RawImage image in customBackgroundImages) {
-					image.texture = tex;
-				}
+			if (!File.Exists(path)) {
+				Logger.Log("Failed to load background image '" + path + "'");
+				return;
+			}
+
+			Texture2D tex = new(2, 2);
+			tex.LoadImage(File.ReadAllBytes(path));
+			foreach (RawImage image in customBackgroundImages) {
+				image.texture = tex;
 			}
 		}
 
@@ -75,6 +88,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void SetShowBackgroundImage(bool show) {
+			// Settings.SetShowCustomBackground(show);
 			foreach (RawImage image in customBackgroundImages) {
 				image.color = show ? Color.white : Color.clear;
 			}
@@ -107,27 +121,5 @@ namespace HardCoded.VRigUnity {
 				textureFrame.CopyTexture(tex);
 			}
 		}
-
-		/*
-		void LateUpdate() {
-			if (showWebCamImage) {
-				WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
-				Texture2D tex = worldBackgroundImage.texture as Texture2D;
-
-				if (texture == null) {
-					return;
-				}
-
-				if (tex == null || tex.width != texture.width || tex.height != texture.height) {
-					tex = new Texture2D(texture.width, texture.height);
-					worldBackgroundImage.texture = tex;
-				}
-
-				if (tex != null) {
-					tex.SetPixels32(texture.GetPixels32());
-				}
-			}
-		}
-		*/
 	}
 }
