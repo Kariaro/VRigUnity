@@ -23,17 +23,17 @@ namespace HardCoded.VRigUnity {
 		private Action<Color> _callback;
 
 		private void InitializeContents() {
-			_inputField = gameObject.transform.Find(_InputFieldPath).gameObject.GetComponent<TMP_InputField>();
+			_inputField = transform.Find(_InputFieldPath).GetComponent<TMP_InputField>();
 			_inputField.onValueChanged.RemoveAllListeners();
 			_inputField.text = "";
-			_rawImage = gameObject.transform.Find(_RawImagePath).gameObject.GetComponent<RawImage>();
-			_redSlider = gameObject.transform.Find(_RedSliderPath).gameObject.GetComponent<Slider>();
+			_rawImage = transform.Find(_RawImagePath).GetComponent<RawImage>();
+			_redSlider = transform.Find(_RedSliderPath).GetComponent<Slider>();
 			_redSlider.onValueChanged.RemoveAllListeners();
-			_greenSlider = gameObject.transform.Find(_GreenSliderPath).gameObject.GetComponent<Slider>();
+			_greenSlider = transform.Find(_GreenSliderPath).GetComponent<Slider>();
 			_greenSlider.onValueChanged.RemoveAllListeners();
-			_blueSlider = gameObject.transform.Find(_BlueSliderPath).gameObject.GetComponent<Slider>();
+			_blueSlider = transform.Find(_BlueSliderPath).GetComponent<Slider>();
 			_blueSlider.onValueChanged.RemoveAllListeners();
-			_alphaSlider = gameObject.transform.Find(_AlphaSliderPath).gameObject.GetComponent<Slider>();
+			_alphaSlider = transform.Find(_AlphaSliderPath).GetComponent<Slider>();
 			_alphaSlider.onValueChanged.RemoveAllListeners();
 
 			_inputField.onValueChanged.AddListener(delegate {

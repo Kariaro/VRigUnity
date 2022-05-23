@@ -9,6 +9,7 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class HolisticTrackingSolution : HolisticSolutionBase {
 		[Header("Rig")]
+		[SerializeField] protected GameObject defaultVrmPrefab;
 		[SerializeField] protected GameObject vrmModel;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
@@ -77,6 +78,9 @@ namespace HardCoded.VRigUnity {
 		public bool keep = false;
 		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
+		public void ResetVrmModel() {
+			SetVrmModel(Instantiate(defaultVrmPrefab));
+		}
 
 		public bool SetVrmModel(GameObject gameObject) {
 			VRMBlendShapeProxy blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();

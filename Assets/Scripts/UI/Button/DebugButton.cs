@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUIDebugButton : MonoBehaviour {
+	public class DebugButton : MonoBehaviour {
 		private TMP_Text text;
 		private Button toggleButton;
 		private bool isDebugShowing;

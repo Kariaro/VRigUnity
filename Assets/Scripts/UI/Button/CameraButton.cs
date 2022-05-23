@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUICameraButton : MonoBehaviour {
+	public class CameraButton : MonoBehaviour {
 		private TMP_Text text;
 		private Button toggleButton;
 		private Image buttonImage;

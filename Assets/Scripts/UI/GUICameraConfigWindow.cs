@@ -9,11 +9,11 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUICameraConfigWindow : MonoBehaviour {
-		private const string _SourcePath                = "Contents/Source/Dropdown";
-		private const string _ResolutionPath            = "Contents/Resolution/Dropdown";
-		private const string _IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
-		private const string _VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
-		private const string _VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
+		private const string SourcePath                = "Contents/Source/Dropdown";
+		private const string ResolutionPath            = "Contents/Resolution/Dropdown";
+		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
+		private const string VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
+		private const string VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
 
 		private Solution _solution;
 		private TMP_Dropdown _sourceInput;
@@ -21,7 +21,6 @@ namespace HardCoded.VRigUnity {
 		private Toggle _isHorizontallyFlippedInput;
 		private Button _virtualCameraInstall;
 		private Button _virtualCameraUninstall;
-
 
 		void Start() {
 			_solution = SolutionUtils.GetSolution();
@@ -37,7 +36,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private IEnumerator UpdateContents() {
-			WebCamSource webCamSource = _solution.bootstrap.GetComponent<WebCamSource>();
+			WebCamSource webCamSource = SolutionUtils.GetImageSource();
 			yield return webCamSource.UpdateSources();
 			
 			InitializeSource();
@@ -49,7 +48,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeSource() {
-			_sourceInput = gameObject.transform.Find(_SourcePath).gameObject.GetComponent<TMP_Dropdown>();
+			_sourceInput = transform.Find(SourcePath).GetComponent<TMP_Dropdown>();
 			_sourceInput.ClearOptions();
 			_sourceInput.onValueChanged.RemoveAllListeners();
 
@@ -82,7 +81,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeResolution() {
-			_resolutionInput = gameObject.transform.Find(_ResolutionPath).gameObject.GetComponent<TMP_Dropdown>();
+			_resolutionInput = transform.Find(ResolutionPath).GetComponent<TMP_Dropdown>();
 			_resolutionInput.ClearOptions();
 			_resolutionInput.onValueChanged.RemoveAllListeners();
 
@@ -113,7 +112,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeIsHorizontallyFlipped() {
-			_isHorizontallyFlippedInput = gameObject.transform.Find(_IsHorizontallyFlippedPath).gameObject.GetComponent<Toggle>();
+			_isHorizontallyFlippedInput = transform.Find(IsHorizontallyFlippedPath).GetComponent<Toggle>();
 
 			var imageSource = SolutionUtils.GetImageSource();
 			_isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
@@ -123,8 +122,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeVirtualCamera() {
-			_virtualCameraInstall = gameObject.transform.Find(_VirtualCameraInstall).gameObject.GetComponent<Button>();
-			_virtualCameraUninstall = gameObject.transform.Find(_VirtualCameraUninstall).gameObject.GetComponent<Button>();
+			_virtualCameraInstall = transform.Find(VirtualCameraInstall).GetComponent<Button>();
+			_virtualCameraUninstall = transform.Find(VirtualCameraUninstall).GetComponent<Button>();
 			
 			#if !UNITY_STANDALONE_WIN
 			#  error Virtual Camera won't work on non linux systems

@@ -6,7 +6,7 @@ namespace HardCoded.VRigUnity {
 	public abstract class Solution : MonoBehaviour {
 		protected virtual string TAG => GetType().Name;
 
-		public Bootstrap bootstrap;
+		protected Bootstrap bootstrap;
 		protected bool isPaused;
 
 		// List of debug transforms

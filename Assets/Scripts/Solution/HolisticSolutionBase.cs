@@ -51,18 +51,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override IEnumerator WaitForNextValue() {
-			//Detection poseDetection = null;
-			//NormalizedLandmarkList faceLandmarks = null;
-			//NormalizedLandmarkList poseLandmarks = null;
-			//NormalizedLandmarkList leftHandLandmarks = null;
-			//NormalizedLandmarkList rightHandLandmarks = null;
-			//LandmarkList poseWorldLandmarks = null;
-			//NormalizedRect poseRoi = null;
-
-			//_poseDetectionAnnotationController.DrawNow(poseDetection);
-			//_holisticAnnotationController.DrawNow(faceLandmarks, poseLandmarks, leftHandLandmarks, rightHandLandmarks);
-			//_poseWorldLandmarksAnnotationController.DrawNow(poseWorldLandmarks);
-			//_poseRoiAnnotationController.DrawNow(poseRoi);
+			// Wait a frame
 			yield return null;
 		}
 	}

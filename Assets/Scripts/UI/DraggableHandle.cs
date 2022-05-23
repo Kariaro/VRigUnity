@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUIDraggableHandle : MonoBehaviour, IDragHandler {
+	public class DraggableHandle : MonoBehaviour, IDragHandler {
 		[SerializeField] RectTransform _parent;
 		[SerializeField] Canvas _canvas;
 		[SerializeField] float _border = 50;
@@ -19,8 +16,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void OnDrag(PointerEventData eventData) {
-			// TODO: If the Transform is dragged outside the screen it should remember the original
-			//       drag point
+			// TODO: If the Transform is dragged outside the screen it should remember the original drag point
 			_parent.anchoredPosition += eventData.delta / _canvas.scaleFactor;
 
 			// Make sure the window is within the correct position

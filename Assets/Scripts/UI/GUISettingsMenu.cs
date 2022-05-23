@@ -18,11 +18,15 @@ namespace HardCoded.VRigUnity {
 				new ExtensionFilter("All Fil1es", "*"),
 			};
 
-			var paths = FileDialogUtils.OpenFilePanelRemember("gui.selectmodel", "Open File", extensions, false);
+			var paths = FileDialogUtils.OpenFilePanelRemember(Settings._ModelFile, "Open File", extensions, false);
 			if (paths.Length > 0) {
 				string filePath = paths[0];
 				settings.LoadVrmModel(filePath);
 			}
+		}
+
+		public void ResetModel() {
+			settings.ResetModel();
 		}
 
 		private bool TryParseFloat(string s, out float value) {

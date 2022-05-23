@@ -23,12 +23,15 @@ namespace HardCoded.VRigUnity {
 			// There is only one instance of the holistic solution
 			webCamSource = SolutionUtils.GetImageSource();
 
-			// TODO: Persistent paths
-			// TODO: Load vrm model if there is a defined one
-			
-			// LoadVrmModel(Settings.GetModelPath());
-			// LoadCustomImage(Settings.GetImagePath());
-			// SetShowBackgroundImage(Settings.IsShowCustomBackground());
+			// Configure scene with settings
+			LoadVrmModel(Settings.ModelFile);
+			LoadCustomImage(Settings.ImageFile);
+			SetShowBackgroundImage(Settings.ShowCustomBackground);
+		}
+
+		public void ResetModel() {
+			Settings.ModelFile = "";
+			SolutionUtils.GetSolution().ResetVrmModel();
 		}
 
 		public void LoadVrmModel(string path) {
@@ -45,7 +48,8 @@ namespace HardCoded.VRigUnity {
 				var loaded = context.Load();
 				loaded.EnableUpdateWhenOffscreen();
 				loaded.ShowMeshes();
-
+				
+				Settings.ModelFile = path;
 				SolutionUtils.GetSolution().SetVrmModel(loaded.gameObject);
 			}
 		}
@@ -56,6 +60,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
+			Settings.ImageFile = path;
 			Texture2D tex = new(2, 2);
 			tex.LoadImage(File.ReadAllBytes(path));
 			foreach (RawImage image in customBackgroundImages) {
@@ -88,7 +93,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void SetShowBackgroundImage(bool show) {
-			// Settings.SetShowCustomBackground(show);
+			Settings.ShowCustomBackground = show;
+
 			foreach (RawImage image in customBackgroundImages) {
 				image.color = show ? Color.white : Color.clear;
 			}

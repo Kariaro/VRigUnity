@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class GUIBackgroundOverlayAlpha : MonoBehaviour {
+	public class OverlayAlpha : MonoBehaviour {
 		private CanvasGroup canvasGroup;
 		[SerializeField] float timeMultiplier = 1;
 
