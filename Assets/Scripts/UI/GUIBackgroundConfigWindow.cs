@@ -74,7 +74,7 @@ namespace HardCoded.VRigUnity {
 				new ExtensionFilter("All Files", "*"),
 			};
 
-			var paths = FileDialogUtils.OpenFilePanelRemember(Settings._ImageFile, "Open Image", extensions, false);
+			var paths = FileDialogUtils.OpenFilePanel("Open Image", Settings.ImageFile, extensions, false);
 			if (paths.Length > 0) {
 				string filePath = paths[0];
 				settings.LoadCustomImage(filePath);

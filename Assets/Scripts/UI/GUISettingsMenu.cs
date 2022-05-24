@@ -18,7 +18,7 @@ namespace HardCoded.VRigUnity {
 				new ExtensionFilter("All Fil1es", "*"),
 			};
 
-			var paths = FileDialogUtils.OpenFilePanelRemember(Settings._ModelFile, "Open File", extensions, false);
+			var paths = FileDialogUtils.OpenFilePanel("Open File", Settings.ModelFile, extensions, false);
 			if (paths.Length > 0) {
 				string filePath = paths[0];
 				settings.LoadVrmModel(filePath);
