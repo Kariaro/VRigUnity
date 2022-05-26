@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Test/HolisticTest.unity
+    guid: 03622cccc2fd274418f98b4e45b04511
   m_configObjects: {}
