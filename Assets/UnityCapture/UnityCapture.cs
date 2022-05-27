@@ -44,33 +44,30 @@ public class UnityCapture : MonoBehaviour
 	[SerializeField] [Tooltip("Check to enable VSync during capturing")] public bool EnableVSync = false;
 	[SerializeField] [Tooltip("Set the desired render target frame rate")] public int TargetFrameRate = 60;
 	[SerializeField] [Tooltip("Check to disable output of warnings")] public bool HideWarnings = false;
-
-	Interface CaptureInterface;
-	Camera captureCamera;
 	[SerializeField] Camera mainCamera;
+	Camera captureCamera;
 
-	void Awake()
-	{
+	void Awake() {
 		QualitySettings.vSyncCount = (EnableVSync ? 1 : 0);
 		Application.targetFrameRate = TargetFrameRate;
 
-		if (Application.runInBackground == false)
-		{
+		if (Application.runInBackground == false) {
 			Debug.LogWarning("Application.runInBackground switched to enabled for capture streaming");
 			Application.runInBackground = true;
 		}
 	}
 
-	void Start()
-	{
+#if UNITY_STANDALONE_WIN
+	Interface CaptureInterface;
+
+	void Start() {
 		CaptureInterface = new Interface(CaptureDevice);
 		captureCamera = GetComponent<Camera>();
 		captureCamera.clearFlags = CameraClearFlags.SolidColor;
 		captureCamera.backgroundColor = Color.clear;
 	}
 
-	void OnDestroy()
-	{
+	void OnDestroy() {
 		CaptureInterface.Close();
 	}
 
@@ -89,8 +86,7 @@ public class UnityCapture : MonoBehaviour
 	}
 
 	void OnPostRender() {
-		switch (CaptureInterface.SendTexture(renderTexture, Timeout, DoubleBuffering, ResizeMode, MirrorMode))
-		{
+		switch (CaptureInterface.SendTexture(renderTexture, Timeout, DoubleBuffering, ResizeMode, MirrorMode)) {
 			case ECaptureSendResult.SUCCESS: break;
 			case ECaptureSendResult.WARNING_FRAMESKIP:               if (!HideWarnings) Debug.LogWarning("[UnityCapture] Capture device did skip a frame read, capture frame rate will not match render frame rate."); break;
 			case ECaptureSendResult.WARNING_CAPTUREINACTIVE:         if (!HideWarnings) Debug.LogWarning("[UnityCapture] Capture device is inactive"); break;
@@ -103,54 +99,33 @@ public class UnityCapture : MonoBehaviour
 		}
 	}
 
-	/*
-	void OnRenderImage(RenderTexture source, RenderTexture destination)
-	{
-		// TODO: Allow this texture to be transparent
-
-		Graphics.Blit(source, destination);
-		switch (CaptureInterface.SendTexture(source, Timeout, DoubleBuffering, ResizeMode, MirrorMode))
-		{
-			case ECaptureSendResult.SUCCESS: break;
-			case ECaptureSendResult.WARNING_FRAMESKIP:               if (!HideWarnings) Debug.LogWarning("[UnityCapture] Capture device did skip a frame read, capture frame rate will not match render frame rate."); break;
-			case ECaptureSendResult.WARNING_CAPTUREINACTIVE:         if (!HideWarnings) Debug.LogWarning("[UnityCapture] Capture device is inactive"); break;
-			case ECaptureSendResult.ERROR_UNSUPPORTEDGRAPHICSDEVICE: Debug.LogError("[UnityCapture] Unsupported graphics device (only D3D11 supported)"); break;
-			case ECaptureSendResult.ERROR_PARAMETER:                 Debug.LogError("[UnityCapture] Input parameter error"); break;
-			case ECaptureSendResult.ERROR_TOOLARGERESOLUTION:        Debug.LogError("[UnityCapture] Render resolution is too large to send to capture device"); break;
-			case ECaptureSendResult.ERROR_TEXTUREFORMAT:             Debug.LogError("[UnityCapture] Render texture format is unsupported (only basic non-HDR (ARGB32) and HDR (FP16/ARGB Half) formats are supported)"); break;
-			case ECaptureSendResult.ERROR_READTEXTURE:               Debug.LogError("[UnityCapture] Error while reading texture image data"); break;
-			case ECaptureSendResult.ERROR_INVALIDCAPTUREINSTANCEPTR: Debug.LogError("[UnityCapture] Invalid Capture Instance Pointer"); break;
-		}
-	}
-	*/
-
-	public class Interface
-	{
+	public class Interface {
 		[System.Runtime.InteropServices.DllImport("UnityCapturePlugin")] extern static System.IntPtr CaptureCreateInstance(int CapNum);
 		[System.Runtime.InteropServices.DllImport("UnityCapturePlugin")] extern static void CaptureDeleteInstance(System.IntPtr instance);
 		[System.Runtime.InteropServices.DllImport("UnityCapturePlugin")] extern static ECaptureSendResult CaptureSendTexture(System.IntPtr instance, System.IntPtr nativetexture, int Timeout, bool UseDoubleBuffering, EResizeMode ResizeMode, EMirrorMode MirrorMode, bool IsLinearColorSpace);
 		System.IntPtr CaptureInstance;
 
-		public Interface(ECaptureDevice CaptureDevice)
-		{
+		public Interface(ECaptureDevice CaptureDevice) {
 			CaptureInstance = CaptureCreateInstance((int)CaptureDevice);
 		}
 
-		~Interface()
-		{
+		~Interface() {
 			Close();
 		}
 
-		public void Close()
-		{
+		public void Close() {
 			if (CaptureInstance != System.IntPtr.Zero) CaptureDeleteInstance(CaptureInstance);
 			CaptureInstance = System.IntPtr.Zero;
 		}
 
-		public ECaptureSendResult SendTexture(Texture Source, int Timeout = 1000, bool DoubleBuffering = false, EResizeMode ResizeMode = EResizeMode.Disabled, EMirrorMode MirrorMode = EMirrorMode.Disabled)
-		{
+		public ECaptureSendResult SendTexture(Texture Source, int Timeout = 1000, bool DoubleBuffering = false, EResizeMode ResizeMode = EResizeMode.Disabled, EMirrorMode MirrorMode = EMirrorMode.Disabled) {
 			if (CaptureInstance == System.IntPtr.Zero) return ECaptureSendResult.ERROR_INVALIDCAPTUREINSTANCEPTR;
 			return CaptureSendTexture(CaptureInstance, Source.GetNativeTexturePtr(), Timeout, DoubleBuffering, ResizeMode, MirrorMode, QualitySettings.activeColorSpace == ColorSpace.Linear);
 		}
 	}
+#elif UNITY_STANDALONE_LINUX
+#  warning Virtual Camera has not been implemented for Linux
+#else
+#  error Virtual Camera is not supported on this system
+#endif
 }

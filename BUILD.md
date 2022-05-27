@@ -1,22 +1,15 @@
 # VRigUnity
-Test rig unity project.
 
 Some of the dependencies only support **Windows**.
 
 ## Dependencies
-[MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
-+ [OpenCV 3.4.16](https://opencv.org/releases/)
-
-[StandaloneFileBrowser](https://github.com/gkngkc/UnityStandaloneFileBrowser)
-
-[UniVRM v0.97.0](https://github.com/vrm-c/UniVRM)
-
-[UnityCapture](https://github.com/schellingb/UnityCapture)
++ [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
+  + [OpenCV 3.4.16](https://opencv.org/releases/)
++ [UniVRM v0.97.0](https://github.com/vrm-c/UniVRM)
++ [StandaloneFileBrowser v1.2](https://github.com/gkngkc/UnityStandaloneFileBrowser)
++ [UnityCapture (fe461e8f6e1cd1e6a0dfa9891147c8e393a20a2c)](https://github.com/schellingb/UnityCapture)
 
 ## Setup
-
-### UniVRM
-Install the version `v0.97.0` and navigate `Assets > Import Package > Custom Package...` and add the `.unitypackage` file.
 
 ### MediaPipeUnityPlugin
 Go to the github page and follow the build instructions.

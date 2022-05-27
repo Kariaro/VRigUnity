@@ -15,6 +15,7 @@ namespace HardCoded.VRigUnity {
 		protected virtual IEnumerator Start() {
 			bootstrap = FindBootstrap();
 			yield return new WaitUntil(() => bootstrap.IsFinished);
+			isPaused = true;
 		}
 
 		public virtual void Play() {

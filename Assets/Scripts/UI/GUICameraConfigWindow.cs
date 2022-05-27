@@ -14,7 +14,8 @@ namespace HardCoded.VRigUnity {
 		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
 		private const string VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
 		private const string VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
-
+		
+		[SerializeField] private GUIScript settings;
 		private Solution _solution;
 		private TMP_Dropdown _sourceInput;
 		private TMP_Dropdown _resolutionInput;
@@ -105,6 +106,7 @@ namespace HardCoded.VRigUnity {
 
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
+				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}
@@ -124,20 +126,28 @@ namespace HardCoded.VRigUnity {
 		private void InitializeVirtualCamera() {
 			_virtualCameraInstall = transform.Find(VirtualCameraInstall).GetComponent<Button>();
 			_virtualCameraUninstall = transform.Find(VirtualCameraUninstall).GetComponent<Button>();
-			
-			#if !UNITY_STANDALONE_WIN
-			#  error Virtual Camera won't work on non linux systems
-			#endif
-
 			_virtualCameraInstall.onClick.RemoveAllListeners();
+			_virtualCameraUninstall.onClick.RemoveAllListeners();
+			
+#if UNITY_STANDALONE_WIN
 			_virtualCameraInstall.onClick.AddListener(delegate {
 				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Install.bat"));
 			});
 
-			_virtualCameraUninstall.onClick.RemoveAllListeners();
 			_virtualCameraUninstall.onClick.AddListener(delegate {
 				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Uninstall.bat"));
 			});
+#elif UNITY_STANDALONE_LINUX
+			_virtualCameraInstall.onClick.AddListener(delegate {
+				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "v4l2loopback", "Install.sh"));
+			});
+
+			_virtualCameraUninstall.onClick.AddListener(delegate {
+				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "v4l2loopback", "Uninstall.sh"));
+			});
+#else
+#  error Virtual Camera is not supported on this system
+#endif
 		}
 	}
 }

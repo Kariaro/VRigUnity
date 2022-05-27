@@ -1,4 +1,5 @@
 using Mediapipe.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -90,6 +91,10 @@ namespace HardCoded.VRigUnity {
 			worldBackgroundImage.texture = null;
 			worldBackgroundImage.color = show ? new Color(1, 1, 1, 0.5f) : Color.clear;
 			showWebCamImage = show;
+		}
+
+		public void UpdateShowCamera() {
+			SetShowCamera(showWebCamImage);
 		}
 
 		public void SetShowBackgroundImage(bool show) {

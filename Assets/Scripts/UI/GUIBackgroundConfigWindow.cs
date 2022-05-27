@@ -49,7 +49,6 @@ namespace HardCoded.VRigUnity {
 
 			_showCameraToggle = transform.Find(ShowCameraTogglePath).GetComponent<Toggle>();
 			_showCameraToggle.onValueChanged.RemoveAllListeners();
-			_showCameraToggle.isOn = false;
 			_showCameraToggle.onValueChanged.AddListener(delegate {
 				settings.SetShowCamera(_showCameraToggle.isOn);
 			});

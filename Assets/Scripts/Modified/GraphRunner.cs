@@ -31,15 +31,8 @@ namespace HardCoded.VRigUnity {
 
 		private bool _isRunning = false;
 
-		public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
 		public virtual ConfigType configType {
 			get {
-				if (GpuManager.IsInitialized) {
-					if (_gpuConfig != null) {
-						return ConfigType.GPU;
-					}
-				}
-
 				return _cpuConfig != null ? ConfigType.CPU : ConfigType.None;
 			}
 		}
@@ -141,11 +134,13 @@ namespace HardCoded.VRigUnity {
 		protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame) {
 			latestTimestamp = GetCurrentTimestamp();
 
+			/*
 			if (configType == ConfigType.OpenGLES) {
 				var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
 				AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, latestTimestamp));
 				return;
 			}
+			*/
 
 			var imageFrame = textureFrame.BuildImageFrame();
 			textureFrame.Release();
@@ -184,8 +179,7 @@ namespace HardCoded.VRigUnity {
 					throw new InvalidOperationException("Failed to get the text config. Check if the config is set to GraphRunner");
 				}
 
-				var status = ConfigureCalculatorGraph(baseConfig);
-				return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : CalculatorGraph.SetGpuResources(GpuManager.GpuResources);
+				return ConfigureCalculatorGraph(baseConfig);
 			} catch (Exception e) {
 				return Status.FailedPrecondition(e.ToString());
 			}

@@ -6,7 +6,7 @@
 #define MyAppPublisher "HardCoded"
 #define MyAppURL "https://github.com/Kariaro/VRigUnity"
 #define MyAppExeName "VRigUnity.exe"
-#define MyAppBuildPath "D:\UnityFolder\VRigUnity\Build"
+#define MyAppBuildPath "D:\UnityFolder\VRigUnity\Build\StandaloneWindows"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
