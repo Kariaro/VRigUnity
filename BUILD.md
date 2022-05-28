@@ -1,7 +1,5 @@
 # VRigUnity
 
-Some of the dependencies only support **Windows**.
-
 ## Dependencies
 + [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
   + [OpenCV 3.4.16](https://opencv.org/releases/)
@@ -30,7 +28,4 @@ Scrap notes I wrote when I got `MediaPipeUnityPlugin` working.
 
 # Must type in git-bash
 export MSYS2_ARG_CONV_EXCL="*"
-
-# Must use
-OpenCV – 3.4.16
 ```

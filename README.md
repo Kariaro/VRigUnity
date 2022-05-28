@@ -1,4 +1,17 @@
 # VRigUnity
+A virtual character AI animator.
+This app takes a `VRM` model and uses your webcam to move the virtual character.
+
+## Info
+This app has been tested on:
++ *Windows 10*
++ *Ubuntu 18.04*
+
+Features:
+* Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
+* Allows custom background images
+* Allows custom VRM models
+* Virtual camera support
 
 ## Dependencies
 + [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
@@ -8,14 +21,3 @@
 
 ## Building
 See [BUILD.md](./BUILD.md)
-
-## Info
-+ This tool only works on **Windows**
-
-Features:
-* Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
-* Allows custom background images
-* Allows custom VRM models
-* Virtual camera support
-
-**Note:** *The file provided inside this release was built locally*

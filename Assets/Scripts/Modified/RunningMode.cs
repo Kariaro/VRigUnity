@@ -4,13 +4,11 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-namespace Mediapipe.Unity
-{
-  [System.Serializable]
-  public enum RunningMode
-  {
-    Async,
-    NonBlockingSync,
-    Sync,
-  }
+namespace Mediapipe.Unity {
+	[System.Serializable]
+	public enum RunningMode {
+		Async,
+		NonBlockingSync,
+		Sync,
+	}
 }
