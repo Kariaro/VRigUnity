@@ -89,40 +89,20 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public override void Stop() {
-			if (_poseDetectionStream != null) {
-				_poseDetectionStream.RemoveAllListeners();
-				_poseDetectionStream = null;
-			}
-
-			if (_poseLandmarksStream != null) {
-				_poseLandmarksStream.RemoveAllListeners();
-				_poseLandmarksStream = null;
-			}
-
-			if (_faceLandmarksStream != null) {
-				_faceLandmarksStream.RemoveAllListeners();
-				_faceLandmarksStream = null;
-			}
-
-			if (_leftHandLandmarksStream != null) {
-				_leftHandLandmarksStream.RemoveAllListeners();
-				_leftHandLandmarksStream = null;
-			}
-
-			if (_rightHandLandmarksStream != null) {
-				_rightHandLandmarksStream.RemoveAllListeners();
-				_rightHandLandmarksStream = null;
-			}
-
-			if (_poseWorldLandmarksStream != null) {
-				_poseWorldLandmarksStream.RemoveAllListeners();
-				_poseWorldLandmarksStream = null;
-			}
-
-			if (_poseRoiStream != null) {
-				_poseRoiStream.RemoveAllListeners();
-				_poseRoiStream = null;
-			}
+			_poseDetectionStream?.RemoveAllListeners();
+			_poseDetectionStream = null;
+			_poseLandmarksStream?.RemoveAllListeners();
+			_poseLandmarksStream = null;
+			_faceLandmarksStream?.RemoveAllListeners();
+			_faceLandmarksStream = null;
+			_leftHandLandmarksStream?.RemoveAllListeners();
+			_leftHandLandmarksStream = null;
+			_rightHandLandmarksStream?.RemoveAllListeners();
+			_rightHandLandmarksStream = null;
+			_poseWorldLandmarksStream?.RemoveAllListeners();
+			_poseWorldLandmarksStream = null;
+			_poseRoiStream?.RemoveAllListeners();
+			_poseRoiStream = null;
 
 			base.Stop();
 		}

@@ -60,11 +60,11 @@ namespace HardCoded.VRigUnity {
 		protected CalculatorGraph CalculatorGraph { get; private set; }
 		protected Timestamp latestTimestamp;
 
-		protected virtual void Start() {
+		protected void Start() {
 			_InstanceTable.Add(GetInstanceID(), this);
 		}
 
-		protected virtual void OnDestroy() {
+		protected void OnDestroy() {
 			Stop();
 		}
 		
@@ -72,7 +72,7 @@ namespace HardCoded.VRigUnity {
 			return new WaitForResult(this, InitializeAsync());
 		}
 
-		public virtual IEnumerator InitializeAsync() {
+		public IEnumerator InitializeAsync() {
 			Logger.Info(TAG, $"Config Type = {configType}");
 
 			InitializeCalculatorGraph().AssertOk();
@@ -184,10 +184,8 @@ namespace HardCoded.VRigUnity {
 				return Status.FailedPrecondition(e.ToString());
 			}
 		}
-
-		protected virtual Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
-			return CalculatorGraph.Initialize(config);
-		}
+		
+		protected abstract Status ConfigureCalculatorGraph(CalculatorGraphConfig config);
 
 		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.

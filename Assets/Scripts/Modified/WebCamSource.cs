@@ -186,7 +186,7 @@ namespace HardCoded.VRigUnity {
 		private IEnumerator WaitForWebCamTexture() {
 			const int timeoutFrame = 500;
 			var count = 0;
-			HardCoded.VRigUnity.Logger.Verbose("Waiting for WebCamTexture to start");
+			Logger.Verbose("Waiting for WebCamTexture to start");
 			yield return new WaitUntil(() => count++ > timeoutFrame || webCamTexture.width > 16);
 
 			if (webCamTexture.width <= 16) {

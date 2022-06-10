@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace HardCoded.VRigUnity {
-    public class OrbitalCamera : MonoBehaviour {
+	public class OrbitalCamera : MonoBehaviour {
 		[SerializeField] Vector3 defaultPosition;
 		[SerializeField] Quaternion defaultRotation;
 		[SerializeField] float defaultDepth = 0.8f;
