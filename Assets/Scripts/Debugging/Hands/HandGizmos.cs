@@ -43,6 +43,7 @@ namespace HardCoded.VRigUnity {
 		};
 
 		[SerializeField] [Range(0.0001f, 0.03f)] private float lineLength = 0.015f;
+		[SerializeField] [Range(0, 1)] private float alpha = 0.25f;
 		[SerializeField] private GameObject vrmModel;
 		[SerializeField] private bool rightHand = true;
 		[SerializeField] private bool leftHand = true;
@@ -60,7 +61,7 @@ namespace HardCoded.VRigUnity {
 					rend.material.SetFloat("_DstBlend", 10);
 					rend.material.SetFloat("_SrcBlend", 5);
 					rend.material.SetFloat("_ZWrite", 0);
-					rend.material.SetColor("_Color", new Color(1, 1, 1, 0.2f));
+					rend.material.SetColor("_Color", new Color(1, 1, 1, alpha));
 					rend.material.renderQueue = 3000;
 				}
 			}

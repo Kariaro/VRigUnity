@@ -32,7 +32,11 @@ namespace HardCoded.VRigUnity {
 			isDebugShowing = enable;
 			text.color = enable ? toggleOffColor : toggleOnColor;
 			text.text = enable ? "Debug On" : "Debug Off";
-			SolutionUtils.GetSolution().SetDebug(enable);
+
+			HolisticTrackingSolution solution = SolutionUtils.GetSolution();
+			if (solution is HolisticTrackingSolutionWithDebug debug) {
+				debug.SetDebug(enable);
+			}
 		}
 	}
 }
