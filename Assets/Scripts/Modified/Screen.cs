@@ -28,7 +28,7 @@ namespace Mediapipe.Unity {
 
 			Resize(_imageSource.textureWidth, _imageSource.textureHeight);
 			Rotate(_imageSource.rotation.Reverse());
-			ResetUvRect(RunningMode.Async);
+			ResetUvRect();
 			texture = imageSource.GetCurrentTexture();
 		}
 
@@ -43,15 +43,15 @@ namespace Mediapipe.Unity {
 		public void ReadSync(TextureFrame textureFrame) {
 			if (!(texture is Texture2D)) {
 				texture = new Texture2D(_imageSource.textureWidth, _imageSource.textureHeight, TextureFormat.RGBA32, false);
-				ResetUvRect(RunningMode.Sync);
+				ResetUvRect();
 			}
 			textureFrame.CopyTexture(texture);
 		}
 
-		private void ResetUvRect(RunningMode runningMode) {
+		private void ResetUvRect() {
 			var rect = new UnityEngine.Rect(0, 0, 1, 1);
 
-			if (_imageSource.isVerticallyFlipped && runningMode == RunningMode.Async) {
+			if (_imageSource.isVerticallyFlipped) {
 				// In Async mode, we don't need to flip the screen vertically since the image will be copied on CPU.
 				rect = FlipVertically(rect);
 			}
