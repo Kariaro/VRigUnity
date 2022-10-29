@@ -5,7 +5,7 @@ namespace HardCoded.VRigUnity {
 	// This class is used to check if the current thread is the unity thread
 	public class ThreadObject : MonoBehaviour {
 		private static Thread MainThread;
-
+		
 		void Start() {
 			MainThread = Thread.CurrentThread;
 		}

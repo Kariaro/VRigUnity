@@ -1,7 +1,4 @@
 using Mediapipe.Unity;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UniGLTF;
 using UnityEngine;
@@ -106,31 +103,38 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void DrawImage(TextureFrame textureFrame) {
-			if (showWebCamImage) {
-				WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
-				Texture2D tex = worldBackgroundImage.texture as Texture2D;
-
-				if (!(tex is Texture2D)) {
-					if (tex == null || tex.width != texture.width || tex.height != texture.height) {
-						tex = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
-						worldBackgroundImage.texture = tex;
-					}
-				}
-				
-				float w = (UnityEngine.Screen.width / (float)UnityEngine.Screen.height);
-				float d = (texture.height / (float)texture.width) * w * 0.5f;
-
-				if (d < 0.5) {
-					worldBackgroundImage.rectTransform.anchorMin = new Vector2(0, 0.5f - d);
-					worldBackgroundImage.rectTransform.anchorMax = new Vector2(1, 0.5f + d);
-				} else {
-					d = ((texture.width / (float)texture.height) / w) * 0.5f;
-					worldBackgroundImage.rectTransform.anchorMin = new Vector2(0.5f - d, 0);
-					worldBackgroundImage.rectTransform.anchorMax = new Vector2(0.5f + d, 1);
-				}
-
-				textureFrame.CopyTexture(tex);
+			if (!showWebCamImage) {
+				return;
 			}
+
+			if (webCamSource == null) {
+				webCamSource = SolutionUtils.GetImageSource();
+				return;
+			}
+
+			WebCamTexture texture = webCamSource.GetCurrentTexture() as WebCamTexture;
+			Texture2D tex = worldBackgroundImage.texture as Texture2D;
+			
+			if (!(tex is Texture2D)) {
+				if (tex == null || tex.width != texture.width || tex.height != texture.height) {
+					tex = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+					worldBackgroundImage.texture = tex;
+				}
+			}
+				
+			float w = (UnityEngine.Screen.width / (float) UnityEngine.Screen.height);
+			float d = (texture.height / (float) texture.width) * w * 0.5f;
+
+			if (d < 0.5) {
+				worldBackgroundImage.rectTransform.anchorMin = new(0, 0.5f - d);
+				worldBackgroundImage.rectTransform.anchorMax = new(1, 0.5f + d);
+			} else {
+				d = ((texture.width / (float) texture.height) / w) * 0.5f;
+				worldBackgroundImage.rectTransform.anchorMin = new(0.5f - d, 0);
+				worldBackgroundImage.rectTransform.anchorMax = new(0.5f + d, 1);
+			}
+
+			textureFrame.CopyTexture(tex);
 		}
 	}
 }
