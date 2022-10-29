@@ -75,8 +75,8 @@ namespace HardCoded.VRigUnity {
 
 		public void Apply(Groups.HandRotation handRotations) {
 			// TODO: Does not seem to work?
-			for (int i = 0; i < handRotations.Data.Length; i++) {
-				points[i].transform.rotation = handRotations.Data[i];
+			for (int i = 0; i < handRotations.Length; i++) {
+				points[i].transform.rotation = handRotations[i];
 			}
 		}
 

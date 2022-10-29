@@ -7,16 +7,17 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class HolisticTrackingSolutionWithDebug : HolisticTrackingSolution {
 		[Header("Debug")]
-		[SerializeField] protected Mediapipe.Unity.Screen screen;
+		[SerializeField] private Mediapipe.Unity.Screen screen;
 		[SerializeField] private HandGroup handGroup;
-		private Groups.HandPoints handPoints = new();
-
-		[SerializeField] protected RectTransform _worldAnnotationArea;
-		[SerializeField] protected DetectionAnnotationController _poseDetectionAnnotationController;
-		[SerializeField] protected HolisticLandmarkListAnnotationController _holisticAnnotationController;
-		[SerializeField] protected PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
-		[SerializeField] protected NormalizedRectAnnotationController _poseRoiAnnotationController;
+		[SerializeField] private RectTransform _worldAnnotationArea;
+		[SerializeField] private DetectionAnnotationController _poseDetectionAnnotationController;
+		[SerializeField] private HolisticLandmarkListAnnotationController _holisticAnnotationController;
+		[SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
+		[SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
 		
+		private Groups.HandPoints handPoints = new();
+		private bool hasHandData;
+
 		// List of debug transforms
 		public Transform[] debugTransforms;
 
@@ -80,8 +81,10 @@ namespace HardCoded.VRigUnity {
 			int count = eventArgs.value.Landmark.Count;
 			for (int i = 0; i < count; i++) {
 				NormalizedLandmark mark = eventArgs.value.Landmark[i];
-				this.handPoints.Data[i] = new(mark.X * 2, -mark.Y, -mark.Z);
+				handPoints.Data[i] = new(mark.X * 2, -mark.Y, -mark.Z);
 			}
+
+			hasHandData = true;
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
@@ -91,6 +94,11 @@ namespace HardCoded.VRigUnity {
 		new void FixedUpdate() {
 			if (handGroup != null && handPoints != null) {
 				handGroup.Apply(handPoints, animator.GetBoneTransform(HumanBodyBones.LeftHand).transform.position, 0.5f);
+			}
+
+			// Debug
+			if (hasHandData) {
+				HandResolver.SolveRightHand(handPoints);
 			}
 
 			base.FixedUpdate();

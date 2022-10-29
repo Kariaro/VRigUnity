@@ -31,45 +31,87 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public class HandRotation {
+			public readonly int Length = 21;
+
 			// Easy setters
-			public Quaternion Wrist; 
-			public Quaternion ThumbMCP; 
+			public Quaternion Wrist;
+			public Quaternion ThumbCMC;
+			public Quaternion ThumbMCP;
 			public Quaternion ThumbIP;
-			public Quaternion ThumbTIP; 
-			public Quaternion IndexFingerPIP; 
-			public Quaternion IndexFingerDIP; 
-			public Quaternion IndexFingerTIP; 
+			public Quaternion ThumbTIP;
+			public Quaternion IndexFingerMCP;
+			public Quaternion IndexFingerPIP;
+			public Quaternion IndexFingerDIP;
+			public Quaternion IndexFingerTIP;
+			public Quaternion MiddleFingerMCP;
 			public Quaternion MiddleFingerPIP;
 			public Quaternion MiddleFingerDIP;
 			public Quaternion MiddleFingerTIP;
+			public Quaternion RingFingerMCP;
 			public Quaternion RingFingerPIP;
 			public Quaternion RingFingerDIP;
 			public Quaternion RingFingerTIP;
+			public Quaternion PinkyMCP;
 			public Quaternion PinkyPIP;
 			public Quaternion PinkyDIP;
 			public Quaternion PinkyTIP;
-
+			
 			// This uses the indexs MediaPipe.Hand
-			public Quaternion[] Data {
+			public Quaternion this[int index] {
 				get {
-					Quaternion[] data = new Quaternion[21];
-					data[MediaPipe.Hand.WRIST] = Wrist;
-					data[MediaPipe.Hand.THUMB_MCP] = ThumbMCP;
-					data[MediaPipe.Hand.THUMB_IP] =	ThumbIP;
-					data[MediaPipe.Hand.THUMB_TIP] = ThumbTIP;
-					data[MediaPipe.Hand.INDEX_FINGER_PIP] =	IndexFingerPIP;
-					data[MediaPipe.Hand.INDEX_FINGER_DIP] =	IndexFingerDIP;
-					data[MediaPipe.Hand.INDEX_FINGER_TIP] =	IndexFingerTIP;
-					data[MediaPipe.Hand.MIDDLE_FINGER_PIP] = MiddleFingerPIP;
-					data[MediaPipe.Hand.MIDDLE_FINGER_DIP] = MiddleFingerDIP;
-					data[MediaPipe.Hand.MIDDLE_FINGER_TIP] = MiddleFingerTIP;
-					data[MediaPipe.Hand.RING_FINGER_PIP] = RingFingerPIP;
-					data[MediaPipe.Hand.RING_FINGER_DIP] = RingFingerDIP;
-					data[MediaPipe.Hand.RING_FINGER_TIP] = RingFingerTIP;
-					data[MediaPipe.Hand.PINKY_PIP] = PinkyPIP;
-					data[MediaPipe.Hand.PINKY_DIP] = PinkyDIP;
-					data[MediaPipe.Hand.PINKY_TIP] = PinkyTIP;
-					return data;
+					return index switch {
+						MediaPipe.Hand.WRIST => Wrist,
+						MediaPipe.Hand.THUMB_CMC => ThumbCMC,
+						MediaPipe.Hand.THUMB_MCP => ThumbMCP,
+						MediaPipe.Hand.THUMB_IP => ThumbIP,
+						MediaPipe.Hand.THUMB_TIP => ThumbTIP,
+						MediaPipe.Hand.INDEX_FINGER_MCP => IndexFingerMCP,
+						MediaPipe.Hand.INDEX_FINGER_PIP => IndexFingerPIP,
+						MediaPipe.Hand.INDEX_FINGER_DIP => IndexFingerDIP,
+						MediaPipe.Hand.INDEX_FINGER_TIP => IndexFingerTIP,
+						MediaPipe.Hand.MIDDLE_FINGER_MCP => MiddleFingerMCP,
+						MediaPipe.Hand.MIDDLE_FINGER_PIP => MiddleFingerPIP,
+						MediaPipe.Hand.MIDDLE_FINGER_DIP => MiddleFingerDIP,
+						MediaPipe.Hand.MIDDLE_FINGER_TIP => MiddleFingerTIP,
+						MediaPipe.Hand.RING_FINGER_MCP => RingFingerMCP,
+						MediaPipe.Hand.RING_FINGER_PIP => RingFingerPIP,
+						MediaPipe.Hand.RING_FINGER_DIP => RingFingerDIP,
+						MediaPipe.Hand.RING_FINGER_TIP => RingFingerTIP,
+						MediaPipe.Hand.PINKY_MCP => PinkyMCP,
+						MediaPipe.Hand.PINKY_PIP => PinkyPIP,
+						MediaPipe.Hand.PINKY_DIP => PinkyDIP,
+						MediaPipe.Hand.PINKY_TIP => PinkyTIP,
+						_ => Quaternion.identity,
+					};
+				}
+				set {
+					switch (index) {
+						case MediaPipe.Hand.WRIST: Wrist = value; return;
+						case MediaPipe.Hand.THUMB_CMC: ThumbCMC = value; return;
+						case MediaPipe.Hand.THUMB_MCP: ThumbMCP = value; return;
+						case MediaPipe.Hand.THUMB_IP: ThumbIP = value; return;
+						case MediaPipe.Hand.THUMB_TIP: ThumbTIP = value; return;
+						case MediaPipe.Hand.INDEX_FINGER_MCP: IndexFingerMCP = value; return;
+						case MediaPipe.Hand.INDEX_FINGER_PIP: IndexFingerPIP = value; return;
+						case MediaPipe.Hand.INDEX_FINGER_DIP: IndexFingerDIP = value; return;
+						case MediaPipe.Hand.INDEX_FINGER_TIP: IndexFingerTIP = value; return;
+						case MediaPipe.Hand.MIDDLE_FINGER_MCP: MiddleFingerMCP = value; return;
+						case MediaPipe.Hand.MIDDLE_FINGER_PIP: MiddleFingerPIP = value; return;
+						case MediaPipe.Hand.MIDDLE_FINGER_DIP: MiddleFingerDIP = value; return;
+						case MediaPipe.Hand.MIDDLE_FINGER_TIP: MiddleFingerTIP = value; return;
+						case MediaPipe.Hand.RING_FINGER_MCP: RingFingerMCP = value; return;
+						case MediaPipe.Hand.RING_FINGER_PIP: RingFingerPIP = value; return;
+						case MediaPipe.Hand.RING_FINGER_DIP: RingFingerDIP = value; return;
+						case MediaPipe.Hand.RING_FINGER_TIP: RingFingerTIP = value; return;
+						case MediaPipe.Hand.PINKY_MCP: PinkyMCP = value; return;
+						case MediaPipe.Hand.PINKY_PIP: PinkyPIP = value; return;
+						case MediaPipe.Hand.PINKY_DIP: PinkyDIP = value; return;
+						case MediaPipe.Hand.PINKY_TIP: PinkyTIP = value; return;
+						default: {
+							Debug.LogError("Invalid index " + index);
+							return;
+						}
+					}
 				}
 			}
 		}

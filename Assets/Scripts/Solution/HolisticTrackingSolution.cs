@@ -67,7 +67,6 @@ namespace HardCoded.VRigUnity {
 		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
-		public bool keep = false;
 		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 		
 		public int TestInterpolation;
@@ -307,174 +306,54 @@ namespace HardCoded.VRigUnity {
 			OnRightHandLandmarks(handPoints);
 		}
 
-		private void OnLeftHandLandmarks(Groups.HandPoints points) {
-			Groups.HandRotation handGroup = new();
-			Quaternion preHand = Quaternion.identity;
-
-			{
-				Vector3 handUpDir;
-				Vector3 handForwardDir;
-				{
-					Vector3 palm = points.Wrist;
-					Vector3 indexFinger = points.IndexFingerMCP;
-					Vector3 middleFinger = points.MiddleFingerMCP;
-					Vector3 ringFinger = points.RingFingerMCP;
-					Vector3 pinkyFinger = points.PinkyMCP;
-
-					// Figure out their position on the eye socket plane
-					handUpDir = new Vector3(
-						(middleFinger.x - palm.x),
-						(middleFinger.y - palm.y),
-						(middleFinger.z - palm.z)
-					);
-
-					Plane plane = new(palm, indexFinger, pinkyFinger);
-					handForwardDir = plane.normal;
-					
-					Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
-					HandPoints.ComputeFinger2(rotTest, -1, 3,
-						indexFinger,
-						points.IndexFingerPIP,
-						points.IndexFingerDIP,
-						points.IndexFingerTIP,
-						null,
-						out handGroup.IndexFingerPIP, out handGroup.IndexFingerDIP, out handGroup.IndexFingerTIP);
-					HandPoints.ComputeFinger2(rotTest, -1, 2,
-						middleFinger,
-						points.MiddleFingerPIP,
-						points.MiddleFingerDIP,
-						points.MiddleFingerTIP,
-						null,
-						out handGroup.MiddleFingerPIP, out handGroup.MiddleFingerDIP, out handGroup.MiddleFingerTIP);
-					HandPoints.ComputeFinger2(rotTest, -1, 1,
-						ringFinger,
-						points.RingFingerPIP,
-						points.RingFingerDIP,
-						points.RingFingerTIP,
-						null,
-						out handGroup.RingFingerPIP, out handGroup.RingFingerDIP, out handGroup.RingFingerTIP);
-					HandPoints.ComputeFinger2(rotTest, -1, 0,
-						pinkyFinger,
-						points.PinkyPIP,
-						points.PinkyDIP,
-						points.PinkyTIP,
-						null,
-						out handGroup.PinkyPIP, out handGroup.PinkyDIP, out handGroup.PinkyTIP);
-					HandPoints.ComputeThumb(rotTest, -1, 4,
-						points.Wrist,
-						points.ThumbMCP,
-						points.ThumbIP,
-						points.ThumbTIP,
-						null,
-						out handGroup.ThumbMCP, out handGroup.ThumbIP, out handGroup.ThumbTIP);
-				}
-
-				Quaternion test = Quaternion.Euler(0, 90, 90);
-				preHand = Quaternion.LookRotation(handForwardDir, -handUpDir);
-				Quaternion rot = preHand * test;
-				handGroup.Wrist = rot;
-			}
+		private void OnLeftHandLandmarks(Groups.HandPoints hand) {
+			Groups.HandRotation handGroup;
+			
+			handGroup = HandResolverOld.SolveLeftHand(hand);
+			handGroup = HandResolver.SolveLeftHand(hand);
 
 			float time = TimeNow;
 			lHand.Set(handGroup.Wrist, time);
-			lIndexPip.Set(handGroup.IndexFingerPIP, time);
-			lIndexDip.Set(handGroup.IndexFingerDIP, time);
-			lIndexTip.Set(handGroup.IndexFingerTIP, time);
-			lMiddlePip.Set(handGroup.MiddleFingerPIP, time);
-			lMiddleDip.Set(handGroup.MiddleFingerDIP, time);
-			lMiddleTip.Set(handGroup.MiddleFingerTIP, time);
-			lRingPip.Set(handGroup.RingFingerPIP, time);
-			lRingDip.Set(handGroup.RingFingerDIP, time);
-			lRingTip.Set(handGroup.RingFingerTIP, time);
-			lPinkyPip.Set(handGroup.PinkyPIP, time);
-			lPinkyDip.Set(handGroup.PinkyDIP, time);
-			lPinkyTip.Set(handGroup.PinkyTIP, time);
-			lThumbPip.Set(handGroup.ThumbMCP, time);
-			lThumbDip.Set(handGroup.ThumbIP, time);
-			lThumbTip.Set(handGroup.ThumbTIP, time);
+			lIndexPip.Set(handGroup.IndexFingerMCP, time);
+			lIndexDip.Set(handGroup.IndexFingerPIP, time);
+			lIndexTip.Set(handGroup.IndexFingerDIP, time);
+			lMiddlePip.Set(handGroup.MiddleFingerMCP, time);
+			lMiddleDip.Set(handGroup.MiddleFingerPIP, time);
+			lMiddleTip.Set(handGroup.MiddleFingerDIP, time);
+			lRingPip.Set(handGroup.RingFingerMCP, time);
+			lRingDip.Set(handGroup.RingFingerPIP, time);
+			lRingTip.Set(handGroup.RingFingerDIP, time);
+			lPinkyPip.Set(handGroup.PinkyMCP, time);
+			lPinkyDip.Set(handGroup.PinkyPIP, time);
+			lPinkyTip.Set(handGroup.PinkyDIP, time);
+			lThumbPip.Set(handGroup.ThumbCMC, time);
+			lThumbDip.Set(handGroup.ThumbMCP, time);
+			lThumbTip.Set(handGroup.ThumbIP, time);
 		}
 
-		private void OnRightHandLandmarks(Groups.HandPoints points) {
-			Groups.HandRotation handGroup = new();
-
-			Vector3 handUpDir;
-			Vector3 handForwardDir;
-			{
-				Vector3 palm = points.Wrist;
-				Vector3 indexFinger = points.IndexFingerMCP;
-				Vector3 middleFinger = points.MiddleFingerMCP;
-				Vector3 ringFinger = points.RingFingerMCP;
-				Vector3 pinkyFinger = points.PinkyMCP;
-
-				// Figure out their position on the eye socket plane
-				handUpDir = new Vector3(
-					(middleFinger.x - palm.x),
-					(middleFinger.y - palm.y),
-					(middleFinger.z - palm.z)
-				);
-
-				Plane plane = new(palm, indexFinger, pinkyFinger);
-				handForwardDir = plane.normal;
-					
-				Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
-				HandPoints.ComputeFinger2(rotTest, 1, 3,
-					indexFinger,
-					points.IndexFingerPIP,
-					points.IndexFingerDIP,
-					points.IndexFingerTIP,
-					null,
-					out handGroup.IndexFingerPIP, out handGroup.IndexFingerDIP, out handGroup.IndexFingerTIP);
-				HandPoints.ComputeFinger2(rotTest, 1, 2,
-					middleFinger,
-					points.MiddleFingerPIP,
-					points.MiddleFingerDIP,
-					points.MiddleFingerTIP,
-					null,
-					out handGroup.MiddleFingerPIP, out handGroup.MiddleFingerDIP, out handGroup.MiddleFingerTIP);
-				HandPoints.ComputeFinger2(rotTest, 1, 1,
-					ringFinger,
-					points.RingFingerPIP,
-					points.RingFingerDIP,
-					points.RingFingerTIP,
-					null,
-					out handGroup.RingFingerPIP, out handGroup.RingFingerDIP, out handGroup.RingFingerTIP);
-				HandPoints.ComputeFinger2(rotTest, 1, 0,
-					pinkyFinger,
-					points.PinkyPIP,
-					points.PinkyDIP,
-					points.PinkyTIP,
-					null,
-					out handGroup.PinkyPIP, out handGroup.PinkyDIP, out handGroup.PinkyTIP);
-				HandPoints.ComputeThumb(rotTest, 1, 4,
-					points.Wrist,
-					points.ThumbMCP,
-					points.ThumbIP,
-					points.ThumbTIP,
-					null,
-					out handGroup.ThumbMCP, out handGroup.ThumbIP, out handGroup.ThumbTIP);
-			}
-
-			Quaternion test = Quaternion.Euler(0, 90, -90);
-			Quaternion rot = Quaternion.LookRotation(handForwardDir, -handUpDir);
-			handGroup.Wrist = rot * test;
+		private void OnRightHandLandmarks(Groups.HandPoints hand) {
+			Groups.HandRotation handGroup;
+			
+			handGroup = HandResolverOld.SolveRightHand(hand);
+			handGroup = HandResolver.SolveRightHand(hand);
 			
 			float time = TimeNow;
 			rHand.Set(handGroup.Wrist, time);
-			rIndexPip.Set(handGroup.IndexFingerPIP, time);
-			rIndexDip.Set(handGroup.IndexFingerDIP, time);
-			rIndexTip.Set(handGroup.IndexFingerTIP, time);
-			rMiddlePip.Set(handGroup.MiddleFingerPIP, time);
-			rMiddleDip.Set(handGroup.MiddleFingerDIP, time);
-			rMiddleTip.Set(handGroup.MiddleFingerTIP, time);
-			rRingPip.Set(handGroup.RingFingerPIP, time);
-			rRingDip.Set(handGroup.RingFingerDIP, time);
-			rRingTip.Set(handGroup.RingFingerTIP, time);
-			rPinkyPip.Set(handGroup.PinkyPIP, time);
-			rPinkyDip.Set(handGroup.PinkyDIP, time);
-			rPinkyTip.Set(handGroup.PinkyTIP, time);
-			rThumbPip.Set(handGroup.ThumbMCP, time);
-			rThumbDip.Set(handGroup.ThumbIP, time);
-			rThumbTip.Set(handGroup.ThumbTIP, time);
+			rIndexPip.Set(handGroup.IndexFingerMCP, time);
+			rIndexDip.Set(handGroup.IndexFingerPIP, time);
+			rIndexTip.Set(handGroup.IndexFingerDIP, time);
+			rMiddlePip.Set(handGroup.MiddleFingerMCP, time);
+			rMiddleDip.Set(handGroup.MiddleFingerPIP, time);
+			rMiddleTip.Set(handGroup.MiddleFingerDIP, time);
+			rRingPip.Set(handGroup.RingFingerMCP, time);
+			rRingDip.Set(handGroup.RingFingerPIP, time);
+			rRingTip.Set(handGroup.RingFingerDIP, time);
+			rPinkyPip.Set(handGroup.PinkyMCP, time);
+			rPinkyDip.Set(handGroup.PinkyPIP, time);
+			rPinkyTip.Set(handGroup.PinkyDIP, time);
+			rThumbPip.Set(handGroup.ThumbCMC, time);
+			rThumbDip.Set(handGroup.ThumbMCP, time);
+			rThumbTip.Set(handGroup.ThumbIP, time);
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {

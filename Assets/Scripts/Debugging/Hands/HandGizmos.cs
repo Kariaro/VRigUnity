@@ -49,8 +49,13 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private bool leftHand = true;
 
 		void Update() {
-			// Make sure the model is semi transparent
+			if (vrmModel == null) {
+				// If the model was not found update the model
+				vrmModel = SolutionUtils.GetSolution().GetVRMModel();
+			}
+
 			{
+				// Make sure the model is semi transparent
 				SkinnedMeshRenderer[] array = vrmModel.GetComponentsInChildren<SkinnedMeshRenderer>();
 				foreach (SkinnedMeshRenderer rend in array) {
 					rend.material.SetOverrideTag("RenderType", "Transparent");
