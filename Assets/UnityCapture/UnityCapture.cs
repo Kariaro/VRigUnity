@@ -26,6 +26,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+/*
+  The source has been altered to make it easier to use the API provided
+  by UnityCapture. Check out the original repository to see the non modified
+  version of this script.
+*/
+
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -44,7 +50,7 @@ public class UnityCapture : MonoBehaviour
 	[SerializeField] [Tooltip("Check to enable VSync during capturing")] public bool EnableVSync = false;
 	[SerializeField] [Tooltip("Set the desired render target frame rate")] public int TargetFrameRate = 60;
 	[SerializeField] [Tooltip("Check to disable output of warnings")] public bool HideWarnings = false;
-	[SerializeField] Camera mainCamera;
+	[SerializeField] public Camera mainCamera;
 	Camera captureCamera;
 
 	void Awake() {

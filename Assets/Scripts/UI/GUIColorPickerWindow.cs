@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace HardCoded.VRigUnity {
 	public class GUIColorPickerWindow : MonoBehaviour {
 		private const string _InputFieldPath  = "Contents/InputField";
-		private const string _RawImagePath    = "Contents/RawImage";
+		private const string _RawImagePath    = "Contents/Display Image";
 		private const string _RedSliderPath   = "Contents/Red";
 		private const string _GreenSliderPath = "Contents/Green";
 		private const string _BlueSliderPath  = "Contents/Blue";

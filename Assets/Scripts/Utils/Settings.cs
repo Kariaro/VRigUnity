@@ -5,6 +5,7 @@ namespace HardCoded.VRigUnity {
 		public static readonly string _ModelFile = "gui.model";
 		public static readonly string _ImageFile = "gui.image";
 		public static readonly string _ShowCustomBackground = "gui.show.custombackground";
+		public static readonly string _ShowBgColor = "gui.show.bgColor";
 
 		public static string ModelFile {
 			get => Data.GetString(_ModelFile, "");
@@ -19,6 +20,11 @@ namespace HardCoded.VRigUnity {
 		public static bool ShowCustomBackground {
 			get => Data.GetBool(_ShowCustomBackground, false);
 			set => Data.SetBool(_ShowCustomBackground, value);
+		}
+
+		public static bool ShowCustomBackgroundColor {
+			get => Data.GetBool(_ShowBgColor, false);
+			set => Data.SetBool(_ShowBgColor, value);
 		}
 
 		// Reset
