@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private GameObject inputFieldTemplate;
 		[SerializeField] private GameObject toggleTemplate;
 		[SerializeField] private GameObject buttonTemplate;
+		[SerializeField] private GameObject dropdownTemplate;
 
 		public SettingsFieldTemplate AddToggle(Action<Toggle, bool> action, bool defaultValue = false) {
 			GameObject field = Instantiate(toggleTemplate, transform);
@@ -73,6 +75,57 @@ namespace HardCoded.VRigUnity {
 				}
 
 				action.Invoke(inputField, result);
+			});
+			return this;
+		}
+
+		public SettingsFieldTemplate AddEnumDropdown<T>(Action<TMP_Dropdown, T> action, T value, T defaultValue, float width = 24) where T : System.Enum {
+			GameObject field = Instantiate(dropdownTemplate, transform);
+			field.name = "EnumDropdownField";
+			field.SetActive(true);
+
+			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
+			if (width < 0) {
+				layoutElement.flexibleWidth = 1;
+				layoutElement.minWidth = -1;
+			} else {
+				layoutElement.minWidth = width;
+			}
+
+			List<string> options = new();
+			foreach (T item in Enum.GetValues(typeof(T))) {
+				options.Add(item.ToString());
+			}
+			
+			TMP_Dropdown dropdown = field.GetComponentInChildren<TMP_Dropdown>();
+			dropdown.AddOptions(options);
+			dropdown.onValueChanged.AddListener(delegate {
+				string valueName = options[dropdown.value];
+				if (Enum.TryParse(typeof(T), valueName, out object result)) {
+					action.Invoke(dropdown, (T) result);
+				}
+			});
+			return this;
+		}
+
+		public SettingsFieldTemplate AddDropdown(Action<TMP_Dropdown, int> action, List<string> options, int index, int defaultIndex, float width = 24) {
+			GameObject field = Instantiate(dropdownTemplate, transform);
+			field.name = "DropdownField";
+			field.SetActive(true);
+
+			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
+			if (width < 0) {
+				layoutElement.flexibleWidth = 1;
+				layoutElement.minWidth = -1;
+			} else {
+				layoutElement.minWidth = width;
+			}
+
+			TMP_Dropdown dropdown = field.GetComponentInChildren<TMP_Dropdown>();
+			dropdown.AddOptions(options);
+			dropdown.SetValueWithoutNotify(index);
+			dropdown.onValueChanged.AddListener(delegate {
+				action.Invoke(dropdown, dropdown.value);
 			});
 			return this;
 		}
