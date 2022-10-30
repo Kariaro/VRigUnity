@@ -100,6 +100,13 @@ namespace HardCoded.VRigUnity {
 							zAngles[i] = Mathf.Max(0, Mathf.Lerp(zAngles[i], 0, (xAngles[i] - 45) / 45.0f));
 						}
 
+						// xAngles can never go more than 120 degrees
+						if (type == HandType.Right) {
+							xAngles[i] = Mathf.Clamp(xAngles[i], -10, 110);
+						} else {
+							xAngles[i] = -Mathf.Clamp(-xAngles[i], -10, 110);
+						}
+
 						data.Add(new(i, new(0, zAngles[i], xAngles[i])));
 					}
 				}
