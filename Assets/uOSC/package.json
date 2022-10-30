@@ -1,0 +1,37 @@
+{
+    "name": "com.hecomi.uosc",
+    "version": "1.0.0",
+    "displayName": "uOSC",
+    "description": "A simple implementation of the OSC protocol",
+    "author": {
+        "name": "hecomi",
+        "url": "https://tips.hecomi.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hecomi/uOSC"
+    },
+    "keywords": [
+        "osc",
+        "network",
+        "udp"
+    ],
+    "license": "MIT License",
+    "samples": [
+        {
+            "displayName": "Client to Server",
+            "description": "An example of sending data from a client to a server.",
+            "path": "Samples~/Client to Server"
+        },
+        {
+            "displayName": "Blob",
+            "description": "An example of sending textures.",
+            "path": "Samples~/Blob"
+        },
+        {
+            "displayName": "Bundle",
+            "description": "An example of sending multiple messages in a single Bundle.",
+            "path": "Samples~/Bundle"
+        }
+    ]
+}
