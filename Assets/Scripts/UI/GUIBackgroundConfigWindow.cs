@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUIBackgroundConfigWindow : MonoBehaviour {
+		private const string BackgroundColorTogglePath  = "Contents/Background/Toggle";
 		private const string BackgroundColorInputPath  = "Contents/Background/InputField";
 		private const string BackgroundColorButtonPath = "Contents/Background/Button";
 		private const string ShowCameraTogglePath      = "Contents/ShowCamera/Toggle";
@@ -14,12 +15,14 @@ namespace HardCoded.VRigUnity {
 		
 		[SerializeField] private GUIScript settings;
 		[SerializeField] private GUIColorPickerWindow _colorPicker;
-		private TMP_InputField _backgroundInput;
-		private Toggle _showCameraToggle;
-		private Button _backgroundButton;
+		private TMP_InputField _bgColorInput;
+		private Toggle _bgColorToggle;
+		private Button _bgColorButton;
 		
-		private Toggle _customImageToggle;
-		private Button _customImageButton;
+		private Toggle _showCameraToggle;
+		
+		private Toggle _bgImageToggle;
+		private Button _bgImageButton;
 
 		void Start() {
 			InitializeContents();
@@ -30,23 +33,34 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeContents() {
-			InitializeBackground();
-			InitializeImage();
+			InitializeBackgroundColor();
+			InitializeShowCamera();
+			InitializeCustomImage();
 		}
 
-		private void InitializeBackground() {
-			//_backgroundInput = transform.Find(BackgroundColorInputPath).GetComponent<TMP_InputField>();
-			//_backgroundInput.onValueChanged.RemoveAllListeners();
-			//_backgroundInput.text = "";
-			//_backgroundInput.onValueChanged.AddListener(delegate {
-			//	if (GUIColorPickerWindow.ToColor(_backgroundInput.text, out Color outColor)) {
-			//		settings.SetBackgroundColor(outColor);
-			//	}
-			//});
+		private void InitializeBackgroundColor() {
+			_bgColorInput = transform.Find(BackgroundColorInputPath).GetComponent<TMP_InputField>();
+			_bgColorInput.onValueChanged.RemoveAllListeners();
+			_bgColorInput.text = "";
+			_bgColorInput.onValueChanged.AddListener(delegate {
+				if (GUIColorPickerWindow.ToColor(_bgColorInput.text, out Color outColor)) {
+					settings.SetBackgroundColor(outColor);
+				}
+			});
 
-			_backgroundButton = transform.Find(BackgroundColorButtonPath).GetComponent<Button>();
-			_backgroundButton.onClick.RemoveAllListeners();
+			
+			_bgColorToggle = transform.Find(BackgroundColorTogglePath).GetComponent<Toggle>();
+			_bgColorToggle.onValueChanged.RemoveAllListeners();
+			_bgColorToggle.isOn = Settings.ShowCustomBackgroundColor;
+			_bgColorToggle.onValueChanged.AddListener(delegate {
+				settings.SetShowBackgroundColor(_bgColorToggle.isOn);
+			});
 
+			_bgColorButton = transform.Find(BackgroundColorButtonPath).GetComponent<Button>();
+			_bgColorButton.onClick.RemoveAllListeners();
+		}
+
+		private void InitializeShowCamera() {
 			_showCameraToggle = transform.Find(ShowCameraTogglePath).GetComponent<Toggle>();
 			_showCameraToggle.onValueChanged.RemoveAllListeners();
 			_showCameraToggle.onValueChanged.AddListener(delegate {
@@ -54,17 +68,17 @@ namespace HardCoded.VRigUnity {
 			});
 		}
 
-		private void InitializeImage() {
-			_customImageToggle = transform.Find(CustomImageTogglePath).GetComponent<Toggle>();
-			_customImageToggle.isOn = Settings.ShowCustomBackground;
-			_customImageToggle.onValueChanged.RemoveAllListeners();
-			_customImageToggle.onValueChanged.AddListener(delegate {
-				settings.SetShowBackgroundImage(_customImageToggle.isOn);
+		private void InitializeCustomImage() {
+			_bgImageToggle = transform.Find(CustomImageTogglePath).GetComponent<Toggle>();
+			_bgImageToggle.isOn = Settings.ShowCustomBackground;
+			_bgImageToggle.onValueChanged.RemoveAllListeners();
+			_bgImageToggle.onValueChanged.AddListener(delegate {
+				settings.SetShowBackgroundImage(_bgImageToggle.isOn);
 			});
 
-			_customImageButton = transform.Find(CustomImageButtonPath).GetComponent<Button>();
-			_customImageButton.onClick.RemoveAllListeners();
-			_customImageButton.onClick.AddListener(SelectCustomImage);
+			_bgImageButton = transform.Find(CustomImageButtonPath).GetComponent<Button>();
+			_bgImageButton.onClick.RemoveAllListeners();
+			_bgImageButton.onClick.AddListener(SelectCustomImage);
 		}
 		
 		public void SelectCustomImage() {
@@ -81,8 +95,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void PickColor() {
-			_colorPicker.ShowWindow(_backgroundInput.text, (result) => {
-				_backgroundInput.SetTextWithoutNotify(GUIColorPickerWindow.FromColor(result));
+			_colorPicker.ShowWindow(_bgColorInput.text, (result) => {
+				_bgColorInput.SetTextWithoutNotify(GUIColorPickerWindow.FromColor(result));
 				settings.SetBackgroundColor(result);
 			});
 		}

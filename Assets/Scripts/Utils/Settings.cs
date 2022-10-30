@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
 		public static readonly string _ModelFile = "gui.model";
 		public static readonly string _ImageFile = "gui.image";
 		public static readonly string _ShowCustomBackground = "gui.show.custombackground";
+		public static readonly string _ShowBgColor = "gui.show.bgColor";
+		public static readonly string _VMCPort = "vmc.port";
 
 		public static string ModelFile {
 			get => Data.GetString(_ModelFile, "");
@@ -21,12 +24,36 @@ namespace HardCoded.VRigUnity {
 			set => Data.SetBool(_ShowCustomBackground, value);
 		}
 
+		public static bool ShowCustomBackgroundColor {
+			get => Data.GetBool(_ShowBgColor, false);
+			set => Data.SetBool(_ShowBgColor, value);
+		}
+
+		public static int VMCPort {
+			get => Data.GetInt(_VMCPort, 3333);
+			set {
+				Data.SetInt(_VMCPort, value);
+				VMCPortListener?.Invoke(value);
+			}
+		}
+
+		public delegate void VMCPortDelegate (int value);
+		public static event VMCPortDelegate VMCPortListener;
+
 		// Reset
 		public static void ResetSettings() {
 			PlayerPrefs.DeleteAll();
 		}
 
 		public static class Data {
+			public static void SetInt(string key, int value) {
+				PlayerPrefs.SetInt(key, value);
+			}
+			
+			public static int GetInt(string key, int def) {
+				return PlayerPrefs.GetInt(key, def);
+			}
+
 			public static void SetString(string key, string value) {
 				PlayerPrefs.SetString(key, value);
 			}

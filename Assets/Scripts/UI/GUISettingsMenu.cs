@@ -67,5 +67,9 @@ namespace HardCoded.VRigUnity {
 		public void OpenBackgroundSettings() {
 			backgroundConfigWindow.SetActive(true);
 		}
+
+		public void OpenGithub() {
+			Application.OpenURL("https://github.com/Kariaro/VRigUnity");
+		}
 	}
 }

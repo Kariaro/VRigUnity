@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public abstract class ImageSourceSolution<T> : Solution where T : GraphRunner {
-		[SerializeField] protected Mediapipe.Unity.Screen screen;
 		[SerializeField] protected T graphRunner;
 		[SerializeField] protected TextureFramePool textureFramePool;
 
@@ -90,10 +89,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		protected virtual void SetupScreen(ImageSource imageSource) {
-			// NOTE: Without this line the screen does not update its size and no annotations are drawn
-			screen.Initialize(imageSource);
-		}
+		protected abstract void SetupScreen(ImageSource imageSource);
 
 		protected abstract void RenderCurrentFrame(TextureFrame textureFrame);
 

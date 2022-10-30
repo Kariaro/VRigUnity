@@ -9,9 +9,6 @@ namespace HardCoded.VRigUnity {
 		protected Bootstrap bootstrap;
 		protected bool isPaused;
 
-		// List of debug transforms
-		public Transform[] debugTransforms;
-
 		protected virtual IEnumerator Start() {
 			bootstrap = FindBootstrap();
 			yield return new WaitUntil(() => bootstrap.IsFinished);
@@ -36,12 +33,6 @@ namespace HardCoded.VRigUnity {
 
 		public bool IsPaused() {
 			return isPaused;
-		}
-
-		public void SetDebug(bool enable) {
-			foreach (Transform t in debugTransforms) {
-				t.gameObject.SetActive(enable);
-			}
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {

@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "VRigUnity"
-#define MyAppVersion "1.0"
+#define MyAppVersion "0.1.2"
 #define MyAppPublisher "HardCoded"
 #define MyAppURL "https://github.com/Kariaro/VRigUnity"
 #define MyAppExeName "VRigUnity.exe"
-#define MyAppBuildPath "D:\UnityFolder\VRigUnity\Build\StandaloneWindows"
+#define MyAppBuildPath "Build\StandaloneWindows"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.

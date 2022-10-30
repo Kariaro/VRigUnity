@@ -1,12 +1,5 @@
 # VRigUnity
 
-## Dependencies
-+ [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
-  + [OpenCV 3.4.16](https://opencv.org/releases/)
-+ [UniVRM v0.97.0](https://github.com/vrm-c/UniVRM)
-+ [StandaloneFileBrowser v1.2](https://github.com/gkngkc/UnityStandaloneFileBrowser)
-+ [UnityCapture (fe461e8f6e1cd1e6a0dfa9891147c8e393a20a2c)](https://github.com/schellingb/UnityCapture)
-
 ## Setup
 
 ### MediaPipeUnityPlugin
@@ -29,3 +22,11 @@ Scrap notes I wrote when I got `MediaPipeUnityPlugin` working.
 # Must type in git-bash
 export MSYS2_ARG_CONV_EXCL="*"
 ```
+
+## Systems
+
+### Windows
+When building for windows you need to install **Inno Setup** and compile into the `Build/StandaloneWindows` folder
+
+### Linux
+Build into the folder `Build/StandaloneLinux` and zip the project
