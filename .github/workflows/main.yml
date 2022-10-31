@@ -1,4 +1,4 @@
-name: Build VRigUnity 🎮
+name: Build VRigUnity
 
 on: workflow_dispatch
 
@@ -6,54 +6,28 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  buildWindows:
-    name: Build for Windows 🖥️
+  buildForAllSupportedPlatforms:
+    name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneOSX # Build a macOS standalone (Intel 64-bit)
+          - StandaloneWindows64 # Build a Windows 64-bit standalone
+          - StandaloneLinux64 # Build a Linux 64-bit standalone
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-VRigUnity-Windows64
-          restore-keys: |
-            Library-VRigUnity-
-            Library-
-      
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: Library-
       - uses: game-ci/unity-builder@v2
         with:
-          targetPlatform: StandaloneWindows64
-
+          targetPlatform: ${{ matrix.targetPlatform }}
       - uses: actions/upload-artifact@v2
         with:
-          name: build-StandaloneWindows64
-          path: build/StandaloneWindows64
-
-  buildLinux:
-    name: Build for Linux 📱
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-VRigUnity-Linux64
-          restore-keys: |
-            Library-VRigUnity-
-            Library-
-
-      - uses: game-ci/unity-builder@v2
-        with:
-          targetPlatform: StandaloneLinux64
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-StandaloneLinux64
-          path: build/StandaloneLinux64
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
