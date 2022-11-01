@@ -7,15 +7,15 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUIColorPickerWindow : MonoBehaviour {
-		private const string _InputFieldPath  = "Contents/InputField";
-		private const string _RawImagePath    = "Contents/Display Image";
-		private const string _RedSliderPath   = "Contents/Red";
-		private const string _GreenSliderPath = "Contents/Green";
-		private const string _BlueSliderPath  = "Contents/Blue";
-		private const string _AlphaSliderPath = "Contents/Alpha";
+		private const string _InputFieldPath   = "Contents/InputField";
+		private const string _DisplayImagePath = "Contents/DisplayImage";
+		private const string _RedSliderPath    = "Contents/Red";
+		private const string _GreenSliderPath  = "Contents/Green";
+		private const string _BlueSliderPath   = "Contents/Blue";
+		private const string _AlphaSliderPath  = "Contents/Alpha";
 		
 		private TMP_InputField _inputField;
-		private RawImage _rawImage;
+		private Image _displayImage;
 		private Slider _redSlider;
 		private Slider _greenSlider;
 		private Slider _blueSlider;
@@ -26,7 +26,7 @@ namespace HardCoded.VRigUnity {
 			_inputField = transform.Find(_InputFieldPath).GetComponent<TMP_InputField>();
 			_inputField.onValueChanged.RemoveAllListeners();
 			_inputField.text = "";
-			_rawImage = transform.Find(_RawImagePath).GetComponent<RawImage>();
+			_displayImage = transform.Find(_DisplayImagePath).GetComponent<Image>();
 			_redSlider = transform.Find(_RedSliderPath).GetComponent<Slider>();
 			_redSlider.onValueChanged.RemoveAllListeners();
 			_greenSlider = transform.Find(_GreenSliderPath).GetComponent<Slider>();
@@ -38,7 +38,7 @@ namespace HardCoded.VRigUnity {
 
 			_inputField.onValueChanged.AddListener(delegate {
 				SetHexColor(_inputField.text);
-				_rawImage.color = GetCurrentColor();
+				_displayImage.color = GetCurrentColor();
 			});
 			_redSlider.onValueChanged.AddListener(delegate {
 				_inputField.text = GetColorHexString();

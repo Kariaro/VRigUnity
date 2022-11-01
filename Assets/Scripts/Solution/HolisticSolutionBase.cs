@@ -36,10 +36,5 @@ namespace HardCoded.VRigUnity {
 		protected override void AddTextureFrameToInputStream(TextureFrame textureFrame) {
 			graphRunner.AddTextureFrameToInputStream(textureFrame);
 		}
-
-		protected override IEnumerator WaitForNextValue() {
-			// Wait a frame
-			yield return null;
-		}
 	}
 }

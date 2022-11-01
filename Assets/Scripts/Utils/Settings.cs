@@ -3,6 +3,27 @@ using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
+		// Camera Settings
+		public static readonly string _CameraName = "camera.name";
+		public static readonly string _CameraFlipped = "camera.flipped";
+		public static readonly string _CameraResolution = "camera.resolution";
+
+		public static string CameraName {
+			get => Data.GetString(_CameraName, "");
+			set => Data.SetString(_CameraName, value);
+		}
+
+		public static bool CameraFlipped {
+			get => Data.GetBool(_CameraFlipped, false);
+			set => Data.SetBool(_CameraFlipped, value);
+		}
+
+		public static string CameraResolution {
+			get => Data.GetString(_CameraResolution, "");
+			set => Data.SetString(_CameraResolution, value);
+		}
+
+		// Gui Settings
 		public static readonly string _ModelFile = "gui.model";
 		public static readonly string _ImageFile = "gui.image";
 		public static readonly string _ShowCustomBackground = "gui.show.custombackground";

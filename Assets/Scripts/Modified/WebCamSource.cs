@@ -9,7 +9,7 @@ using UnityEngine;
 namespace HardCoded.VRigUnity {
 	public class WebCamSource : ImageSource {
 		[Tooltip("For the default resolution, the one whose width is closest to this value will be chosen")]
-		[SerializeField] private int _preferableDefaultWidth = 1280;
+		[SerializeField] private int _preferableDefaultWidth = 848;
 
 		private const string _TAG = nameof(WebCamSource);
 
@@ -170,7 +170,11 @@ namespace HardCoded.VRigUnity {
 
 		private ResolutionStruct GetDefaultResolution() {
 			var resolutions = availableResolutions;
-			return resolutions == null || resolutions.Length == 0 ? new ResolutionStruct() : resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
+			if (resolutions == null || resolutions.Length == 0) {
+				return new ResolutionStruct();
+			}
+
+			return resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
 		}
 
 		private void InitializeWebCamTexture() {

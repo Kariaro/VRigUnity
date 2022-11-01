@@ -96,8 +96,5 @@ namespace HardCoded.VRigUnity {
 		protected abstract void OnStartRun();
 
 		protected abstract void AddTextureFrameToInputStream(TextureFrame textureFrame);
-
-		// TODO: Is this needed?
-		protected abstract IEnumerator WaitForNextValue();
 	}
 }

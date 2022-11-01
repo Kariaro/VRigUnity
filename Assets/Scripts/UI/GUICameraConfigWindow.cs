@@ -22,6 +22,10 @@ namespace HardCoded.VRigUnity {
 		private Button _virtualCameraUninstall;
 
 		void Start() {
+			Debug.Log("A: " + Settings.CameraName);
+			Debug.Log("B: " + Settings.CameraFlipped);
+			Debug.Log("C: " + Settings.CameraResolution);
+
 			_solution = SolutionUtils.GetSolution();
 			InitializeContents();
 		}
@@ -37,7 +41,19 @@ namespace HardCoded.VRigUnity {
 		private IEnumerator UpdateContents() {
 			WebCamSource webCamSource = SolutionUtils.GetImageSource();
 			yield return webCamSource.UpdateSources();
+
+			// Updating the webcam source might break the current config
+			var sourceId = webCamSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
+			if (sourceId >= 0 && sourceId < webCamSource.sourceCandidateNames.Length) {
+				webCamSource.SelectSource(sourceId);
+			}
+			var resolutionId = webCamSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
+			if (resolutionId >= 0 && resolutionId < webCamSource.availableResolutions.Length) {
+				webCamSource.SelectResolution(resolutionId);
+			}
+			webCamSource.isHorizontallyFlipped = Settings.CameraFlipped;
 			
+			// Initialize UI
 			InitializeSource();
 			InitializeResolution();
 			InitializeIsHorizontallyFlipped();
@@ -62,7 +78,7 @@ namespace HardCoded.VRigUnity {
 			var options = new List<string>(sourceNames);
 			_sourceInput.AddOptions(options);
 
-			var currentSourceName = imageSource.sourceName;
+			var currentSourceName = Settings.CameraName;
 			var defaultValue = options.FindIndex(option => option == currentSourceName);
 
 			if (defaultValue >= 0) {
@@ -71,6 +87,7 @@ namespace HardCoded.VRigUnity {
 
 			_sourceInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectSource(_sourceInput.value);
+				Settings.CameraName = options[_sourceInput.value];
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}
@@ -95,7 +112,7 @@ namespace HardCoded.VRigUnity {
 			var options = resolutions.Select(resolution => resolution.ToString()).ToList();
 			_resolutionInput.AddOptions(options);
 
-			var currentResolutionStr = imageSource.resolution.ToString();
+			var currentResolutionStr = Settings.CameraResolution;
 			var defaultValue = options.FindIndex(option => option == currentResolutionStr);
 
 			if (defaultValue >= 0) {
@@ -104,6 +121,7 @@ namespace HardCoded.VRigUnity {
 
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
+				Settings.CameraResolution = options[_resolutionInput.value];
 				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
@@ -115,7 +133,7 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput = transform.Find(IsHorizontallyFlippedPath).GetComponent<Toggle>();
 
 			var imageSource = SolutionUtils.GetImageSource();
-			_isHorizontallyFlippedInput.isOn = imageSource.isHorizontallyFlipped;
+			_isHorizontallyFlippedInput.isOn = Settings.CameraFlipped;
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
 			});

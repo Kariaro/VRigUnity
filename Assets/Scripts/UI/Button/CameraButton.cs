@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Linq;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
@@ -36,6 +37,20 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Stop Camera" : "Start Camera";
 
 			if (enable) {
+				var imageSource = SolutionUtils.GetImageSource();
+
+				var sourceId = imageSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
+				if (sourceId >= 0 && sourceId < imageSource.sourceCandidateNames.Length) {
+					imageSource.SelectSource(sourceId);
+				}
+
+				var resolutionId = imageSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
+				if (resolutionId >= 0 && resolutionId < imageSource.availableResolutions.Length) {
+					imageSource.SelectResolution(resolutionId);
+				}
+
+				imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
+
 				SolutionUtils.GetSolution().Play();
 			} else {
 				SolutionUtils.GetSolution().Stop();

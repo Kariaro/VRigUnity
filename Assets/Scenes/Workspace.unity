@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _preferableDefaultWidth: 1280
+  _preferableDefaultWidth: 800
   _defaultAvailableResolutions:
   - width: 1920
     height: 1080
@@ -719,6 +719,30 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3791656191045845575, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947618219776667130, guid: 0a4fbc463e02c5844b4a4bb463300669, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
