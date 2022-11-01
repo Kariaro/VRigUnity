@@ -31,7 +31,7 @@ namespace HardCoded.VRigUnity {
 		private void SetDebug(bool enable) {
 			isDebugShowing = enable;
 			text.color = enable ? toggleOffColor : toggleOnColor;
-			text.text = enable ? "Debug On" : "Debug Off";
+			text.text = enable ? "Visuals On" : "Visuals Off";
 
 			HolisticTrackingSolution solution = SolutionUtils.GetSolution();
 			solution.canvas.ShowAnnotations(enable);
