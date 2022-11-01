@@ -34,9 +34,7 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Debug On" : "Debug Off";
 
 			HolisticTrackingSolution solution = SolutionUtils.GetSolution();
-			if (solution is HolisticTrackingSolutionWithDebug debug) {
-				debug.SetDebug(enable);
-			}
+			solution.canvas.ShowAnnotations(enable);
 		}
 	}
 }

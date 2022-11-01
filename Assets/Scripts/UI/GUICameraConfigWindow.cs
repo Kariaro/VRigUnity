@@ -1,7 +1,5 @@
-using Mediapipe.Unity;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -126,28 +124,17 @@ namespace HardCoded.VRigUnity {
 		private void InitializeVirtualCamera() {
 			_virtualCameraInstall = transform.Find(VirtualCameraInstall).GetComponent<Button>();
 			_virtualCameraUninstall = transform.Find(VirtualCameraUninstall).GetComponent<Button>();
+			_virtualCameraInstall.enabled = CameraCapture.IsVirtualCameraSupported;
 			_virtualCameraInstall.onClick.RemoveAllListeners();
-			_virtualCameraUninstall.onClick.RemoveAllListeners();
+			_virtualCameraInstall.onClick.AddListener(delegate {
+				CameraCapture.InstallVirtualCamera();
+			});
 			
-#if UNITY_STANDALONE_WIN
-			_virtualCameraInstall.onClick.AddListener(delegate {
-				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Install.bat"));
-			});
-
+			_virtualCameraUninstall.enabled = CameraCapture.IsVirtualCameraSupported;
+			_virtualCameraUninstall.onClick.RemoveAllListeners();
 			_virtualCameraUninstall.onClick.AddListener(delegate {
-				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "unitycapture", "Uninstall.bat"));
+				CameraCapture.UninstallVirtualCamera();
 			});
-#elif UNITY_STANDALONE_LINUX
-			_virtualCameraInstall.onClick.AddListener(delegate {
-				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "v4l2loopback", "Install.sh"));
-			});
-
-			_virtualCameraUninstall.onClick.AddListener(delegate {
-				System.Diagnostics.Process.Start(Path.Combine(Application.streamingAssetsPath, "v4l2loopback", "Uninstall.sh"));
-			});
-#else
-#  error Virtual Camera is not supported on this system
-#endif
 		}
 	}
 }

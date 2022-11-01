@@ -12,6 +12,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
 		[SerializeField] protected GUIScript guiScript;
+		[SerializeField] public CustomizableCanvas canvas;
 
 		private RotStruct chestRotation = RotStruct.identity;
 		private RotStruct hipsRotation = RotStruct.identity;
@@ -69,6 +70,8 @@ namespace HardCoded.VRigUnity {
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		private float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 		
+		// Testing values
+		[Header("Testing")]
 		public int TestInterpolation;
 		public float InterpolationValue = 0.4f; // 0.4 is really good for the current frame interval. Make this adjustable
 		public static int TestInterpolationStatic;
@@ -164,18 +167,17 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void OnStartRun() {
-			// graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
-			// graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			// graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
+			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
+			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
+			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-		}
 
-		protected override void SetupScreen(ImageSource imageSource) {
+			canvas.SetupAnnotations();
 		}
-
+		
 		private Vector3 ConvertPoint(LandmarkList list, int idx) {
 			Landmark mark = list.Landmark[idx];
 			return new Vector3(-mark.X, mark.Y, mark.Z);
@@ -186,11 +188,24 @@ namespace HardCoded.VRigUnity {
 			return new Vector3(-mark.X * 2, mark.Y, mark.Z);
 		}
 
-		//private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {}
-		//private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		//private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {}
+		protected override void SetupScreen(ImageSource imageSource) {
+			canvas.SetupScreen(imageSource);
+		}
+
+		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {
+			canvas.OnPoseDetectionOutput(eventArgs);
+		}
+
+		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			canvas.OnPoseLandmarksOutput(eventArgs);
+		}
+
+		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {
+			canvas.OnPoseRoiOutput(eventArgs);
+		}
 
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			canvas.OnFaceLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -276,6 +291,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			canvas.OnLeftHandLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -292,6 +308,7 @@ namespace HardCoded.VRigUnity {
 
 		
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			canvas.OnRightHandLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -357,6 +374,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
+			canvas.OnPoseWorldLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}

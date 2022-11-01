@@ -35,8 +35,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class UnityCapture : MonoBehaviour
-{
+public class UnityCapture : MonoBehaviour {
 	public enum ECaptureDevice { CaptureDevice1 = 0, CaptureDevice2 = 1, CaptureDevice3 = 2, CaptureDevice4 = 3, CaptureDevice5 = 4, CaptureDevice6 = 5, CaptureDevice7 = 6, CaptureDevice8 = 7, CaptureDevice9 = 8, CaptureDevice10 = 9 }
 	public enum EResizeMode { Disabled = 0, LinearResize = 1 }
 	public enum EMirrorMode { Disabled = 0, MirrorHorizontally = 1 }
@@ -129,9 +128,5 @@ public class UnityCapture : MonoBehaviour
 			return CaptureSendTexture(CaptureInstance, Source.GetNativeTexturePtr(), Timeout, DoubleBuffering, ResizeMode, MirrorMode, QualitySettings.activeColorSpace == ColorSpace.Linear);
 		}
 	}
-#elif UNITY_STANDALONE_LINUX
-#  warning Virtual Camera has not been implemented for Linux
-#else
-#  error Virtual Camera is not supported on this system
 #endif
 }
