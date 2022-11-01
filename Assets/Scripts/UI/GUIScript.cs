@@ -98,5 +98,9 @@ namespace HardCoded.VRigUnity {
 		public void DrawImage(TextureFrame textureFrame) {
 			customizableCanvas.DrawImage(textureFrame);
 		}
+
+		public void OpenDiscord() {
+			Application.OpenURL("https://discord.com/invite/Enaup9TJPd");
+		}
 	}
 }
