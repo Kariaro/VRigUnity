@@ -8,11 +8,22 @@ namespace HardCoded.VRigUnity {
 		public Transform contentTransform;
 	
 		[Header("Settings")]
-		public SettingsField vmcPort;
+		public SettingsField vmcSenderPort;
+		public SettingsField vmcReceiverPort;
+		public SettingsField boneWindow;
+
+		[Header("Fields")]
+		public GUIBoneSettingsWindow boneSettingsWindow;
 		
 		void Start() {
-			vmcPort = CreateSetting("VMC Port", builder => {
-				return builder.AddNumberInput((_, value) => { Settings.VMCPort = value; }, 0, 65535, Settings.VMCPort, 3333, -1);	
+			vmcSenderPort = CreateSetting("VMC Sender Port", builder => {
+				return builder.AddNumberInput((_, value) => { Settings.VMCSenderPort = value; }, 0, 65535, Settings.VMCSenderPort, 3333, -1);	
+			});
+			vmcSenderPort = CreateSetting("VMC Receiver Port", builder => {
+				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, Settings.VMCReceiverPort, 3333, -1);	
+			});
+			boneWindow = CreateSetting("Bone Window", builder => {
+				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, -1);	
 			});
 		}
 
@@ -20,8 +31,7 @@ namespace HardCoded.VRigUnity {
 			GameObject empty = Instantiate(emptySetting);
 			empty.transform.SetParent(contentTransform);
 			empty.SetActive(true);
-			return builder.Invoke(empty.GetComponent<SettingsFieldTemplate>())
-				.Build(name);
+			return builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(name);
 		}
 	}
 }

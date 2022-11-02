@@ -6,8 +6,8 @@ using System;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class VMCButton : MonoBehaviour {
-		public VMCSender vmcSender;
+	public class VMCReceiverButton : MonoBehaviour {
+		public VMCReceiver vmcReceiver;
 
 		[SerializeField] private TMP_Text buttonText;
 		[SerializeField] private TMP_Text portText;
@@ -30,14 +30,14 @@ namespace HardCoded.VRigUnity {
 			isVMCStarted = false;
 
 			// Setup settings listener (TODO: Remove)
-			Settings.VMCPortListener += (value) => {
+			Settings.VMCReceiverPortListener += (value) => {
 				// Only display port changes when the VMC is closed
 				if (!isVMCStarted) {
 					portText.text = "Port " + value;
 				}
 			};
 
-			portText.text = "Port " + Settings.VMCPort;
+			portText.text = "Port " + Settings.VMCReceiverPort;
 			
 			toggleButton.onClick.RemoveAllListeners();
 			toggleButton.onClick.AddListener(delegate {
@@ -48,18 +48,18 @@ namespace HardCoded.VRigUnity {
 		private void SetVMC(bool enable) {
 			isVMCStarted = enable;
 			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
-			buttonText.text = enable ? "Stop VMC" : "Start VMC";
+			buttonText.text = enable ? "Stop Receiver VMC" : "Start Receiver VMC";
 
 			// Start/Stop the VMC instance
 			if (enable) {
-				vmcSender.SetPort(Settings.VMCPort);	
-				vmcSender.StartVMC();
+				vmcReceiver.SetPort(Settings.VMCReceiverPort);
+				vmcReceiver.StartVMC();
 			} else {
-				vmcSender.StopVMC();
+				vmcReceiver.StopVMC();
 			}
 
 			// Update port
-			portText.text = "Port " + Settings.VMCPort;
+			portText.text = "Port " + Settings.VMCReceiverPort;
 		}
 	}
 }

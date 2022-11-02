@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
+using System.Collections;
 
 namespace HardCoded.VRigUnity {
 	public class CameraButton : MonoBehaviour {
@@ -53,6 +54,7 @@ namespace HardCoded.VRigUnity {
 
 				SolutionUtils.GetSolution().Play();
 			} else {
+				SolutionUtils.GetSolution().ResetVRMAnimator();
 				SolutionUtils.GetSolution().Stop();
 			}
 		}
