@@ -1,4 +1,4 @@
-name: Build VRigUnity 🎮
+name: Build VRigUnity
 
 on: workflow_dispatch
 
@@ -7,7 +7,7 @@ env:
 
 jobs:
   buildWindows:
-    name: Build for Windows 🖥️
+    name: Build for Windows
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -25,6 +25,7 @@ jobs:
       
       - uses: game-ci/unity-builder@v2
         with:
+          buildName: VRigUnity
           targetPlatform: StandaloneWindows64
 
       - uses: actions/upload-artifact@v2
@@ -33,7 +34,7 @@ jobs:
           path: build/StandaloneWindows64
 
   buildLinux:
-    name: Build for Linux 📱
+    name: Build for Linux
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -51,9 +52,37 @@ jobs:
 
       - uses: game-ci/unity-builder@v2
         with:
+          buildName: VRigUnity
           targetPlatform: StandaloneLinux64
 
       - uses: actions/upload-artifact@v2
         with:
           name: build-StandaloneLinux64
           path: build/StandaloneLinux64
+
+  buildOSX:
+    name: Build for OSX
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-VRigUnity-OSX
+          restore-keys: |
+            Library-VRigUnity-
+            Library-
+
+      - uses: game-ci/unity-builder@v2
+        with:
+          buildName: VRigUnity
+          targetPlatform: StandaloneOSX
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-StandaloneOSX
+          path: build/StandaloneOSX
