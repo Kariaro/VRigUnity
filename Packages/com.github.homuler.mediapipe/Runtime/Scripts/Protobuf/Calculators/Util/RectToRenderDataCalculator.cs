@@ -27,16 +27,16 @@ namespace Mediapipe {
             "Cj9tZWRpYXBpcGUvY2FsY3VsYXRvcnMvdXRpbC9yZWN0X3RvX3JlbmRlcl9k",
             "YXRhX2NhbGN1bGF0b3IucHJvdG8SCW1lZGlhcGlwZRokbWVkaWFwaXBlL2Zy",
             "YW1ld29yay9jYWxjdWxhdG9yLnByb3RvGhptZWRpYXBpcGUvdXRpbC9jb2xv",
-            "ci5wcm90byLbAQohUmVjdFRvUmVuZGVyRGF0YUNhbGN1bGF0b3JPcHRpb25z",
+            "ci5wcm90byL3AQohUmVjdFRvUmVuZGVyRGF0YUNhbGN1bGF0b3JPcHRpb25z",
             "Eg4KBmZpbGxlZBgBIAEoCBIfCgVjb2xvchgCIAEoCzIQLm1lZGlhcGlwZS5D",
             "b2xvchIUCgl0aGlja25lc3MYAyABKAE6ATESEwoEb3ZhbBgEIAEoCDoFZmFs",
-            "c2UyWgoDZXh0EhwubWVkaWFwaXBlLkNhbGN1bGF0b3JPcHRpb25zGKzbh30g",
-            "ASgLMiwubWVkaWFwaXBlLlJlY3RUb1JlbmRlckRhdGFDYWxjdWxhdG9yT3B0",
-            "aW9ucw=="));
+            "c2USGgoSdG9wX2xlZnRfdGhpY2tuZXNzGAUgASgBMloKA2V4dBIcLm1lZGlh",
+            "cGlwZS5DYWxjdWxhdG9yT3B0aW9ucxis24d9IAEoCzIsLm1lZGlhcGlwZS5S",
+            "ZWN0VG9SZW5kZXJEYXRhQ2FsY3VsYXRvck9wdGlvbnM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.ColorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RectToRenderDataCalculatorOptions), global::Mediapipe.RectToRenderDataCalculatorOptions.Parser, new[]{ "Filled", "Color", "Thickness", "Oval" }, null, null, new pb::Extension[] { global::Mediapipe.RectToRenderDataCalculatorOptions.Extensions.Ext }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RectToRenderDataCalculatorOptions), global::Mediapipe.RectToRenderDataCalculatorOptions.Parser, new[]{ "Filled", "Color", "Thickness", "Oval", "TopLeftThickness" }, null, null, new pb::Extension[] { global::Mediapipe.RectToRenderDataCalculatorOptions.Extensions.Ext }, null)
           }));
     }
     #endregion
@@ -83,6 +83,7 @@ namespace Mediapipe {
       color_ = other.color_ != null ? other.color_.Clone() : null;
       thickness_ = other.thickness_;
       oval_ = other.oval_;
+      topLeftThickness_ = other.topLeftThickness_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -197,6 +198,37 @@ namespace Mediapipe {
       _hasBits0 &= ~4;
     }
 
+    /// <summary>Field number for the "top_left_thickness" field.</summary>
+    public const int TopLeftThicknessFieldNumber = 5;
+    private readonly static double TopLeftThicknessDefaultValue = 0D;
+
+    private double topLeftThickness_;
+    /// <summary>
+    /// Radius of top left corner circle. Only supported for oval=false,
+    /// filled=false.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double TopLeftThickness {
+      get { if ((_hasBits0 & 8) != 0) { return topLeftThickness_; } else { return TopLeftThicknessDefaultValue; } }
+      set {
+        _hasBits0 |= 8;
+        topLeftThickness_ = value;
+      }
+    }
+    /// <summary>Gets whether the "top_left_thickness" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasTopLeftThickness {
+      get { return (_hasBits0 & 8) != 0; }
+    }
+    /// <summary>Clears the value of the "top_left_thickness" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearTopLeftThickness() {
+      _hasBits0 &= ~8;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -216,6 +248,7 @@ namespace Mediapipe {
       if (!object.Equals(Color, other.Color)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Thickness, other.Thickness)) return false;
       if (Oval != other.Oval) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TopLeftThickness, other.TopLeftThickness)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -227,6 +260,7 @@ namespace Mediapipe {
       if (color_ != null) hash ^= Color.GetHashCode();
       if (HasThickness) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Thickness);
       if (HasOval) hash ^= Oval.GetHashCode();
+      if (HasTopLeftThickness) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TopLeftThickness);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -261,6 +295,10 @@ namespace Mediapipe {
         output.WriteRawTag(32);
         output.WriteBool(Oval);
       }
+      if (HasTopLeftThickness) {
+        output.WriteRawTag(41);
+        output.WriteDouble(TopLeftThickness);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -287,6 +325,10 @@ namespace Mediapipe {
         output.WriteRawTag(32);
         output.WriteBool(Oval);
       }
+      if (HasTopLeftThickness) {
+        output.WriteRawTag(41);
+        output.WriteDouble(TopLeftThickness);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -308,6 +350,9 @@ namespace Mediapipe {
       }
       if (HasOval) {
         size += 1 + 1;
+      }
+      if (HasTopLeftThickness) {
+        size += 1 + 8;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -335,6 +380,9 @@ namespace Mediapipe {
       }
       if (other.HasOval) {
         Oval = other.Oval;
+      }
+      if (other.HasTopLeftThickness) {
+        TopLeftThickness = other.TopLeftThickness;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -370,6 +418,10 @@ namespace Mediapipe {
             Oval = input.ReadBool();
             break;
           }
+          case 41: {
+            TopLeftThickness = input.ReadDouble();
+            break;
+          }
         }
       }
     #endif
@@ -402,6 +454,10 @@ namespace Mediapipe {
           }
           case 32: {
             Oval = input.ReadBool();
+            break;
+          }
+          case 41: {
+            TopLeftThickness = input.ReadDouble();
             break;
           }
         }

@@ -28,7 +28,7 @@ namespace Mediapipe {
             "GhptZWRpYXBpcGUvdXRpbC9jb2xvci5wcm90byKNAQoKUmVuZGVyRGF0YRI3",
             "ChJyZW5kZXJfYW5ub3RhdGlvbnMYASADKAsyGy5tZWRpYXBpcGUuUmVuZGVy",
             "QW5ub3RhdGlvbhITCgtzY2VuZV9jbGFzcxgCIAEoCRIxCg5zY2VuZV92aWV3",
-            "cG9ydBgDIAEoCzIZLm1lZGlhcGlwZS5SZW5kZXJWaWV3cG9ydCKWEQoQUmVu",
+            "cG9ydBgDIAEoCzIZLm1lZGlhcGlwZS5SZW5kZXJWaWV3cG9ydCKzEQoQUmVu",
             "ZGVyQW5ub3RhdGlvbhI6CglyZWN0YW5nbGUYASABKAsyJS5tZWRpYXBpcGUu",
             "UmVuZGVyQW5ub3RhdGlvbi5SZWN0YW5nbGVIABJHChBmaWxsZWRfcmVjdGFu",
             "Z2xlGAIgASgLMisubWVkaWFwaXBlLlJlbmRlckFubm90YXRpb24uRmlsbGVk",
@@ -46,45 +46,46 @@ namespace Mediapipe {
             "Z3JhZGllbnRfbGluZRgOIAEoCzIoLm1lZGlhcGlwZS5SZW5kZXJBbm5vdGF0",
             "aW9uLkdyYWRpZW50TGluZUgAEhQKCXRoaWNrbmVzcxgLIAEoAToBMRIfCgVj",
             "b2xvchgMIAEoCzIQLm1lZGlhcGlwZS5Db2xvchIRCglzY2VuZV90YWcYDSAB",
-            "KAkacgoJUmVjdGFuZ2xlEgwKBGxlZnQYASABKAESCwoDdG9wGAIgASgBEg0K",
-            "BXJpZ2h0GAMgASgBEg4KBmJvdHRvbRgEIAEoARIZCgpub3JtYWxpemVkGAUg",
-            "ASgIOgVmYWxzZRIQCghyb3RhdGlvbhgGIAEoARpxCg9GaWxsZWRSZWN0YW5n",
-            "bGUSOAoJcmVjdGFuZ2xlGAEgASgLMiUubWVkaWFwaXBlLlJlbmRlckFubm90",
-            "YXRpb24uUmVjdGFuZ2xlEiQKCmZpbGxfY29sb3IYAiABKAsyEC5tZWRpYXBp",
-            "cGUuQ29sb3IafAoQUm91bmRlZFJlY3RhbmdsZRI4CglyZWN0YW5nbGUYASAB",
-            "KAsyJS5tZWRpYXBpcGUuUmVuZGVyQW5ub3RhdGlvbi5SZWN0YW5nbGUSGAoN",
-            "Y29ybmVyX3JhZGl1cxgCIAEoBToBMBIUCglsaW5lX3R5cGUYAyABKAU6ATQa",
-            "hwEKFkZpbGxlZFJvdW5kZWRSZWN0YW5nbGUSRwoRcm91bmRlZF9yZWN0YW5n",
-            "bGUYASABKAsyLC5tZWRpYXBpcGUuUmVuZGVyQW5ub3RhdGlvbi5Sb3VuZGVk",
-            "UmVjdGFuZ2xlEiQKCmZpbGxfY29sb3IYAiABKAsyEC5tZWRpYXBpcGUuQ29s",
-            "b3IaQAoET3ZhbBI4CglyZWN0YW5nbGUYASABKAsyJS5tZWRpYXBpcGUuUmVu",
-            "ZGVyQW5ub3RhdGlvbi5SZWN0YW5nbGUaYgoKRmlsbGVkT3ZhbBIuCgRvdmFs",
-            "GAEgASgLMiAubWVkaWFwaXBlLlJlbmRlckFubm90YXRpb24uT3ZhbBIkCgpm",
-            "aWxsX2NvbG9yGAIgASgLMhAubWVkaWFwaXBlLkNvbG9yGjgKBVBvaW50EgkK",
-            "AXgYASABKAESCQoBeRgCIAEoARIZCgpub3JtYWxpemVkGAMgASgIOgVmYWxz",
-            "ZRrWAQoETGluZRIPCgd4X3N0YXJ0GAEgASgBEg8KB3lfc3RhcnQYAiABKAES",
-            "DQoFeF9lbmQYAyABKAESDQoFeV9lbmQYBCABKAESGQoKbm9ybWFsaXplZBgF",
-            "IAEoCDoFZmFsc2USQwoJbGluZV90eXBlGAYgASgOMikubWVkaWFwaXBlLlJl",
-            "bmRlckFubm90YXRpb24uTGluZS5MaW5lVHlwZToFU09MSUQiLgoITGluZVR5",
-            "cGUSCwoHVU5LTk9XThAAEgkKBVNPTElEEAESCgoGREFTSEVEEAIarQEKDEdy",
-            "YWRpZW50TGluZRIPCgd4X3N0YXJ0GAEgASgBEg8KB3lfc3RhcnQYAiABKAES",
-            "DQoFeF9lbmQYAyABKAESDQoFeV9lbmQYBCABKAESGQoKbm9ybWFsaXplZBgF",
-            "IAEoCDoFZmFsc2USIAoGY29sb3IxGAYgASgLMhAubWVkaWFwaXBlLkNvbG9y",
-            "EiAKBmNvbG9yMhgHIAEoCzIQLm1lZGlhcGlwZS5Db2xvchpiCgVBcnJvdxIP",
-            "Cgd4X3N0YXJ0GAEgASgBEg8KB3lfc3RhcnQYAiABKAESDQoFeF9lbmQYAyAB",
-            "KAESDQoFeV9lbmQYBCABKAESGQoKbm9ybWFsaXplZBgFIAEoCDoFZmFsc2Ua",
-            "ywEKBFRleHQSFAoMZGlzcGxheV90ZXh0GAEgASgJEgwKBGxlZnQYAiABKAES",
-            "EAoIYmFzZWxpbmUYAyABKAESFgoLZm9udF9oZWlnaHQYBCABKAE6ATgSGQoK",
-            "bm9ybWFsaXplZBgFIAEoCDoFZmFsc2USFAoJZm9udF9mYWNlGAYgASgFOgEw",
-            "EiIKE2NlbnRlcl9ob3Jpem9udGFsbHkYByABKAg6BWZhbHNlEiAKEWNlbnRl",
-            "cl92ZXJ0aWNhbGx5GAggASgIOgVmYWxzZUIGCgRkYXRhIlsKDlJlbmRlclZp",
-            "ZXdwb3J0EgoKAmlkGAEgASgJEhAKCHdpZHRoX3B4GAIgASgFEhEKCWhlaWdo",
-            "dF9weBgDIAEoBRIYChBjb21wb3NlX29uX3ZpZGVvGAQgASgI"));
+            "KAkajgEKCVJlY3RhbmdsZRIMCgRsZWZ0GAEgASgBEgsKA3RvcBgCIAEoARIN",
+            "CgVyaWdodBgDIAEoARIOCgZib3R0b20YBCABKAESGQoKbm9ybWFsaXplZBgF",
+            "IAEoCDoFZmFsc2USEAoIcm90YXRpb24YBiABKAESGgoSdG9wX2xlZnRfdGhp",
+            "Y2tuZXNzGAcgASgBGnEKD0ZpbGxlZFJlY3RhbmdsZRI4CglyZWN0YW5nbGUY",
+            "ASABKAsyJS5tZWRpYXBpcGUuUmVuZGVyQW5ub3RhdGlvbi5SZWN0YW5nbGUS",
+            "JAoKZmlsbF9jb2xvchgCIAEoCzIQLm1lZGlhcGlwZS5Db2xvchp8ChBSb3Vu",
+            "ZGVkUmVjdGFuZ2xlEjgKCXJlY3RhbmdsZRgBIAEoCzIlLm1lZGlhcGlwZS5S",
+            "ZW5kZXJBbm5vdGF0aW9uLlJlY3RhbmdsZRIYCg1jb3JuZXJfcmFkaXVzGAIg",
+            "ASgFOgEwEhQKCWxpbmVfdHlwZRgDIAEoBToBNBqHAQoWRmlsbGVkUm91bmRl",
+            "ZFJlY3RhbmdsZRJHChFyb3VuZGVkX3JlY3RhbmdsZRgBIAEoCzIsLm1lZGlh",
+            "cGlwZS5SZW5kZXJBbm5vdGF0aW9uLlJvdW5kZWRSZWN0YW5nbGUSJAoKZmls",
+            "bF9jb2xvchgCIAEoCzIQLm1lZGlhcGlwZS5Db2xvchpACgRPdmFsEjgKCXJl",
+            "Y3RhbmdsZRgBIAEoCzIlLm1lZGlhcGlwZS5SZW5kZXJBbm5vdGF0aW9uLlJl",
+            "Y3RhbmdsZRpiCgpGaWxsZWRPdmFsEi4KBG92YWwYASABKAsyIC5tZWRpYXBp",
+            "cGUuUmVuZGVyQW5ub3RhdGlvbi5PdmFsEiQKCmZpbGxfY29sb3IYAiABKAsy",
+            "EC5tZWRpYXBpcGUuQ29sb3IaOAoFUG9pbnQSCQoBeBgBIAEoARIJCgF5GAIg",
+            "ASgBEhkKCm5vcm1hbGl6ZWQYAyABKAg6BWZhbHNlGtYBCgRMaW5lEg8KB3hf",
+            "c3RhcnQYASABKAESDwoHeV9zdGFydBgCIAEoARINCgV4X2VuZBgDIAEoARIN",
+            "CgV5X2VuZBgEIAEoARIZCgpub3JtYWxpemVkGAUgASgIOgVmYWxzZRJDCgls",
+            "aW5lX3R5cGUYBiABKA4yKS5tZWRpYXBpcGUuUmVuZGVyQW5ub3RhdGlvbi5M",
+            "aW5lLkxpbmVUeXBlOgVTT0xJRCIuCghMaW5lVHlwZRILCgdVTktOT1dOEAAS",
+            "CQoFU09MSUQQARIKCgZEQVNIRUQQAhqtAQoMR3JhZGllbnRMaW5lEg8KB3hf",
+            "c3RhcnQYASABKAESDwoHeV9zdGFydBgCIAEoARINCgV4X2VuZBgDIAEoARIN",
+            "CgV5X2VuZBgEIAEoARIZCgpub3JtYWxpemVkGAUgASgIOgVmYWxzZRIgCgZj",
+            "b2xvcjEYBiABKAsyEC5tZWRpYXBpcGUuQ29sb3ISIAoGY29sb3IyGAcgASgL",
+            "MhAubWVkaWFwaXBlLkNvbG9yGmIKBUFycm93Eg8KB3hfc3RhcnQYASABKAES",
+            "DwoHeV9zdGFydBgCIAEoARINCgV4X2VuZBgDIAEoARINCgV5X2VuZBgEIAEo",
+            "ARIZCgpub3JtYWxpemVkGAUgASgIOgVmYWxzZRrLAQoEVGV4dBIUCgxkaXNw",
+            "bGF5X3RleHQYASABKAkSDAoEbGVmdBgCIAEoARIQCghiYXNlbGluZRgDIAEo",
+            "ARIWCgtmb250X2hlaWdodBgEIAEoAToBOBIZCgpub3JtYWxpemVkGAUgASgI",
+            "OgVmYWxzZRIUCglmb250X2ZhY2UYBiABKAU6ATASIgoTY2VudGVyX2hvcml6",
+            "b250YWxseRgHIAEoCDoFZmFsc2USIAoRY2VudGVyX3ZlcnRpY2FsbHkYCCAB",
+            "KAg6BWZhbHNlQgYKBGRhdGEiWwoOUmVuZGVyVmlld3BvcnQSCgoCaWQYASAB",
+            "KAkSEAoId2lkdGhfcHgYAiABKAUSEQoJaGVpZ2h0X3B4GAMgASgFEhgKEGNv",
+            "bXBvc2Vfb25fdmlkZW8YBCABKAg="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.ColorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderData), global::Mediapipe.RenderData.Parser, new[]{ "RenderAnnotations", "SceneClass", "SceneViewport" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation), global::Mediapipe.RenderAnnotation.Parser, new[]{ "Rectangle", "FilledRectangle", "Oval", "FilledOval", "Point", "Line", "Arrow", "Text", "RoundedRectangle", "FilledRoundedRectangle", "GradientLine", "Thickness", "Color", "SceneTag" }, new[]{ "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation.Types.Rectangle), global::Mediapipe.RenderAnnotation.Types.Rectangle.Parser, new[]{ "Left", "Top", "Right", "Bottom", "Normalized", "Rotation" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation), global::Mediapipe.RenderAnnotation.Parser, new[]{ "Rectangle", "FilledRectangle", "Oval", "FilledOval", "Point", "Line", "Arrow", "Text", "RoundedRectangle", "FilledRoundedRectangle", "GradientLine", "Thickness", "Color", "SceneTag" }, new[]{ "Data" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation.Types.Rectangle), global::Mediapipe.RenderAnnotation.Types.Rectangle.Parser, new[]{ "Left", "Top", "Right", "Bottom", "Normalized", "Rotation", "TopLeftThickness" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation.Types.FilledRectangle), global::Mediapipe.RenderAnnotation.Types.FilledRectangle.Parser, new[]{ "Rectangle", "FillColor" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation.Types.RoundedRectangle), global::Mediapipe.RenderAnnotation.Types.RoundedRectangle.Parser, new[]{ "Rectangle", "CornerRadius", "LineType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.RenderAnnotation.Types.FilledRoundedRectangle), global::Mediapipe.RenderAnnotation.Types.FilledRoundedRectangle.Parser, new[]{ "RoundedRectangle", "FillColor" }, null, null, null, null),
@@ -1361,6 +1362,7 @@ namespace Mediapipe {
           bottom_ = other.bottom_;
           normalized_ = other.normalized_;
           rotation_ = other.rotation_;
+          topLeftThickness_ = other.topLeftThickness_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -1540,6 +1542,36 @@ namespace Mediapipe {
           _hasBits0 &= ~32;
         }
 
+        /// <summary>Field number for the "top_left_thickness" field.</summary>
+        public const int TopLeftThicknessFieldNumber = 7;
+        private readonly static double TopLeftThicknessDefaultValue = 0D;
+
+        private double topLeftThickness_;
+        /// <summary>
+        /// Radius of top left corner circle.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public double TopLeftThickness {
+          get { if ((_hasBits0 & 64) != 0) { return topLeftThickness_; } else { return TopLeftThicknessDefaultValue; } }
+          set {
+            _hasBits0 |= 64;
+            topLeftThickness_ = value;
+          }
+        }
+        /// <summary>Gets whether the "top_left_thickness" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasTopLeftThickness {
+          get { return (_hasBits0 & 64) != 0; }
+        }
+        /// <summary>Clears the value of the "top_left_thickness" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearTopLeftThickness() {
+          _hasBits0 &= ~64;
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -1561,6 +1593,7 @@ namespace Mediapipe {
           if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Bottom, other.Bottom)) return false;
           if (Normalized != other.Normalized) return false;
           if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Rotation, other.Rotation)) return false;
+          if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(TopLeftThickness, other.TopLeftThickness)) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -1574,6 +1607,7 @@ namespace Mediapipe {
           if (HasBottom) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Bottom);
           if (HasNormalized) hash ^= Normalized.GetHashCode();
           if (HasRotation) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Rotation);
+          if (HasTopLeftThickness) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(TopLeftThickness);
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -1616,6 +1650,10 @@ namespace Mediapipe {
             output.WriteRawTag(49);
             output.WriteDouble(Rotation);
           }
+          if (HasTopLeftThickness) {
+            output.WriteRawTag(57);
+            output.WriteDouble(TopLeftThickness);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -1650,6 +1688,10 @@ namespace Mediapipe {
             output.WriteRawTag(49);
             output.WriteDouble(Rotation);
           }
+          if (HasTopLeftThickness) {
+            output.WriteRawTag(57);
+            output.WriteDouble(TopLeftThickness);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -1676,6 +1718,9 @@ namespace Mediapipe {
             size += 1 + 1;
           }
           if (HasRotation) {
+            size += 1 + 8;
+          }
+          if (HasTopLeftThickness) {
             size += 1 + 8;
           }
           if (_unknownFields != null) {
@@ -1707,6 +1752,9 @@ namespace Mediapipe {
           }
           if (other.HasRotation) {
             Rotation = other.Rotation;
+          }
+          if (other.HasTopLeftThickness) {
+            TopLeftThickness = other.TopLeftThickness;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -1747,6 +1795,10 @@ namespace Mediapipe {
                 Rotation = input.ReadDouble();
                 break;
               }
+              case 57: {
+                TopLeftThickness = input.ReadDouble();
+                break;
+              }
             }
           }
         #endif
@@ -1784,6 +1836,10 @@ namespace Mediapipe {
               }
               case 49: {
                 Rotation = input.ReadDouble();
+                break;
+              }
+              case 57: {
+                TopLeftThickness = input.ReadDouble();
                 break;
               }
             }

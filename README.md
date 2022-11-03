@@ -11,7 +11,8 @@ Features:
 * Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
 * Allows custom background images
 * Allows custom VRM models
-* Virtual camera support
+* VMC sender
+* Virtual camera support *(Only Windows)*
 
 ## Dependencies
 + [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)

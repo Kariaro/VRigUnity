@@ -4,11 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
 using NUnit.Framework;
 using System;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class GlCalculatorHelperTest
   {
@@ -18,7 +17,7 @@ namespace Tests
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
-        Assert.AreNotEqual(glCalculatorHelper.mpPtr, IntPtr.Zero);
+        Assert.AreNotEqual(IntPtr.Zero, glCalculatorHelper.mpPtr);
       }
     }
     #endregion
@@ -64,35 +63,20 @@ namespace Tests
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var status = glCalculatorHelper.RunInGlContext(() => { return Status.Ok(); });
+        var status = glCalculatorHelper.RunInGlContext(() => { });
         Assert.True(status.Ok());
       }
     }
 
     [Test, GpuOnly]
-    public void RunInGlContext_ShouldReturnInternal_When_FunctionReturnsInternal()
+    public void RunInGlContext_ShouldReturnInternal_When_FunctionThrows()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
       {
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
-        var status = glCalculatorHelper.RunInGlContext(() => { return Status.Build(Status.StatusCode.Internal, "error"); });
-        Assert.AreEqual(status.Code(), Status.StatusCode.Internal);
-      }
-    }
-
-    [Test, GpuOnly]
-    public void RunInGlContext_ShouldReturnFailedPreCondition_When_FunctionThrows()
-    {
-      using (var glCalculatorHelper = new GlCalculatorHelper())
-      {
-        glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
-
-#pragma warning disable IDE0039
-        GlCalculatorHelper.GlStatusFunction glStatusFunction = () => { throw new InvalidProgramException(); };
-#pragma warning restore IDE0039
-        var status = glCalculatorHelper.RunInGlContext(glStatusFunction);
-        Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
+        var status = glCalculatorHelper.RunInGlContext((GlCalculatorHelper.GlFunction)(() => { throw new Exception("Function Throws"); }));
+        Assert.AreEqual(Status.StatusCode.Internal, status.Code());
       }
     }
     #endregion
@@ -111,11 +95,10 @@ namespace Tests
           {
             var texture = glCalculatorHelper.CreateSourceTexture(imageFrame);
 
-            Assert.AreEqual(texture.width, 32);
-            Assert.AreEqual(texture.height, 24);
+            Assert.AreEqual(32, texture.width);
+            Assert.AreEqual(24, texture.height);
 
             texture.Dispose();
-            return Status.Ok();
           });
           Assert.True(status.Ok());
 
@@ -125,7 +108,7 @@ namespace Tests
     }
 
     [Test, GpuOnly]
-    [Ignore("Skip because a thread hangs")]
+    [Ignore("Skip because a thread will hang")]
     public void CreateSourceTexture_ShouldFail_When_ImageFrameFormatIsInvalid()
     {
       using (var glCalculatorHelper = new GlCalculatorHelper())
@@ -140,9 +123,8 @@ namespace Tests
             {
               texture.Release();
             }
-            return Status.Ok();
           });
-          Assert.AreEqual(status.Code(), Status.StatusCode.FailedPrecondition);
+          Assert.AreEqual(Status.StatusCode.FailedPrecondition, status.Code());
 
           status.Dispose();
         }
@@ -162,9 +144,8 @@ namespace Tests
         {
           var glTexture = glCalculatorHelper.CreateDestinationTexture(32, 24, GpuBufferFormat.kBGRA32);
 
-          Assert.AreEqual(glTexture.width, 32);
-          Assert.AreEqual(glTexture.height, 24);
-          return Status.Ok();
+          Assert.AreEqual(32, glTexture.width);
+          Assert.AreEqual(24, glTexture.height);
         });
 
         Assert.True(status.Ok());
@@ -181,7 +162,7 @@ namespace Tests
         glCalculatorHelper.InitializeForTest(GpuResources.Create().Value());
 
         // default frame buffer
-        Assert.AreEqual(glCalculatorHelper.framebuffer, 0);
+        Assert.AreEqual(0, glCalculatorHelper.framebuffer);
       }
     }
     #endregion
@@ -197,11 +178,11 @@ namespace Tests
         using (var glContext = glCalculatorHelper.GetGlContext())
         {
 #if UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_ANDROID
-          Assert.AreNotEqual(glContext.eglContext, IntPtr.Zero);
+          Assert.AreNotEqual(IntPtr.Zero, glContext.eglContext);
 #elif UNITY_STANDALONE_OSX
-          Assert.AreNotEqual(glContext.nsglContext, IntPtr.Zero);
+          Assert.AreNotEqual(IntPtr.Zero, glContext.nsglContext);
 #elif UNITY_IOS
-          Assert.AreNotEqual(glContext.eaglContext, IntPtr.Zero);
+          Assert.AreNotEqual(IntPtr.Zero, glContext.eaglContext);
 #endif
         }
       }

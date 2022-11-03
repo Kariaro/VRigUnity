@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Download libs
+        run: bash download_libs.sh
 
       - uses: actions/cache@v2
         with:
@@ -41,6 +44,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Download libs
+        run: bash download_libs.sh
 
       - uses: actions/cache@v2
         with:
@@ -68,6 +74,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Download libs
+        run: bash download_libs.sh
 
       - uses: actions/cache@v2
         with:
