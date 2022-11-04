@@ -99,8 +99,7 @@ namespace Mediapipe.Unity {
 			Graphics.CopyTexture(src, _texture);
 		}
 
-		public bool ConvertTexture(Texture dst)
-		{
+		public bool ConvertTexture(Texture dst) {
 			return Graphics.ConvertTexture(_texture, dst);
 		}
 
@@ -192,11 +191,9 @@ namespace Mediapipe.Unity {
 					if (!AcquireName(name, _instanceId)) {
 						throw new InvalidProgramException($"Another instance (id={_instanceId}) is using the specified name ({name}) now");
 					}
-
 					_NameTable.Add(name, _instanceId);
 				}
 			}
-
 			return _nativeTexturePtr;
 		}
 
