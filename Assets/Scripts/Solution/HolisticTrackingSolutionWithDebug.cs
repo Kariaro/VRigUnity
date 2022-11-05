@@ -14,8 +14,6 @@ namespace HardCoded.VRigUnity {
 
 		protected override void OnStartRun() {
 			base.OnStartRun();
-
-			/*
 			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
@@ -23,18 +21,6 @@ namespace HardCoded.VRigUnity {
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
 			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
-
-			var imageSource = SolutionUtils.GetImageSource();
-			SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
-			SetupAnnotationController(_holisticAnnotationController, imageSource);
-			SetupAnnotationController(_poseWorldLandmarksAnnotationController, imageSource);
-			SetupAnnotationController(_poseRoiAnnotationController, imageSource);
-			*/
-		}
-
-		protected override void SetupScreen(ImageSource imageSource) {
-			// NOTE: Without this line the screen does not update its size and no annotations are drawn
-			base.SetupScreen(imageSource);
 		}
 
 		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {}
@@ -43,7 +29,7 @@ namespace HardCoded.VRigUnity {
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {}
-
+		
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			if (eventArgs.value == null) {
 				return;

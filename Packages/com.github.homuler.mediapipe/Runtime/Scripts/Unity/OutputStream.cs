@@ -5,6 +5,7 @@
 // https://opensource.org/licenses/MIT.
 
 using System;
+using System.Collections.Generic;
 
 namespace Mediapipe.Unity
 {
@@ -86,6 +87,7 @@ namespace Mediapipe.Unity
       this.streamName = streamName;
       this.observeTimestampBounds = observeTimestampBounds;
       this.timeoutMicrosec = timeoutMicrosec;
+
       _InstanceTable.Add(_id, this);
     }
 
@@ -153,6 +155,24 @@ namespace Mediapipe.Unity
     public void RemoveAllListeners()
     {
       OnReceived = null;
+    }
+
+    public void Close()
+    {
+      RemoveAllListeners();
+
+      _poller?.Dispose();
+      _poller = null;
+      _outputPacket?.Dispose();
+      _outputPacket = null;
+
+      _presencePoller?.Dispose();
+      _presencePoller = null;
+      _presencePacket?.Dispose();
+      _presencePacket = null;
+
+      _referencePacket?.Dispose();
+      _referencePacket = null;
     }
 
     /// <summary>
@@ -262,6 +282,12 @@ namespace Mediapipe.Unity
 
     protected bool CanCallNext(bool allowBlock)
     {
+      if (_poller == null)
+      {
+        Logger.LogWarning("OutputStreamPoller is not initialized. Call StartPolling before running the CalculatorGraph");
+        return false;
+      }
+
       if (canTestPresence)
       {
         if (!allowBlock)
@@ -356,18 +382,18 @@ namespace Mediapipe.Unity
     }
 
     [AOT.MonoPInvokeCallback(typeof(CalculatorGraph.NativePacketCallback))]
-    protected static IntPtr InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
+    protected static Status.StatusArgs InvokeIfOutputStreamFound(IntPtr graphPtr, int streamId, IntPtr packetPtr)
     {
       try
       {
         var isFound = _InstanceTable.TryGetValue(streamId, out var outputStream);
         if (!isFound)
         {
-          return Status.FailedPrecondition($"OutputStream with id {streamId} is not found").mpPtr;
+          return Status.StatusArgs.NotFound($"OutputStream with id {streamId} is not found, maybe already GCed");
         }
         if (outputStream.calculatorGraph.mpPtr != graphPtr)
         {
-          return Status.FailedPrecondition($"OutputStream is found, but is not linked to the specified CalclatorGraph").mpPtr;
+          return Status.StatusArgs.InvalidArgument($"OutputStream is found, but is not linked to the specified CalclatorGraph");
         }
 
         outputStream.referencePacket.SwitchNativePtr(packetPtr);
@@ -377,11 +403,11 @@ namespace Mediapipe.Unity
         }
         outputStream.referencePacket.ReleaseMpResource();
 
-        return Status.Ok().mpPtr;
+        return Status.StatusArgs.Ok();
       }
       catch (Exception e)
       {
-        return Status.FailedPrecondition(e.ToString()).mpPtr;
+        return Status.StatusArgs.Internal(e.ToString());
       }
     }
   }

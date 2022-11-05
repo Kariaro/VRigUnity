@@ -76,6 +76,10 @@ crashlytics-build.properties
 
 # Remove mediapipe resources
 /Packages/com.github.homuler.mediapipe/Runtime/Resources/
+/Packages/com.github.homuler.mediapipe/Samples~/
 Build/
 Temp/
 TempFolder/
+
+# Temp
+.curl/

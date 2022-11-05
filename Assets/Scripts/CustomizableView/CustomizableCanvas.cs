@@ -56,17 +56,17 @@ namespace HardCoded.VRigUnity {
 			annotationObject.SetActive(show);
 		}
 
-		public void DrawImage(TextureFrame textureFrame) {
-			unityCanvas.DrawImage(textureFrame);
+		public void ReadSync(TextureFrame textureFrame) {
+			unityCanvas.ReadSync(textureFrame);
 		}
 
 		// Annotations
 		public void SetupAnnotations() {
 			var imageSource = SolutionUtils.GetImageSource();
-			SetupAnnotationController(poseDetectionAnnotationController, imageSource);
-			SetupAnnotationController(holisticAnnotationController, imageSource);
-			SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource);
-			SetupAnnotationController(poseRoiAnnotationController, imageSource);
+			SetupAnnotationController(poseDetectionAnnotationController, imageSource, Settings.CameraFlipped);
+			SetupAnnotationController(holisticAnnotationController, imageSource, Settings.CameraFlipped);
+			SetupAnnotationController(poseWorldLandmarksAnnotationController, imageSource, Settings.CameraFlipped);
+			SetupAnnotationController(poseRoiAnnotationController, imageSource, Settings.CameraFlipped);
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {

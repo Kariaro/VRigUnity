@@ -4,12 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using Mediapipe;
-using Mediapipe.Unity;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Tests
+namespace Mediapipe.Tests
 {
   public class ValidatedGraphConfigTest
   {
@@ -28,32 +26,36 @@ input_stream: ""in""
 output_stream: ""out""
 ";
 
-    private const string _ObjectronConfigText = @"
+    private const string _FlowLimiterConfigText = @"
 input_stream: ""input_video""
+input_stream: ""output""
 
 node {
-  calculator: ""ObjectronGpuSubgraph""
-  input_stream: ""IMAGE_GPU:input_video""
-  input_side_packet: ""LABELS_CSV:allowed_labels""
-  input_side_packet: ""MAX_NUM_OBJECTS:max_num_objects""
-  output_stream: ""FRAME_ANNOTATION:lifted_objects""
-  output_stream: ""NORM_RECTS:multi_box_rects""
-  output_stream: ""MULTI_LANDMARKS:multi_box_landmarks""
-}  
+  calculator: ""FlowLimiterCalculator""
+  input_stream: ""input_video""
+  input_stream: ""FINISHED:output""
+  input_stream_info: {
+    tag_index: ""FINISHED""
+    back_edge: true
+  }
+  input_side_packet: ""MAX_IN_FLIGHT:max_in_flight""
+  input_side_packet: ""OPTIONS:flow_limiter_calculator_options""
+  output_stream: ""throttled_input_video""
+}
 ";
-    private const string _PoseLandmarkConfigText = @"
+
+    private const string _ImageTransformationConfigText = @"
 input_stream: ""input_video""
 
-node {
-  calculator: ""PoseLandmarkGpu""
+node: {
+  calculator: ""ImageTransformationCalculator""
   input_stream: ""IMAGE:input_video""
-  input_side_packet: ""MODEL_COMPLEXITY:model_complexity""
-  input_side_packet: ""SMOOTH_LANDMARKS:smooth_landmarks""
-  output_stream: ""LANDMARKS:pose_landmarks""
-  output_stream: ""WORLD_LANDMARKS:pose_world_landmarks""
-  output_stream: ""DETECTION:pose_detection""
-  output_stream: ""ROI_FROM_LANDMARKS:roi_from_landmarks""
-}";
+  input_side_packet: ""ROTATION_DEGREES:input_rotation""
+  input_side_packet: ""FLIP_HORIZONTALLY:input_horizontally_flipped""
+  input_side_packet: ""FLIP_VERTICALLY:input_vertically_flipped""
+  output_stream: ""IMAGE:transformed_input_video""
+}
+";
 
     private const string _ConstantSidePacketConfigText = @"
 node {
@@ -70,6 +72,18 @@ node {
       packet { string_value: ""string"" }
     }
   }
+}
+";
+
+    private const string _FaceDetectionShortRangeCommonConfigText = @"
+input_stream: ""detection_tensors""
+input_stream: ""transform_matrix""
+
+node {
+  calculator: ""FaceDetectionShortRangeCommon""
+  input_stream: ""TENSORS:detection_tensors""
+  input_stream: ""MATRIX:transform_matrix""
+  output_stream: ""DETECTIONS:detections""
 }
 ";
 
@@ -139,7 +153,7 @@ node {
       {
         using (var status = config.Initialize("InvalidSubgraph"))
         {
-          Assert.AreEqual(status.Code(), Status.StatusCode.NotFound);
+          Assert.AreEqual(Status.StatusCode.NotFound, status.Code());
         }
         Assert.False(config.Initialized());
       }
@@ -185,7 +199,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
@@ -201,12 +215,12 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -217,13 +231,14 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("max_num_objects", new IntPacket(3));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -234,14 +249,15 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("allowed_labels", new StringPacket("cup"));
-          sidePacket.Emplace("max_num_objects", new StringPacket("3"));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+          sidePacket.Emplace("input_rotation", new StringPacket("0"));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
-            Assert.AreEqual(status.Code(), Status.StatusCode.InvalidArgument);
+            Assert.AreEqual(Status.StatusCode.InvalidArgument, status.Code());
           }
         }
       }
@@ -252,11 +268,12 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ObjectronConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ImageTransformationConfigText)).AssertOk();
         using (var sidePacket = new SidePacket())
         {
-          sidePacket.Emplace("allowed_labels", new StringPacket("cup"));
-          sidePacket.Emplace("max_num_objects", new IntPacket(3));
+          sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(false));
+          sidePacket.Emplace("input_vertically_flipped", new BoolPacket(true));
+          sidePacket.Emplace("input_rotation", new IntPacket(0));
           using (var status = config.ValidateRequiredSidePackets(sidePacket))
           {
             Assert.True(status.Ok());
@@ -290,25 +307,25 @@ node {
         Assert.AreEqual(originalConfig.InputStream, canonicalizedConfig.InputStream);
         Assert.AreEqual(originalConfig.OutputStream, canonicalizedConfig.OutputStream);
         Assert.IsEmpty(originalConfig.Executor);
-        Assert.AreEqual(canonicalizedConfig.Executor.Count, 1);
-        Assert.AreEqual(canonicalizedConfig.Executor[0].CalculateSize(), 0);
+        Assert.AreEqual(1, canonicalizedConfig.Executor.Count);
+        Assert.AreEqual(0, canonicalizedConfig.Executor[0].CalculateSize());
 
-        Assert.AreEqual(originalConfig.CalculateSize(), 80);
-        Assert.AreEqual(canonicalizedConfig.CalculateSize(), 82);
+        Assert.AreEqual(80, originalConfig.CalculateSize());
+        Assert.AreEqual(82, canonicalizedConfig.CalculateSize());
       }
     }
 
     [Test]
-    public void Config_ShouldReturnTheCanonicalizedConfig_When_TheConfigIsPoseLandmarkConfig()
+    public void Config_ShouldReturnTheCanonicalizedConfig_When_TheConfigIsFaceDetectionShortRangeCommonConfig()
     {
       using (var config = new ValidatedGraphConfig())
       {
-        var originalConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText);
+        var originalConfig = CalculatorGraphConfig.Parser.ParseFromTextFormat(_FaceDetectionShortRangeCommonConfigText);
         config.Initialize(originalConfig).AssertOk();
         var canonicalizedConfig = config.Config();
 
-        Assert.AreEqual(originalConfig.CalculateSize(), 251);
-        Assert.AreEqual(canonicalizedConfig.CalculateSize(), 26514);
+        Assert.AreEqual(145, originalConfig.CalculateSize());
+        Assert.AreEqual(936, canonicalizedConfig.CalculateSize());
       }
     }
     #endregion
@@ -344,15 +361,15 @@ node {
         Assert.AreEqual(inputStreamInfos.Count, 2);
 
         var inStream = inputStreamInfos.First((edgeInfo) => edgeInfo.name == "in");
-        Assert.AreEqual(inStream.upstream, 0);
-        Assert.AreEqual(inStream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(inStream.parentNode.index, 0);
+        Assert.AreEqual(0, inStream.upstream);
+        Assert.AreEqual(NodeType.Calculator, inStream.parentNode.type);
+        Assert.AreEqual(0, inStream.parentNode.index);
         Assert.False(inStream.backEdge);
 
         var out1Stream = inputStreamInfos.First((edgeInfo) => edgeInfo.name == "out1");
-        Assert.AreEqual(out1Stream.upstream, 1);
-        Assert.AreEqual(out1Stream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(out1Stream.parentNode.index, 1);
+        Assert.AreEqual(1, out1Stream.upstream);
+        Assert.AreEqual(NodeType.Calculator, out1Stream.parentNode.type);
+        Assert.AreEqual(1, out1Stream.parentNode.index);
         Assert.False(out1Stream.backEdge);
       }
     }
@@ -376,24 +393,24 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
         var outputStreamInfos = config.OutputStreamInfos();
 
-        Assert.AreEqual(outputStreamInfos.Count, 3);
+        Assert.AreEqual(3, outputStreamInfos.Count);
 
         var inStream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "in");
-        Assert.AreEqual(inStream.upstream, -1);
-        Assert.AreEqual(inStream.parentNode.type, NodeType.GraphInputStream);
-        Assert.AreEqual(inStream.parentNode.index, 2);
+        Assert.AreEqual(-1, inStream.upstream);
+        Assert.AreEqual(NodeType.GraphInputStream, inStream.parentNode.type);
+        Assert.AreEqual(2, inStream.parentNode.index, 2);
         Assert.False(inStream.backEdge);
 
         var out1Stream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "out1");
-        Assert.AreEqual(out1Stream.upstream, -1);
-        Assert.AreEqual(out1Stream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(out1Stream.parentNode.index, 0);
+        Assert.AreEqual(-1, out1Stream.upstream);
+        Assert.AreEqual(NodeType.Calculator, out1Stream.parentNode.type);
+        Assert.AreEqual(0, out1Stream.parentNode.index);
         Assert.False(out1Stream.backEdge);
 
         var outStream = outputStreamInfos.First((edgeInfo) => edgeInfo.name == "out");
-        Assert.AreEqual(outStream.upstream, -1);
-        Assert.AreEqual(outStream.parentNode.type, NodeType.Calculator);
-        Assert.AreEqual(outStream.parentNode.index, 1);
+        Assert.AreEqual(-1, outStream.upstream);
+        Assert.AreEqual(NodeType.Calculator, outStream.parentNode.type);
+        Assert.AreEqual(1, outStream.parentNode.index);
         Assert.False(outStream.backEdge);
       }
     }
@@ -424,20 +441,20 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
         var inputSidePacketInfos = config.InputSidePacketInfos();
 
         Assert.True(inputSidePacketInfos.Count >= 2);
 
-        var modelComplexityPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "model_complexity");
-        Assert.AreEqual(modelComplexityPacket.upstream, -1);
-        Assert.AreEqual(modelComplexityPacket.parentNode.type, NodeType.Calculator);
-        Assert.False(modelComplexityPacket.backEdge);
+        var maxInFlightPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "max_in_flight");
+        Assert.AreEqual(-1, maxInFlightPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, maxInFlightPacket.parentNode.type);
+        Assert.False(maxInFlightPacket.backEdge);
 
-        var smoothLandmarksPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "smooth_landmarks");
-        Assert.AreEqual(smoothLandmarksPacket.upstream, -1);
-        Assert.AreEqual(smoothLandmarksPacket.parentNode.type, NodeType.Calculator);
-        Assert.False(smoothLandmarksPacket.backEdge);
+        var flowLimiterCalculatorOptionsPacket = inputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "flow_limiter_calculator_options");
+        Assert.AreEqual(-1, flowLimiterCalculatorOptionsPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, flowLimiterCalculatorOptionsPacket.parentNode.type);
+        Assert.False(flowLimiterCalculatorOptionsPacket.backEdge);
       }
     }
     #endregion
@@ -470,26 +487,26 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
         var outputSidePacketInfos = config.OutputSidePacketInfos();
 
-        Assert.AreEqual(outputSidePacketInfos.Count, 4);
+        Assert.AreEqual(4, outputSidePacketInfos.Count);
 
         var intPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "int_packet");
-        Assert.AreEqual(intPacket.upstream, -1);
-        Assert.AreEqual(intPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, intPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, intPacket.parentNode.type);
         Assert.False(intPacket.backEdge);
 
         var floatPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "float_packet");
-        Assert.AreEqual(floatPacket.upstream, -1);
-        Assert.AreEqual(floatPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, floatPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, floatPacket.parentNode.type);
         Assert.False(floatPacket.backEdge);
 
         var boolPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "bool_packet");
-        Assert.AreEqual(boolPacket.upstream, -1);
-        Assert.AreEqual(boolPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, boolPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, boolPacket.parentNode.type);
         Assert.False(boolPacket.backEdge);
 
         var stringPacket = outputSidePacketInfos.First((edgeInfo) => edgeInfo.name == "string_packet");
-        Assert.AreEqual(stringPacket.upstream, -1);
-        Assert.AreEqual(stringPacket.parentNode.type, NodeType.Calculator);
+        Assert.AreEqual(-1, stringPacket.upstream);
+        Assert.AreEqual(NodeType.Calculator, stringPacket.parentNode.type);
         Assert.False(stringPacket.backEdge);
       }
     }
@@ -501,7 +518,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputStreamIndex(""), -1);
+        Assert.AreEqual(-1, config.OutputStreamIndex(""));
       }
     }
 
@@ -511,7 +528,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputStreamIndex("unknown"));
       }
     }
 
@@ -521,7 +538,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("out"), 2);
+        Assert.AreEqual(2, config.OutputStreamIndex("out"));
       }
     }
 
@@ -531,7 +548,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamIndex("out1"), 1);
+        Assert.AreEqual(1, config.OutputStreamIndex("out1"));
       }
     }
     #endregion
@@ -542,7 +559,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputSidePacketIndex(""), -1);
+        Assert.AreEqual(-1, config.OutputSidePacketIndex(""));
       }
     }
 
@@ -552,7 +569,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputSidePacketIndex("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputSidePacketIndex("unknown"));
       }
     }
 
@@ -562,7 +579,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_ConstantSidePacketConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputSidePacketIndex("int_packet"), 0);
+        Assert.AreEqual(0, config.OutputSidePacketIndex("int_packet"));
       }
     }
     #endregion
@@ -574,7 +591,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.AreEqual(config.OutputStreamToNode(""), -1);
+        Assert.AreEqual(-1, config.OutputStreamToNode(""));
       }
     }
 
@@ -584,7 +601,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamToNode("unknown"), -1);
+        Assert.AreEqual(-1, config.OutputStreamToNode("unknown"));
       }
     }
 
@@ -594,7 +611,7 @@ node {
       using (var config = new ValidatedGraphConfig())
       {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
-        Assert.AreEqual(config.OutputStreamToNode("out1"), 0);
+        Assert.AreEqual(0, config.OutputStreamToNode("out1"));
       }
     }
     #endregion
@@ -605,9 +622,9 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
+        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.InvalidArgument);
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
         }
       }
     }
@@ -617,10 +634,10 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
-        using (var statusOrString = config.RegisteredSidePacketTypeName("model_complexity"))
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
+        using (var statusOrString = config.RegisteredSidePacketTypeName("max_in_flight"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Unknown);
+          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
         }
       }
     }
@@ -634,7 +651,7 @@ node {
       {
         using (var statusOrString = config.RegisteredStreamTypeName("in"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.InvalidArgument);
+          Assert.AreEqual(Status.StatusCode.InvalidArgument, statusOrString.status.Code());
         }
       }
     }
@@ -647,7 +664,7 @@ node {
         config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PassThroughConfigText)).AssertOk();
         using (var statusOrString = config.RegisteredStreamTypeName("in"))
         {
-          Assert.AreEqual(statusOrString.status.Code(), Status.StatusCode.Unknown);
+          Assert.AreEqual(Status.StatusCode.Unknown, statusOrString.status.Code());
         }
       }
     }
@@ -696,7 +713,7 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        Assert.False(config.IsExternalSidePacket("model_complexity"));
+        Assert.False(config.IsExternalSidePacket("max_in_flight"));
       }
     }
 
@@ -716,8 +733,8 @@ node {
     {
       using (var config = new ValidatedGraphConfig())
       {
-        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_PoseLandmarkConfigText)).AssertOk();
-        Assert.True(config.IsExternalSidePacket("model_complexity"));
+        config.Initialize(CalculatorGraphConfig.Parser.ParseFromTextFormat(_FlowLimiterConfigText)).AssertOk();
+        Assert.True(config.IsExternalSidePacket("max_in_flight"));
       }
     }
     #endregion

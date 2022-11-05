@@ -35,11 +35,6 @@ namespace HardCoded.VRigUnity {
 			return isPaused;
 		}
 
-		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped ^ imageSource.isFrontFacing;
-			annotationController.rotationAngle = imageSource.rotation.Reverse();
-		}
-
 		protected static void ReadFromImageSource(WebCamSource imageSource, TextureFrame textureFrame) {
 			// For some reason, when the image is coiped on GPU, latency tends to be high.
 			// So even when OpenGL ES is available, use CPU to copy images.

@@ -1,7 +1,7 @@
-using SFB;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
+using static HardCoded.VRigUnity.FileDialogUtils;
 
 namespace HardCoded.VRigUnity {
 	public class GUISettingsMenu : MonoBehaviour {
@@ -14,15 +14,16 @@ namespace HardCoded.VRigUnity {
 
 		public void SelectModel() {
 			var extensions = new [] {
-				new ExtensionFilter("VRM Files", "vrm"),
-				new ExtensionFilter("All Fil1es", "*"),
+				new CustomExtensionFilter("VRM Files", "vrm"),
+				new CustomExtensionFilter("All Fil1es", "*"),
 			};
 
-			var paths = FileDialogUtils.OpenFilePanel("Open File", Settings.ModelFile, extensions, false);
-			if (paths.Length > 0) {
-				string filePath = paths[0];
-				settings.LoadVrmModel(filePath);
-			}
+			FileDialogUtils.OpenFilePanel(this, "Open File", Settings.ModelFile, extensions, false, (paths) => {
+				if (paths.Length > 0) {
+					string filePath = paths[0];
+					settings.LoadVrmModel(filePath);
+				}
+			});
 		}
 
 		public void ResetModel() {
