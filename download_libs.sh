@@ -3,7 +3,7 @@
 
 if [ "$1" == "" ]; then
 	# Default tag
-	TAG=v0.10.1
+	TAG=v0.10.1-macos11
 else
 	# Custom tag
 	TAG=$1

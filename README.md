@@ -6,6 +6,7 @@ This app takes a `VRM` model and uses your webcam to move the virtual character.
 This app has been tested on:
 + *Windows 10*
 + *Ubuntu 18.04*
++ *Mac 11.x & 12.x*
 
 Features:
 * Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
@@ -15,7 +16,7 @@ Features:
 * Virtual camera support *(Only Windows)*
 
 ## Dependencies
-+ [MediaPipeUnityPlugin v0.9.1](https://github.com/homuler/MediaPipeUnityPlugin)
++ [MediaPipeUnityPlugin v0.10.1](https://github.com/homuler/MediaPipeUnityPlugin)
   + [OpenCV 3.4.16](https://opencv.org/releases/)
 + [UniVRM v0.99.4](https://github.com/vrm-c/UniVRM)
 + [StandaloneFileBrowser v1.2](https://github.com/gkngkc/UnityStandaloneFileBrowser)
