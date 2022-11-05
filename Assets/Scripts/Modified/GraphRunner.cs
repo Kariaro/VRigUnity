@@ -31,8 +31,19 @@ namespace HardCoded.VRigUnity {
 
 		private bool _isRunning = false;
 
+		public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
 		public virtual ConfigType configType {
 			get {
+				if (GpuManager.IsInitialized) {
+#if UNITY_ANDROID
+					if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.OpenGLES3 && _openGlEsConfig != null) {
+						return ConfigType.OpenGLES;
+					}
+#endif
+					if (_gpuConfig != null) {
+						return ConfigType.GPU;
+					}
+				}
 				return _cpuConfig != null ? ConfigType.CPU : ConfigType.None;
 			}
 		}
@@ -60,19 +71,19 @@ namespace HardCoded.VRigUnity {
 		protected CalculatorGraph CalculatorGraph { get; private set; }
 		protected Timestamp latestTimestamp;
 
-		protected void Start() {
+		protected virtual void Start() {
 			_InstanceTable.Add(GetInstanceID(), this);
 		}
 
-		protected void OnDestroy() {
+		protected virtual void OnDestroy() {
 			Stop();
 		}
-		
+
 		public WaitForResult WaitForInitAsync() {
 			return new WaitForResult(this, InitializeAsync());
 		}
 
-		public IEnumerator InitializeAsync() {
+		public virtual IEnumerator InitializeAsync() {
 			Logger.Info(TAG, $"Config Type = {configType}");
 
 			InitializeCalculatorGraph().AssertOk();
@@ -88,7 +99,6 @@ namespace HardCoded.VRigUnity {
 				foreach (var error in errors) {
 					Logger.Error(TAG, error);
 				}
-
 				throw new InternalException("Failed to prepare dependent assets");
 			}
 		}
@@ -134,13 +144,11 @@ namespace HardCoded.VRigUnity {
 		protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame) {
 			latestTimestamp = GetCurrentTimestamp();
 
-			/*
 			if (configType == ConfigType.OpenGLES) {
 				var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
 				AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, latestTimestamp));
 				return;
 			}
-			*/
 
 			var imageFrame = textureFrame.BuildImageFrame();
 			textureFrame.Release();
@@ -178,14 +186,29 @@ namespace HardCoded.VRigUnity {
 				if (baseConfig == null) {
 					throw new InvalidOperationException("Failed to get the text config. Check if the config is set to GraphRunner");
 				}
-
-				return ConfigureCalculatorGraph(baseConfig);
-			} catch (Exception e) {
+				var status = ConfigureCalculatorGraph(baseConfig);
+				return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : CalculatorGraph.SetGpuResources(GpuManager.GpuResources);
+			}
+			catch (Exception e) {
 				return Status.FailedPrecondition(e.ToString());
 			}
 		}
-		
-		protected abstract Status ConfigureCalculatorGraph(CalculatorGraphConfig config);
+
+		/// <summary>
+		///	 Configure and initialize the <see cref="CalculatorGraph" />.
+		/// </summary>
+		/// <remarks>
+		///	 This is the main process in <see cref="InitializeCalculatorGraph" />.<br />
+		///	 At least, <c>calculatorGraph.Initialize</c> must be called here.
+		///	 In addition to that, <see cref="OutputStream" /> instances should be initialized.
+		/// </remarks>
+		/// <param name="config">
+		///	 A <see cref="CalculatorGraphConfig" /> instance corresponding to <see cref="textConfig" />.<br />
+		///	 It can be dynamically modified here.
+		/// </param>
+		protected virtual Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
+			return CalculatorGraph.Initialize(config);
+		}
 
 		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
@@ -210,7 +233,7 @@ namespace HardCoded.VRigUnity {
 			sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
 			sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
 		}
-
+		
 		// TODO: Find a way of requesting these assets from source?
 		// TODO: Remove unused calls
 		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {

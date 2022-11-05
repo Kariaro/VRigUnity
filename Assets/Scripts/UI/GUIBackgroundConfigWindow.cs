@@ -1,11 +1,11 @@
-using SFB;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static HardCoded.VRigUnity.FileDialogUtils;
 
 namespace HardCoded.VRigUnity {
 	public class GUIBackgroundConfigWindow : MonoBehaviour {
-		private const string BackgroundColorTogglePath  = "Contents/Background/Toggle";
+		private const string BackgroundColorTogglePath = "Contents/Background/Toggle";
 		private const string BackgroundColorInputPath  = "Contents/Background/InputField";
 		private const string BackgroundColorButtonPath = "Contents/Background/Button";
 		private const string ShowCameraTogglePath      = "Contents/ShowCamera/Toggle";
@@ -83,15 +83,16 @@ namespace HardCoded.VRigUnity {
 		
 		public void SelectCustomImage() {
 			var extensions = new [] {
-				new ExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
-				new ExtensionFilter("All Files", "*"),
+				new CustomExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
+				new CustomExtensionFilter("All Files", "*"),
 			};
-
-			var paths = FileDialogUtils.OpenFilePanel("Open Image", Settings.ImageFile, extensions, false);
-			if (paths.Length > 0) {
-				string filePath = paths[0];
-				settings.LoadCustomImage(filePath);
-			}
+			
+			FileDialogUtils.OpenFilePanel(this, "Open Image", Settings.ImageFile, extensions, false, (paths) => {
+				if (paths.Length > 0) {
+					string filePath = paths[0];
+					settings.LoadCustomImage(filePath);
+				}
+			});
 		}
 
 		public void PickColor() {

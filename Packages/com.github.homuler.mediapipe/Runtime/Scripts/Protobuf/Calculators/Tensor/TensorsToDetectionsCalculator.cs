@@ -26,7 +26,7 @@ namespace Mediapipe {
           string.Concat(
             "CkNtZWRpYXBpcGUvY2FsY3VsYXRvcnMvdGVuc29yL3RlbnNvcnNfdG9fZGV0",
             "ZWN0aW9uc19jYWxjdWxhdG9yLnByb3RvEgltZWRpYXBpcGUaJG1lZGlhcGlw",
-            "ZS9mcmFtZXdvcmsvY2FsY3VsYXRvci5wcm90byLuBAokVGVuc29yc1RvRGV0",
+            "ZS9mcmFtZXdvcmsvY2FsY3VsYXRvci5wcm90byL9CAokVGVuc29yc1RvRGV0",
             "ZWN0aW9uc0NhbGN1bGF0b3JPcHRpb25zEhMKC251bV9jbGFzc2VzGAEgASgF",
             "EhEKCW51bV9ib3hlcxgCIAEoBRISCgpudW1fY29vcmRzGAMgASgFEh0KFWtl",
             "eXBvaW50X2Nvb3JkX29mZnNldBgJIAEoBRIYCg1udW1fa2V5cG9pbnRzGAog",
@@ -35,16 +35,29 @@ namespace Mediapipe {
             "MBISCgd5X3NjYWxlGAUgASgCOgEwEhIKB3dfc2NhbGUYBiABKAI6ATASEgoH",
             "aF9zY2FsZRgHIAEoAjoBMBIsCh1hcHBseV9leHBvbmVudGlhbF9vbl9ib3hf",
             "c2l6ZRgNIAEoCDoFZmFsc2USIwoUcmV2ZXJzZV9vdXRwdXRfb3JkZXIYDiAB",
-            "KAg6BWZhbHNlEhYKDmlnbm9yZV9jbGFzc2VzGAggAygFEhwKDXNpZ21vaWRf",
-            "c2NvcmUYDyABKAg6BWZhbHNlEh0KFXNjb3JlX2NsaXBwaW5nX3RocmVzaBgQ",
-            "IAEoAhIeCg9mbGlwX3ZlcnRpY2FsbHkYEiABKAg6BWZhbHNlEhgKEG1pbl9z",
-            "Y29yZV90aHJlc2gYEyABKAIyXgoDZXh0EhwubWVkaWFwaXBlLkNhbGN1bGF0",
-            "b3JPcHRpb25zGK+NjKABIAEoCzIvLm1lZGlhcGlwZS5UZW5zb3JzVG9EZXRl",
-            "Y3Rpb25zQ2FsY3VsYXRvck9wdGlvbnM="));
+            "KAg6BWZhbHNlEhYKDmlnbm9yZV9jbGFzc2VzGAggAygFEhkKDWFsbG93X2Ns",
+            "YXNzZXMYFSADKAVCAhABEhwKDXNpZ21vaWRfc2NvcmUYDyABKAg6BWZhbHNl",
+            "Eh0KFXNjb3JlX2NsaXBwaW5nX3RocmVzaBgQIAEoAhIeCg9mbGlwX3ZlcnRp",
+            "Y2FsbHkYEiABKAg6BWZhbHNlEhgKEG1pbl9zY29yZV90aHJlc2gYEyABKAIS",
+            "FwoLbWF4X3Jlc3VsdHMYFCABKAU6Ai0xElUKDnRlbnNvcl9tYXBwaW5nGBYg",
+            "ASgLMj0ubWVkaWFwaXBlLlRlbnNvcnNUb0RldGVjdGlvbnNDYWxjdWxhdG9y",
+            "T3B0aW9ucy5UZW5zb3JNYXBwaW5nEmYKFmJveF9ib3VuZGFyaWVzX2luZGlj",
+            "ZXMYFyABKAsyRC5tZWRpYXBpcGUuVGVuc29yc1RvRGV0ZWN0aW9uc0NhbGN1",
+            "bGF0b3JPcHRpb25zLkJveEJvdW5kYXJpZXNJbmRpY2VzSAAargEKDVRlbnNv",
+            "ck1hcHBpbmcSHwoXZGV0ZWN0aW9uc190ZW5zb3JfaW5kZXgYASABKAUSHAoU",
+            "Y2xhc3Nlc190ZW5zb3JfaW5kZXgYAiABKAUSGwoTc2NvcmVzX3RlbnNvcl9p",
+            "bmRleBgDIAEoBRIjChtudW1fZGV0ZWN0aW9uc190ZW5zb3JfaW5kZXgYBCAB",
+            "KAUSHAoUYW5jaG9yc190ZW5zb3JfaW5kZXgYBSABKAUaWgoUQm94Qm91bmRh",
+            "cmllc0luZGljZXMSDwoEeW1pbhgBIAEoBToBMBIPCgR4bWluGAIgASgFOgEx",
+            "Eg8KBHltYXgYAyABKAU6ATISDwoEeG1heBgEIAEoBToBMzJeCgNleHQSHC5t",
+            "ZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMYr42MoAEgASgLMi8ubWVkaWFw",
+            "aXBlLlRlbnNvcnNUb0RldGVjdGlvbnNDYWxjdWxhdG9yT3B0aW9uc0INCgti",
+            "b3hfaW5kaWNlcw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.TensorsToDetectionsCalculatorOptions), global::Mediapipe.TensorsToDetectionsCalculatorOptions.Parser, new[]{ "NumClasses", "NumBoxes", "NumCoords", "KeypointCoordOffset", "NumKeypoints", "NumValuesPerKeypoint", "BoxCoordOffset", "XScale", "YScale", "WScale", "HScale", "ApplyExponentialOnBoxSize", "ReverseOutputOrder", "IgnoreClasses", "SigmoidScore", "ScoreClippingThresh", "FlipVertically", "MinScoreThresh" }, null, null, new pb::Extension[] { global::Mediapipe.TensorsToDetectionsCalculatorOptions.Extensions.Ext }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.TensorsToDetectionsCalculatorOptions), global::Mediapipe.TensorsToDetectionsCalculatorOptions.Parser, new[]{ "NumClasses", "NumBoxes", "NumCoords", "KeypointCoordOffset", "NumKeypoints", "NumValuesPerKeypoint", "BoxCoordOffset", "XScale", "YScale", "WScale", "HScale", "ApplyExponentialOnBoxSize", "ReverseOutputOrder", "IgnoreClasses", "AllowClasses", "SigmoidScore", "ScoreClippingThresh", "FlipVertically", "MinScoreThresh", "MaxResults", "TensorMapping", "BoxBoundariesIndices" }, new[]{ "BoxIndices" }, null, new pb::Extension[] { global::Mediapipe.TensorsToDetectionsCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping), global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping.Parser, new[]{ "DetectionsTensorIndex", "ClassesTensorIndex", "ScoresTensorIndex", "NumDetectionsTensorIndex", "AnchorsTensorIndex" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices), global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices.Parser, new[]{ "Ymin", "Xmin", "Ymax", "Xmax" }, null, null, null, null)})
           }));
     }
     #endregion
@@ -101,10 +114,19 @@ namespace Mediapipe {
       applyExponentialOnBoxSize_ = other.applyExponentialOnBoxSize_;
       reverseOutputOrder_ = other.reverseOutputOrder_;
       ignoreClasses_ = other.ignoreClasses_.Clone();
+      allowClasses_ = other.allowClasses_.Clone();
       sigmoidScore_ = other.sigmoidScore_;
       scoreClippingThresh_ = other.scoreClippingThresh_;
       flipVertically_ = other.flipVertically_;
       minScoreThresh_ = other.minScoreThresh_;
+      maxResults_ = other.maxResults_;
+      tensorMapping_ = other.tensorMapping_ != null ? other.tensorMapping_.Clone() : null;
+      switch (other.BoxIndicesCase) {
+        case BoxIndicesOneofCase.BoxBoundariesIndices:
+          BoxBoundariesIndices = other.BoxBoundariesIndices.Clone();
+          break;
+      }
+
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -504,11 +526,28 @@ namespace Mediapipe {
     /// <summary>
     /// The ids of classes that should be ignored during decoding the score for
     /// each predicted box. Can be overridden with IGNORE_CLASSES side packet.
+    /// `ignore_classes` and `allow_classes` are mutually exclusive.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<int> IgnoreClasses {
       get { return ignoreClasses_; }
+    }
+
+    /// <summary>Field number for the "allow_classes" field.</summary>
+    public const int AllowClassesFieldNumber = 21;
+    private static readonly pb::FieldCodec<int> _repeated_allowClasses_codec
+        = pb::FieldCodec.ForInt32(170);
+    private readonly pbc::RepeatedField<int> allowClasses_ = new pbc::RepeatedField<int>();
+    /// <summary>
+    /// The ids of classes that should be allowed during decoding the score for
+    /// each predicted box. `ignore_classes` and `allow_classes` are mutually
+    /// exclusive.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<int> AllowClasses {
+      get { return allowClasses_; }
     }
 
     /// <summary>Field number for the "sigmoid_score" field.</summary>
@@ -629,6 +668,85 @@ namespace Mediapipe {
       _hasBits0 &= ~65536;
     }
 
+    /// <summary>Field number for the "max_results" field.</summary>
+    public const int MaxResultsFieldNumber = 20;
+    private readonly static int MaxResultsDefaultValue = -1;
+
+    private int maxResults_;
+    /// <summary>
+    /// The maximum number of the detection results to return. If &lt; 0, all
+    /// available results will be returned.
+    /// For the detection models that have built-in non max suppression op, the
+    /// output detections are the top-scored results. Otherwise, the output
+    /// detections are the first N results that have higher scores than
+    /// `min_score_thresh`.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int MaxResults {
+      get { if ((_hasBits0 & 131072) != 0) { return maxResults_; } else { return MaxResultsDefaultValue; } }
+      set {
+        _hasBits0 |= 131072;
+        maxResults_ = value;
+      }
+    }
+    /// <summary>Gets whether the "max_results" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMaxResults {
+      get { return (_hasBits0 & 131072) != 0; }
+    }
+    /// <summary>Clears the value of the "max_results" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMaxResults() {
+      _hasBits0 &= ~131072;
+    }
+
+    /// <summary>Field number for the "tensor_mapping" field.</summary>
+    public const int TensorMappingFieldNumber = 22;
+    private global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping tensorMapping_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping TensorMapping {
+      get { return tensorMapping_; }
+      set {
+        tensorMapping_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "box_boundaries_indices" field.</summary>
+    public const int BoxBoundariesIndicesFieldNumber = 23;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices BoxBoundariesIndices {
+      get { return boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices ? (global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices) boxIndices_ : null; }
+      set {
+        boxIndices_ = value;
+        boxIndicesCase_ = value == null ? BoxIndicesOneofCase.None : BoxIndicesOneofCase.BoxBoundariesIndices;
+      }
+    }
+
+    private object boxIndices_;
+    /// <summary>Enum of possible cases for the "box_indices" oneof.</summary>
+    public enum BoxIndicesOneofCase {
+      None = 0,
+      BoxBoundariesIndices = 23,
+    }
+    private BoxIndicesOneofCase boxIndicesCase_ = BoxIndicesOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BoxIndicesOneofCase BoxIndicesCase {
+      get { return boxIndicesCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearBoxIndices() {
+      boxIndicesCase_ = BoxIndicesOneofCase.None;
+      boxIndices_ = null;
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -658,10 +776,15 @@ namespace Mediapipe {
       if (ApplyExponentialOnBoxSize != other.ApplyExponentialOnBoxSize) return false;
       if (ReverseOutputOrder != other.ReverseOutputOrder) return false;
       if(!ignoreClasses_.Equals(other.ignoreClasses_)) return false;
+      if(!allowClasses_.Equals(other.allowClasses_)) return false;
       if (SigmoidScore != other.SigmoidScore) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(ScoreClippingThresh, other.ScoreClippingThresh)) return false;
       if (FlipVertically != other.FlipVertically) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinScoreThresh, other.MinScoreThresh)) return false;
+      if (MaxResults != other.MaxResults) return false;
+      if (!object.Equals(TensorMapping, other.TensorMapping)) return false;
+      if (!object.Equals(BoxBoundariesIndices, other.BoxBoundariesIndices)) return false;
+      if (BoxIndicesCase != other.BoxIndicesCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -683,10 +806,15 @@ namespace Mediapipe {
       if (HasApplyExponentialOnBoxSize) hash ^= ApplyExponentialOnBoxSize.GetHashCode();
       if (HasReverseOutputOrder) hash ^= ReverseOutputOrder.GetHashCode();
       hash ^= ignoreClasses_.GetHashCode();
+      hash ^= allowClasses_.GetHashCode();
       if (HasSigmoidScore) hash ^= SigmoidScore.GetHashCode();
       if (HasScoreClippingThresh) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(ScoreClippingThresh);
       if (HasFlipVertically) hash ^= FlipVertically.GetHashCode();
       if (HasMinScoreThresh) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinScoreThresh);
+      if (HasMaxResults) hash ^= MaxResults.GetHashCode();
+      if (tensorMapping_ != null) hash ^= TensorMapping.GetHashCode();
+      if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) hash ^= BoxBoundariesIndices.GetHashCode();
+      hash ^= (int) boxIndicesCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -774,6 +902,19 @@ namespace Mediapipe {
         output.WriteRawTag(157, 1);
         output.WriteFloat(MinScoreThresh);
       }
+      if (HasMaxResults) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(MaxResults);
+      }
+      allowClasses_.WriteTo(output, _repeated_allowClasses_codec);
+      if (tensorMapping_ != null) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(TensorMapping);
+      }
+      if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) {
+        output.WriteRawTag(186, 1);
+        output.WriteMessage(BoxBoundariesIndices);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -853,6 +994,19 @@ namespace Mediapipe {
         output.WriteRawTag(157, 1);
         output.WriteFloat(MinScoreThresh);
       }
+      if (HasMaxResults) {
+        output.WriteRawTag(160, 1);
+        output.WriteInt32(MaxResults);
+      }
+      allowClasses_.WriteTo(ref output, _repeated_allowClasses_codec);
+      if (tensorMapping_ != null) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(TensorMapping);
+      }
+      if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) {
+        output.WriteRawTag(186, 1);
+        output.WriteMessage(BoxBoundariesIndices);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -903,6 +1057,7 @@ namespace Mediapipe {
         size += 1 + 1;
       }
       size += ignoreClasses_.CalculateSize(_repeated_ignoreClasses_codec);
+      size += allowClasses_.CalculateSize(_repeated_allowClasses_codec);
       if (HasSigmoidScore) {
         size += 1 + 1;
       }
@@ -914,6 +1069,15 @@ namespace Mediapipe {
       }
       if (HasMinScoreThresh) {
         size += 2 + 4;
+      }
+      if (HasMaxResults) {
+        size += 2 + pb::CodedOutputStream.ComputeInt32Size(MaxResults);
+      }
+      if (tensorMapping_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(TensorMapping);
+      }
+      if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(BoxBoundariesIndices);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -967,6 +1131,7 @@ namespace Mediapipe {
         ReverseOutputOrder = other.ReverseOutputOrder;
       }
       ignoreClasses_.Add(other.ignoreClasses_);
+      allowClasses_.Add(other.allowClasses_);
       if (other.HasSigmoidScore) {
         SigmoidScore = other.SigmoidScore;
       }
@@ -979,6 +1144,24 @@ namespace Mediapipe {
       if (other.HasMinScoreThresh) {
         MinScoreThresh = other.MinScoreThresh;
       }
+      if (other.HasMaxResults) {
+        MaxResults = other.MaxResults;
+      }
+      if (other.tensorMapping_ != null) {
+        if (tensorMapping_ == null) {
+          TensorMapping = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping();
+        }
+        TensorMapping.MergeFrom(other.TensorMapping);
+      }
+      switch (other.BoxIndicesCase) {
+        case BoxIndicesOneofCase.BoxBoundariesIndices:
+          if (BoxBoundariesIndices == null) {
+            BoxBoundariesIndices = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices();
+          }
+          BoxBoundariesIndices.MergeFrom(other.BoxBoundariesIndices);
+          break;
+      }
+
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1065,6 +1248,31 @@ namespace Mediapipe {
           }
           case 157: {
             MinScoreThresh = input.ReadFloat();
+            break;
+          }
+          case 160: {
+            MaxResults = input.ReadInt32();
+            break;
+          }
+          case 170:
+          case 168: {
+            allowClasses_.AddEntriesFrom(input, _repeated_allowClasses_codec);
+            break;
+          }
+          case 178: {
+            if (tensorMapping_ == null) {
+              TensorMapping = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping();
+            }
+            input.ReadMessage(TensorMapping);
+            break;
+          }
+          case 186: {
+            global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices subBuilder = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices();
+            if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) {
+              subBuilder.MergeFrom(BoxBoundariesIndices);
+            }
+            input.ReadMessage(subBuilder);
+            BoxBoundariesIndices = subBuilder;
             break;
           }
         }
@@ -1155,10 +1363,832 @@ namespace Mediapipe {
             MinScoreThresh = input.ReadFloat();
             break;
           }
+          case 160: {
+            MaxResults = input.ReadInt32();
+            break;
+          }
+          case 170:
+          case 168: {
+            allowClasses_.AddEntriesFrom(ref input, _repeated_allowClasses_codec);
+            break;
+          }
+          case 178: {
+            if (tensorMapping_ == null) {
+              TensorMapping = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.TensorMapping();
+            }
+            input.ReadMessage(TensorMapping);
+            break;
+          }
+          case 186: {
+            global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices subBuilder = new global::Mediapipe.TensorsToDetectionsCalculatorOptions.Types.BoxBoundariesIndices();
+            if (boxIndicesCase_ == BoxIndicesOneofCase.BoxBoundariesIndices) {
+              subBuilder.MergeFrom(BoxBoundariesIndices);
+            }
+            input.ReadMessage(subBuilder);
+            BoxBoundariesIndices = subBuilder;
+            break;
+          }
         }
       }
     }
     #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the TensorsToDetectionsCalculatorOptions message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      /// <summary>
+      /// The custom model output tensor mapping.
+      /// The indices of the "detections" tensor and the "scores" tensor are always
+      /// required. If the model outputs an "anchors" tensor, `anchors_tensor_index`
+      /// must be specified. If the model outputs both "classes" tensor and "number
+      /// of detections" tensors, `classes_tensor_index` and
+      /// `num_detections_tensor_index` must be set.
+      /// </summary>
+      public sealed partial class TensorMapping : pb::IMessage<TensorMapping>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<TensorMapping> _parser = new pb::MessageParser<TensorMapping>(() => new TensorMapping());
+        private pb::UnknownFieldSet _unknownFields;
+        private int _hasBits0;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<TensorMapping> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.TensorsToDetectionsCalculatorOptions.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public TensorMapping() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public TensorMapping(TensorMapping other) : this() {
+          _hasBits0 = other._hasBits0;
+          detectionsTensorIndex_ = other.detectionsTensorIndex_;
+          classesTensorIndex_ = other.classesTensorIndex_;
+          scoresTensorIndex_ = other.scoresTensorIndex_;
+          numDetectionsTensorIndex_ = other.numDetectionsTensorIndex_;
+          anchorsTensorIndex_ = other.anchorsTensorIndex_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public TensorMapping Clone() {
+          return new TensorMapping(this);
+        }
+
+        /// <summary>Field number for the "detections_tensor_index" field.</summary>
+        public const int DetectionsTensorIndexFieldNumber = 1;
+        private readonly static int DetectionsTensorIndexDefaultValue = 0;
+
+        private int detectionsTensorIndex_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int DetectionsTensorIndex {
+          get { if ((_hasBits0 & 1) != 0) { return detectionsTensorIndex_; } else { return DetectionsTensorIndexDefaultValue; } }
+          set {
+            _hasBits0 |= 1;
+            detectionsTensorIndex_ = value;
+          }
+        }
+        /// <summary>Gets whether the "detections_tensor_index" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasDetectionsTensorIndex {
+          get { return (_hasBits0 & 1) != 0; }
+        }
+        /// <summary>Clears the value of the "detections_tensor_index" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearDetectionsTensorIndex() {
+          _hasBits0 &= ~1;
+        }
+
+        /// <summary>Field number for the "classes_tensor_index" field.</summary>
+        public const int ClassesTensorIndexFieldNumber = 2;
+        private readonly static int ClassesTensorIndexDefaultValue = 0;
+
+        private int classesTensorIndex_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int ClassesTensorIndex {
+          get { if ((_hasBits0 & 2) != 0) { return classesTensorIndex_; } else { return ClassesTensorIndexDefaultValue; } }
+          set {
+            _hasBits0 |= 2;
+            classesTensorIndex_ = value;
+          }
+        }
+        /// <summary>Gets whether the "classes_tensor_index" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasClassesTensorIndex {
+          get { return (_hasBits0 & 2) != 0; }
+        }
+        /// <summary>Clears the value of the "classes_tensor_index" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearClassesTensorIndex() {
+          _hasBits0 &= ~2;
+        }
+
+        /// <summary>Field number for the "scores_tensor_index" field.</summary>
+        public const int ScoresTensorIndexFieldNumber = 3;
+        private readonly static int ScoresTensorIndexDefaultValue = 0;
+
+        private int scoresTensorIndex_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int ScoresTensorIndex {
+          get { if ((_hasBits0 & 4) != 0) { return scoresTensorIndex_; } else { return ScoresTensorIndexDefaultValue; } }
+          set {
+            _hasBits0 |= 4;
+            scoresTensorIndex_ = value;
+          }
+        }
+        /// <summary>Gets whether the "scores_tensor_index" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasScoresTensorIndex {
+          get { return (_hasBits0 & 4) != 0; }
+        }
+        /// <summary>Clears the value of the "scores_tensor_index" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearScoresTensorIndex() {
+          _hasBits0 &= ~4;
+        }
+
+        /// <summary>Field number for the "num_detections_tensor_index" field.</summary>
+        public const int NumDetectionsTensorIndexFieldNumber = 4;
+        private readonly static int NumDetectionsTensorIndexDefaultValue = 0;
+
+        private int numDetectionsTensorIndex_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int NumDetectionsTensorIndex {
+          get { if ((_hasBits0 & 8) != 0) { return numDetectionsTensorIndex_; } else { return NumDetectionsTensorIndexDefaultValue; } }
+          set {
+            _hasBits0 |= 8;
+            numDetectionsTensorIndex_ = value;
+          }
+        }
+        /// <summary>Gets whether the "num_detections_tensor_index" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasNumDetectionsTensorIndex {
+          get { return (_hasBits0 & 8) != 0; }
+        }
+        /// <summary>Clears the value of the "num_detections_tensor_index" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearNumDetectionsTensorIndex() {
+          _hasBits0 &= ~8;
+        }
+
+        /// <summary>Field number for the "anchors_tensor_index" field.</summary>
+        public const int AnchorsTensorIndexFieldNumber = 5;
+        private readonly static int AnchorsTensorIndexDefaultValue = 0;
+
+        private int anchorsTensorIndex_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int AnchorsTensorIndex {
+          get { if ((_hasBits0 & 16) != 0) { return anchorsTensorIndex_; } else { return AnchorsTensorIndexDefaultValue; } }
+          set {
+            _hasBits0 |= 16;
+            anchorsTensorIndex_ = value;
+          }
+        }
+        /// <summary>Gets whether the "anchors_tensor_index" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasAnchorsTensorIndex {
+          get { return (_hasBits0 & 16) != 0; }
+        }
+        /// <summary>Clears the value of the "anchors_tensor_index" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearAnchorsTensorIndex() {
+          _hasBits0 &= ~16;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as TensorMapping);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(TensorMapping other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (DetectionsTensorIndex != other.DetectionsTensorIndex) return false;
+          if (ClassesTensorIndex != other.ClassesTensorIndex) return false;
+          if (ScoresTensorIndex != other.ScoresTensorIndex) return false;
+          if (NumDetectionsTensorIndex != other.NumDetectionsTensorIndex) return false;
+          if (AnchorsTensorIndex != other.AnchorsTensorIndex) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (HasDetectionsTensorIndex) hash ^= DetectionsTensorIndex.GetHashCode();
+          if (HasClassesTensorIndex) hash ^= ClassesTensorIndex.GetHashCode();
+          if (HasScoresTensorIndex) hash ^= ScoresTensorIndex.GetHashCode();
+          if (HasNumDetectionsTensorIndex) hash ^= NumDetectionsTensorIndex.GetHashCode();
+          if (HasAnchorsTensorIndex) hash ^= AnchorsTensorIndex.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (HasDetectionsTensorIndex) {
+            output.WriteRawTag(8);
+            output.WriteInt32(DetectionsTensorIndex);
+          }
+          if (HasClassesTensorIndex) {
+            output.WriteRawTag(16);
+            output.WriteInt32(ClassesTensorIndex);
+          }
+          if (HasScoresTensorIndex) {
+            output.WriteRawTag(24);
+            output.WriteInt32(ScoresTensorIndex);
+          }
+          if (HasNumDetectionsTensorIndex) {
+            output.WriteRawTag(32);
+            output.WriteInt32(NumDetectionsTensorIndex);
+          }
+          if (HasAnchorsTensorIndex) {
+            output.WriteRawTag(40);
+            output.WriteInt32(AnchorsTensorIndex);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (HasDetectionsTensorIndex) {
+            output.WriteRawTag(8);
+            output.WriteInt32(DetectionsTensorIndex);
+          }
+          if (HasClassesTensorIndex) {
+            output.WriteRawTag(16);
+            output.WriteInt32(ClassesTensorIndex);
+          }
+          if (HasScoresTensorIndex) {
+            output.WriteRawTag(24);
+            output.WriteInt32(ScoresTensorIndex);
+          }
+          if (HasNumDetectionsTensorIndex) {
+            output.WriteRawTag(32);
+            output.WriteInt32(NumDetectionsTensorIndex);
+          }
+          if (HasAnchorsTensorIndex) {
+            output.WriteRawTag(40);
+            output.WriteInt32(AnchorsTensorIndex);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (HasDetectionsTensorIndex) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(DetectionsTensorIndex);
+          }
+          if (HasClassesTensorIndex) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(ClassesTensorIndex);
+          }
+          if (HasScoresTensorIndex) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(ScoresTensorIndex);
+          }
+          if (HasNumDetectionsTensorIndex) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(NumDetectionsTensorIndex);
+          }
+          if (HasAnchorsTensorIndex) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(AnchorsTensorIndex);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(TensorMapping other) {
+          if (other == null) {
+            return;
+          }
+          if (other.HasDetectionsTensorIndex) {
+            DetectionsTensorIndex = other.DetectionsTensorIndex;
+          }
+          if (other.HasClassesTensorIndex) {
+            ClassesTensorIndex = other.ClassesTensorIndex;
+          }
+          if (other.HasScoresTensorIndex) {
+            ScoresTensorIndex = other.ScoresTensorIndex;
+          }
+          if (other.HasNumDetectionsTensorIndex) {
+            NumDetectionsTensorIndex = other.NumDetectionsTensorIndex;
+          }
+          if (other.HasAnchorsTensorIndex) {
+            AnchorsTensorIndex = other.AnchorsTensorIndex;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                DetectionsTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 16: {
+                ClassesTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 24: {
+                ScoresTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 32: {
+                NumDetectionsTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 40: {
+                AnchorsTensorIndex = input.ReadInt32();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                DetectionsTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 16: {
+                ClassesTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 24: {
+                ScoresTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 32: {
+                NumDetectionsTensorIndex = input.ReadInt32();
+                break;
+              }
+              case 40: {
+                AnchorsTensorIndex = input.ReadInt32();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      /// <summary>
+      /// Represents the bounding box by using the combination of boundaries,
+      /// {ymin, xmin, ymax, xmax}.
+      /// The default order is {ymin, xmin, ymax, xmax}.
+      /// </summary>
+      public sealed partial class BoxBoundariesIndices : pb::IMessage<BoxBoundariesIndices>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<BoxBoundariesIndices> _parser = new pb::MessageParser<BoxBoundariesIndices>(() => new BoxBoundariesIndices());
+        private pb::UnknownFieldSet _unknownFields;
+        private int _hasBits0;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<BoxBoundariesIndices> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.TensorsToDetectionsCalculatorOptions.Descriptor.NestedTypes[1]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public BoxBoundariesIndices() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public BoxBoundariesIndices(BoxBoundariesIndices other) : this() {
+          _hasBits0 = other._hasBits0;
+          ymin_ = other.ymin_;
+          xmin_ = other.xmin_;
+          ymax_ = other.ymax_;
+          xmax_ = other.xmax_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public BoxBoundariesIndices Clone() {
+          return new BoxBoundariesIndices(this);
+        }
+
+        /// <summary>Field number for the "ymin" field.</summary>
+        public const int YminFieldNumber = 1;
+        private readonly static int YminDefaultValue = 0;
+
+        private int ymin_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int Ymin {
+          get { if ((_hasBits0 & 1) != 0) { return ymin_; } else { return YminDefaultValue; } }
+          set {
+            _hasBits0 |= 1;
+            ymin_ = value;
+          }
+        }
+        /// <summary>Gets whether the "ymin" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasYmin {
+          get { return (_hasBits0 & 1) != 0; }
+        }
+        /// <summary>Clears the value of the "ymin" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearYmin() {
+          _hasBits0 &= ~1;
+        }
+
+        /// <summary>Field number for the "xmin" field.</summary>
+        public const int XminFieldNumber = 2;
+        private readonly static int XminDefaultValue = 1;
+
+        private int xmin_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int Xmin {
+          get { if ((_hasBits0 & 2) != 0) { return xmin_; } else { return XminDefaultValue; } }
+          set {
+            _hasBits0 |= 2;
+            xmin_ = value;
+          }
+        }
+        /// <summary>Gets whether the "xmin" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasXmin {
+          get { return (_hasBits0 & 2) != 0; }
+        }
+        /// <summary>Clears the value of the "xmin" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearXmin() {
+          _hasBits0 &= ~2;
+        }
+
+        /// <summary>Field number for the "ymax" field.</summary>
+        public const int YmaxFieldNumber = 3;
+        private readonly static int YmaxDefaultValue = 2;
+
+        private int ymax_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int Ymax {
+          get { if ((_hasBits0 & 4) != 0) { return ymax_; } else { return YmaxDefaultValue; } }
+          set {
+            _hasBits0 |= 4;
+            ymax_ = value;
+          }
+        }
+        /// <summary>Gets whether the "ymax" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasYmax {
+          get { return (_hasBits0 & 4) != 0; }
+        }
+        /// <summary>Clears the value of the "ymax" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearYmax() {
+          _hasBits0 &= ~4;
+        }
+
+        /// <summary>Field number for the "xmax" field.</summary>
+        public const int XmaxFieldNumber = 4;
+        private readonly static int XmaxDefaultValue = 3;
+
+        private int xmax_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int Xmax {
+          get { if ((_hasBits0 & 8) != 0) { return xmax_; } else { return XmaxDefaultValue; } }
+          set {
+            _hasBits0 |= 8;
+            xmax_ = value;
+          }
+        }
+        /// <summary>Gets whether the "xmax" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasXmax {
+          get { return (_hasBits0 & 8) != 0; }
+        }
+        /// <summary>Clears the value of the "xmax" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearXmax() {
+          _hasBits0 &= ~8;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as BoxBoundariesIndices);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(BoxBoundariesIndices other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Ymin != other.Ymin) return false;
+          if (Xmin != other.Xmin) return false;
+          if (Ymax != other.Ymax) return false;
+          if (Xmax != other.Xmax) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (HasYmin) hash ^= Ymin.GetHashCode();
+          if (HasXmin) hash ^= Xmin.GetHashCode();
+          if (HasYmax) hash ^= Ymax.GetHashCode();
+          if (HasXmax) hash ^= Xmax.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (HasYmin) {
+            output.WriteRawTag(8);
+            output.WriteInt32(Ymin);
+          }
+          if (HasXmin) {
+            output.WriteRawTag(16);
+            output.WriteInt32(Xmin);
+          }
+          if (HasYmax) {
+            output.WriteRawTag(24);
+            output.WriteInt32(Ymax);
+          }
+          if (HasXmax) {
+            output.WriteRawTag(32);
+            output.WriteInt32(Xmax);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (HasYmin) {
+            output.WriteRawTag(8);
+            output.WriteInt32(Ymin);
+          }
+          if (HasXmin) {
+            output.WriteRawTag(16);
+            output.WriteInt32(Xmin);
+          }
+          if (HasYmax) {
+            output.WriteRawTag(24);
+            output.WriteInt32(Ymax);
+          }
+          if (HasXmax) {
+            output.WriteRawTag(32);
+            output.WriteInt32(Xmax);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (HasYmin) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Ymin);
+          }
+          if (HasXmin) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Xmin);
+          }
+          if (HasYmax) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Ymax);
+          }
+          if (HasXmax) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(Xmax);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(BoxBoundariesIndices other) {
+          if (other == null) {
+            return;
+          }
+          if (other.HasYmin) {
+            Ymin = other.Ymin;
+          }
+          if (other.HasXmin) {
+            Xmin = other.Xmin;
+          }
+          if (other.HasYmax) {
+            Ymax = other.Ymax;
+          }
+          if (other.HasXmax) {
+            Xmax = other.Xmax;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                Ymin = input.ReadInt32();
+                break;
+              }
+              case 16: {
+                Xmin = input.ReadInt32();
+                break;
+              }
+              case 24: {
+                Ymax = input.ReadInt32();
+                break;
+              }
+              case 32: {
+                Xmax = input.ReadInt32();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                Ymin = input.ReadInt32();
+                break;
+              }
+              case 16: {
+                Xmin = input.ReadInt32();
+                break;
+              }
+              case 24: {
+                Ymax = input.ReadInt32();
+                break;
+              }
+              case 32: {
+                Xmax = input.ReadInt32();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+    }
+    #endregion
 
     #region Extensions
     /// <summary>Container for extensions for other messages declared in the TensorsToDetectionsCalculatorOptions message type.</summary>

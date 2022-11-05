@@ -72,6 +72,11 @@ namespace Mediapipe.Unity
       }
     }
 
+    public bool ContainsKey(TKey key)
+    {
+      return _table.ContainsKey(key);
+    }
+
     private void ClearUnusedKeys()
     {
       lock (((ICollection)_table).SyncRoot)

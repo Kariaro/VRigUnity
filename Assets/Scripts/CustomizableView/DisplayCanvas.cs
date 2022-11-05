@@ -43,6 +43,7 @@ namespace HardCoded.VRigUnity {
 
 			if (webcamImage != null) {
 				webcamImage.gameObject.SetActive(enable);
+				webcamImage.color = Color.white;
 			}
 		}
 
@@ -58,20 +59,24 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void DrawImage(TextureFrame textureFrame) {
+		public void ReadSync(TextureFrame textureFrame) {
 			if (!IsShowingWebcam) {
 				webcamImage.color = Color.clear;
 				return;
 			}
 
+			/*
 			Texture2D tex = webcamImage.texture as Texture2D;
 			
 			// If the webcam image is not a texture2D
 			if (!(tex is Texture2D) || tex.width != textureFrame.width || tex.height != textureFrame.height) {
 				tex = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
 				webcamImage.texture = tex;
+				Logger.Info($"{webcamImage.texture}");
+				Logger.Info($"{webcamImage.color}");
 			}
-				
+			*/
+			
 			float w = (UnityEngine.Screen.width / (float) UnityEngine.Screen.height);
 			float d = (textureFrame.height / (float) textureFrame.width) * w * 0.5f;
 
@@ -84,8 +89,16 @@ namespace HardCoded.VRigUnity {
 				webcamImage.rectTransform.anchorMax = new(0.5f + d, 1);
 			}
 
+			// Flip UV rect
+			if (Settings.CameraFlipped) {
+				webcamImage.uvRect = new(0, 0, 1, 1);
+			} else {
+				webcamImage.uvRect = new(1, 0, -1, 1);
+			}
+
+			// textureFrame.CopyTexture(webcamImage.texture);
 			webcamImage.color = Color.white;
-			textureFrame.CopyTexture(tex);
+			webcamImage.texture = SolutionUtils.GetImageSource().GetCurrentTexture();
 		}
 	}
 }

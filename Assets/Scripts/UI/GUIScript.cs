@@ -28,11 +28,11 @@ namespace HardCoded.VRigUnity {
 
 		public void LoadVrmModel(string path) {
 			if (!File.Exists(path)) {
-				Logger.Log("Failed to load vrm model '" + path + "'");
+				Logger.Log($"Failed to load vrm model '{path}'");
 				return;
 			}
 
-			Logger.Log("Load VRM Model: '" + path + "'");
+			Logger.Log($"Load VRM Model: '{path}'");
 
 			var data = new GlbFileParser(path).Parse();
 			var vrm = new VRMData(data);
@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 
 		public void LoadCustomImage(string path) {
 			if (!File.Exists(path)) {
-				Logger.Log("Failed to load background image '" + path + "'");
+				Logger.Log($"Failed to load background image '{path}'");
 				return;
 			}
 
@@ -93,10 +93,6 @@ namespace HardCoded.VRigUnity {
 
 		public void UpdateShowCamera() {
 			SetShowCamera(showWebCamImage);
-		}
-
-		public void DrawImage(TextureFrame textureFrame) {
-			customizableCanvas.DrawImage(textureFrame);
 		}
 
 		public void OpenDiscord() {

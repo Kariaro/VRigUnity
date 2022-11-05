@@ -27,23 +27,31 @@ namespace Mediapipe {
             "Cj1tZWRpYXBpcGUvY2FsY3VsYXRvcnMvdGVuc29yL2ltYWdlX3RvX3RlbnNv",
             "cl9jYWxjdWxhdG9yLnByb3RvEgltZWRpYXBpcGUaJG1lZGlhcGlwZS9mcmFt",
             "ZXdvcmsvY2FsY3VsYXRvci5wcm90bxoebWVkaWFwaXBlL2dwdS9ncHVfb3Jp",
-            "Z2luLnByb3RvIqMECh5JbWFnZVRvVGVuc29yQ2FsY3VsYXRvck9wdGlvbnMS",
+            "Z2luLnByb3RvIqAGCh5JbWFnZVRvVGVuc29yQ2FsY3VsYXRvck9wdGlvbnMS",
             "GwoTb3V0cHV0X3RlbnNvcl93aWR0aBgBIAEoBRIcChRvdXRwdXRfdGVuc29y",
             "X2hlaWdodBgCIAEoBRIZChFrZWVwX2FzcGVjdF9yYXRpbxgDIAEoCBJZChlv",
             "dXRwdXRfdGVuc29yX2Zsb2F0X3JhbmdlGAQgASgLMjQubWVkaWFwaXBlLklt",
-            "YWdlVG9UZW5zb3JDYWxjdWxhdG9yT3B0aW9ucy5GbG9hdFJhbmdlSAASLQoK",
-            "Z3B1X29yaWdpbhgFIAEoDjIZLm1lZGlhcGlwZS5HcHVPcmlnaW4uTW9kZRJJ",
-            "Cgtib3JkZXJfbW9kZRgGIAEoDjI0Lm1lZGlhcGlwZS5JbWFnZVRvVGVuc29y",
-            "Q2FsY3VsYXRvck9wdGlvbnMuQm9yZGVyTW9kZRomCgpGbG9hdFJhbmdlEgsK",
-            "A21pbhgBIAEoAhILCgNtYXgYAiABKAIiSwoKQm9yZGVyTW9kZRIWChJCT1JE",
-            "RVJfVU5TUEVDSUZJRUQQABIPCgtCT1JERVJfWkVSTxABEhQKEEJPUkRFUl9S",
-            "RVBMSUNBVEUQAjJYCgNleHQSHC5tZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlv",
-            "bnMY0+q3nwEgASgLMikubWVkaWFwaXBlLkltYWdlVG9UZW5zb3JDYWxjdWxh",
-            "dG9yT3B0aW9uc0IHCgVyYW5nZQ=="));
+            "YWdlVG9UZW5zb3JDYWxjdWxhdG9yT3B0aW9ucy5GbG9hdFJhbmdlSAASVQoX",
+            "b3V0cHV0X3RlbnNvcl9pbnRfcmFuZ2UYByABKAsyMi5tZWRpYXBpcGUuSW1h",
+            "Z2VUb1RlbnNvckNhbGN1bGF0b3JPcHRpb25zLkludFJhbmdlSAASVwoYb3V0",
+            "cHV0X3RlbnNvcl91aW50X3JhbmdlGAggASgLMjMubWVkaWFwaXBlLkltYWdl",
+            "VG9UZW5zb3JDYWxjdWxhdG9yT3B0aW9ucy5VSW50UmFuZ2VIABItCgpncHVf",
+            "b3JpZ2luGAUgASgOMhkubWVkaWFwaXBlLkdwdU9yaWdpbi5Nb2RlEkkKC2Jv",
+            "cmRlcl9tb2RlGAYgASgOMjQubWVkaWFwaXBlLkltYWdlVG9UZW5zb3JDYWxj",
+            "dWxhdG9yT3B0aW9ucy5Cb3JkZXJNb2RlGiYKCkZsb2F0UmFuZ2USCwoDbWlu",
+            "GAEgASgCEgsKA21heBgCIAEoAhokCghJbnRSYW5nZRILCgNtaW4YASABKAMS",
+            "CwoDbWF4GAIgASgDGiUKCVVJbnRSYW5nZRILCgNtaW4YASABKAQSCwoDbWF4",
+            "GAIgASgEIksKCkJvcmRlck1vZGUSFgoSQk9SREVSX1VOU1BFQ0lGSUVEEAAS",
+            "DwoLQk9SREVSX1pFUk8QARIUChBCT1JERVJfUkVQTElDQVRFEAIyWAoDZXh0",
+            "EhwubWVkaWFwaXBlLkNhbGN1bGF0b3JPcHRpb25zGNPqt58BIAEoCzIpLm1l",
+            "ZGlhcGlwZS5JbWFnZVRvVGVuc29yQ2FsY3VsYXRvck9wdGlvbnNCBwoFcmFu",
+            "Z2U="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.GpuOriginReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions), global::Mediapipe.ImageToTensorCalculatorOptions.Parser, new[]{ "OutputTensorWidth", "OutputTensorHeight", "KeepAspectRatio", "OutputTensorFloatRange", "GpuOrigin", "BorderMode" }, new[]{ "Range" }, new[]{ typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.BorderMode) }, new pb::Extension[] { global::Mediapipe.ImageToTensorCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.FloatRange), global::Mediapipe.ImageToTensorCalculatorOptions.Types.FloatRange.Parser, new[]{ "Min", "Max" }, null, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions), global::Mediapipe.ImageToTensorCalculatorOptions.Parser, new[]{ "OutputTensorWidth", "OutputTensorHeight", "KeepAspectRatio", "OutputTensorFloatRange", "OutputTensorIntRange", "OutputTensorUintRange", "GpuOrigin", "BorderMode" }, new[]{ "Range" }, new[]{ typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.BorderMode) }, new pb::Extension[] { global::Mediapipe.ImageToTensorCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.FloatRange), global::Mediapipe.ImageToTensorCalculatorOptions.Types.FloatRange.Parser, new[]{ "Min", "Max" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange), global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange.Parser, new[]{ "Min", "Max" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange), global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange.Parser, new[]{ "Min", "Max" }, null, null, null, null)})
           }));
     }
     #endregion
@@ -94,6 +102,12 @@ namespace Mediapipe {
       switch (other.RangeCase) {
         case RangeOneofCase.OutputTensorFloatRange:
           OutputTensorFloatRange = other.OutputTensorFloatRange.Clone();
+          break;
+        case RangeOneofCase.OutputTensorIntRange:
+          OutputTensorIntRange = other.OutputTensorIntRange.Clone();
+          break;
+        case RangeOneofCase.OutputTensorUintRange:
+          OutputTensorUintRange = other.OutputTensorUintRange.Clone();
           break;
       }
 
@@ -204,6 +218,30 @@ namespace Mediapipe {
       }
     }
 
+    /// <summary>Field number for the "output_tensor_int_range" field.</summary>
+    public const int OutputTensorIntRangeFieldNumber = 7;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange OutputTensorIntRange {
+      get { return rangeCase_ == RangeOneofCase.OutputTensorIntRange ? (global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange) range_ : null; }
+      set {
+        range_ = value;
+        rangeCase_ = value == null ? RangeOneofCase.None : RangeOneofCase.OutputTensorIntRange;
+      }
+    }
+
+    /// <summary>Field number for the "output_tensor_uint_range" field.</summary>
+    public const int OutputTensorUintRangeFieldNumber = 8;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange OutputTensorUintRange {
+      get { return rangeCase_ == RangeOneofCase.OutputTensorUintRange ? (global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange) range_ : null; }
+      set {
+        range_ = value;
+        rangeCase_ = value == null ? RangeOneofCase.None : RangeOneofCase.OutputTensorUintRange;
+      }
+    }
+
     /// <summary>Field number for the "gpu_origin" field.</summary>
     public const int GpuOriginFieldNumber = 5;
     private readonly static global::Mediapipe.GpuOrigin.Types.Mode GpuOriginDefaultValue = global::Mediapipe.GpuOrigin.Types.Mode.Default;
@@ -276,6 +314,8 @@ namespace Mediapipe {
     public enum RangeOneofCase {
       None = 0,
       OutputTensorFloatRange = 4,
+      OutputTensorIntRange = 7,
+      OutputTensorUintRange = 8,
     }
     private RangeOneofCase rangeCase_ = RangeOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -310,6 +350,8 @@ namespace Mediapipe {
       if (OutputTensorHeight != other.OutputTensorHeight) return false;
       if (KeepAspectRatio != other.KeepAspectRatio) return false;
       if (!object.Equals(OutputTensorFloatRange, other.OutputTensorFloatRange)) return false;
+      if (!object.Equals(OutputTensorIntRange, other.OutputTensorIntRange)) return false;
+      if (!object.Equals(OutputTensorUintRange, other.OutputTensorUintRange)) return false;
       if (GpuOrigin != other.GpuOrigin) return false;
       if (BorderMode != other.BorderMode) return false;
       if (RangeCase != other.RangeCase) return false;
@@ -324,6 +366,8 @@ namespace Mediapipe {
       if (HasOutputTensorHeight) hash ^= OutputTensorHeight.GetHashCode();
       if (HasKeepAspectRatio) hash ^= KeepAspectRatio.GetHashCode();
       if (rangeCase_ == RangeOneofCase.OutputTensorFloatRange) hash ^= OutputTensorFloatRange.GetHashCode();
+      if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) hash ^= OutputTensorIntRange.GetHashCode();
+      if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) hash ^= OutputTensorUintRange.GetHashCode();
       if (HasGpuOrigin) hash ^= GpuOrigin.GetHashCode();
       if (HasBorderMode) hash ^= BorderMode.GetHashCode();
       hash ^= (int) rangeCase_;
@@ -369,6 +413,14 @@ namespace Mediapipe {
         output.WriteRawTag(48);
         output.WriteEnum((int) BorderMode);
       }
+      if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) {
+        output.WriteRawTag(58);
+        output.WriteMessage(OutputTensorIntRange);
+      }
+      if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) {
+        output.WriteRawTag(66);
+        output.WriteMessage(OutputTensorUintRange);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -403,6 +455,14 @@ namespace Mediapipe {
         output.WriteRawTag(48);
         output.WriteEnum((int) BorderMode);
       }
+      if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) {
+        output.WriteRawTag(58);
+        output.WriteMessage(OutputTensorIntRange);
+      }
+      if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) {
+        output.WriteRawTag(66);
+        output.WriteMessage(OutputTensorUintRange);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -424,6 +484,12 @@ namespace Mediapipe {
       }
       if (rangeCase_ == RangeOneofCase.OutputTensorFloatRange) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(OutputTensorFloatRange);
+      }
+      if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OutputTensorIntRange);
+      }
+      if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OutputTensorUintRange);
       }
       if (HasGpuOrigin) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) GpuOrigin);
@@ -464,6 +530,18 @@ namespace Mediapipe {
             OutputTensorFloatRange = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.FloatRange();
           }
           OutputTensorFloatRange.MergeFrom(other.OutputTensorFloatRange);
+          break;
+        case RangeOneofCase.OutputTensorIntRange:
+          if (OutputTensorIntRange == null) {
+            OutputTensorIntRange = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange();
+          }
+          OutputTensorIntRange.MergeFrom(other.OutputTensorIntRange);
+          break;
+        case RangeOneofCase.OutputTensorUintRange:
+          if (OutputTensorUintRange == null) {
+            OutputTensorUintRange = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange();
+          }
+          OutputTensorUintRange.MergeFrom(other.OutputTensorUintRange);
           break;
       }
 
@@ -511,6 +589,24 @@ namespace Mediapipe {
             BorderMode = (global::Mediapipe.ImageToTensorCalculatorOptions.Types.BorderMode) input.ReadEnum();
             break;
           }
+          case 58: {
+            global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange subBuilder = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange();
+            if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) {
+              subBuilder.MergeFrom(OutputTensorIntRange);
+            }
+            input.ReadMessage(subBuilder);
+            OutputTensorIntRange = subBuilder;
+            break;
+          }
+          case 66: {
+            global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange subBuilder = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange();
+            if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) {
+              subBuilder.MergeFrom(OutputTensorUintRange);
+            }
+            input.ReadMessage(subBuilder);
+            OutputTensorUintRange = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -553,6 +649,24 @@ namespace Mediapipe {
           }
           case 48: {
             BorderMode = (global::Mediapipe.ImageToTensorCalculatorOptions.Types.BorderMode) input.ReadEnum();
+            break;
+          }
+          case 58: {
+            global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange subBuilder = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.IntRange();
+            if (rangeCase_ == RangeOneofCase.OutputTensorIntRange) {
+              subBuilder.MergeFrom(OutputTensorIntRange);
+            }
+            input.ReadMessage(subBuilder);
+            OutputTensorIntRange = subBuilder;
+            break;
+          }
+          case 66: {
+            global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange subBuilder = new global::Mediapipe.ImageToTensorCalculatorOptions.Types.UIntRange();
+            if (rangeCase_ == RangeOneofCase.OutputTensorUintRange) {
+              subBuilder.MergeFrom(OutputTensorUintRange);
+            }
+            input.ReadMessage(subBuilder);
+            OutputTensorUintRange = subBuilder;
             break;
           }
         }
@@ -827,6 +941,532 @@ namespace Mediapipe {
               }
               case 21: {
                 Max = input.ReadFloat();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      /// <summary>
+      /// Range of int values [min, max].
+      /// min, must be strictly less than max.
+      /// Please note that IntRange is supported for CPU tensors only.
+      /// </summary>
+      public sealed partial class IntRange : pb::IMessage<IntRange>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<IntRange> _parser = new pb::MessageParser<IntRange>(() => new IntRange());
+        private pb::UnknownFieldSet _unknownFields;
+        private int _hasBits0;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<IntRange> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.ImageToTensorCalculatorOptions.Descriptor.NestedTypes[1]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntRange() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntRange(IntRange other) : this() {
+          _hasBits0 = other._hasBits0;
+          min_ = other.min_;
+          max_ = other.max_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public IntRange Clone() {
+          return new IntRange(this);
+        }
+
+        /// <summary>Field number for the "min" field.</summary>
+        public const int MinFieldNumber = 1;
+        private readonly static long MinDefaultValue = 0L;
+
+        private long min_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long Min {
+          get { if ((_hasBits0 & 1) != 0) { return min_; } else { return MinDefaultValue; } }
+          set {
+            _hasBits0 |= 1;
+            min_ = value;
+          }
+        }
+        /// <summary>Gets whether the "min" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasMin {
+          get { return (_hasBits0 & 1) != 0; }
+        }
+        /// <summary>Clears the value of the "min" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearMin() {
+          _hasBits0 &= ~1;
+        }
+
+        /// <summary>Field number for the "max" field.</summary>
+        public const int MaxFieldNumber = 2;
+        private readonly static long MaxDefaultValue = 0L;
+
+        private long max_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long Max {
+          get { if ((_hasBits0 & 2) != 0) { return max_; } else { return MaxDefaultValue; } }
+          set {
+            _hasBits0 |= 2;
+            max_ = value;
+          }
+        }
+        /// <summary>Gets whether the "max" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasMax {
+          get { return (_hasBits0 & 2) != 0; }
+        }
+        /// <summary>Clears the value of the "max" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearMax() {
+          _hasBits0 &= ~2;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as IntRange);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(IntRange other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Min != other.Min) return false;
+          if (Max != other.Max) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (HasMin) hash ^= Min.GetHashCode();
+          if (HasMax) hash ^= Max.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (HasMin) {
+            output.WriteRawTag(8);
+            output.WriteInt64(Min);
+          }
+          if (HasMax) {
+            output.WriteRawTag(16);
+            output.WriteInt64(Max);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (HasMin) {
+            output.WriteRawTag(8);
+            output.WriteInt64(Min);
+          }
+          if (HasMax) {
+            output.WriteRawTag(16);
+            output.WriteInt64(Max);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (HasMin) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(Min);
+          }
+          if (HasMax) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(Max);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(IntRange other) {
+          if (other == null) {
+            return;
+          }
+          if (other.HasMin) {
+            Min = other.Min;
+          }
+          if (other.HasMax) {
+            Max = other.Max;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                Min = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                Max = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                Min = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                Max = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      /// <summary>
+      /// Range of uint values [min, max].
+      /// min, must be strictly less than max.
+      /// Please note that UIntRange is supported for CPU tensors only.
+      /// </summary>
+      public sealed partial class UIntRange : pb::IMessage<UIntRange>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<UIntRange> _parser = new pb::MessageParser<UIntRange>(() => new UIntRange());
+        private pb::UnknownFieldSet _unknownFields;
+        private int _hasBits0;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<UIntRange> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Mediapipe.ImageToTensorCalculatorOptions.Descriptor.NestedTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public UIntRange() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public UIntRange(UIntRange other) : this() {
+          _hasBits0 = other._hasBits0;
+          min_ = other.min_;
+          max_ = other.max_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public UIntRange Clone() {
+          return new UIntRange(this);
+        }
+
+        /// <summary>Field number for the "min" field.</summary>
+        public const int MinFieldNumber = 1;
+        private readonly static ulong MinDefaultValue = 0UL;
+
+        private ulong min_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public ulong Min {
+          get { if ((_hasBits0 & 1) != 0) { return min_; } else { return MinDefaultValue; } }
+          set {
+            _hasBits0 |= 1;
+            min_ = value;
+          }
+        }
+        /// <summary>Gets whether the "min" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasMin {
+          get { return (_hasBits0 & 1) != 0; }
+        }
+        /// <summary>Clears the value of the "min" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearMin() {
+          _hasBits0 &= ~1;
+        }
+
+        /// <summary>Field number for the "max" field.</summary>
+        public const int MaxFieldNumber = 2;
+        private readonly static ulong MaxDefaultValue = 0UL;
+
+        private ulong max_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public ulong Max {
+          get { if ((_hasBits0 & 2) != 0) { return max_; } else { return MaxDefaultValue; } }
+          set {
+            _hasBits0 |= 2;
+            max_ = value;
+          }
+        }
+        /// <summary>Gets whether the "max" field is set</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool HasMax {
+          get { return (_hasBits0 & 2) != 0; }
+        }
+        /// <summary>Clears the value of the "max" field</summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearMax() {
+          _hasBits0 &= ~2;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as UIntRange);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(UIntRange other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Min != other.Min) return false;
+          if (Max != other.Max) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (HasMin) hash ^= Min.GetHashCode();
+          if (HasMax) hash ^= Max.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (HasMin) {
+            output.WriteRawTag(8);
+            output.WriteUInt64(Min);
+          }
+          if (HasMax) {
+            output.WriteRawTag(16);
+            output.WriteUInt64(Max);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (HasMin) {
+            output.WriteRawTag(8);
+            output.WriteUInt64(Min);
+          }
+          if (HasMax) {
+            output.WriteRawTag(16);
+            output.WriteUInt64(Max);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (HasMin) {
+            size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Min);
+          }
+          if (HasMax) {
+            size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Max);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(UIntRange other) {
+          if (other == null) {
+            return;
+          }
+          if (other.HasMin) {
+            Min = other.Min;
+          }
+          if (other.HasMax) {
+            Max = other.Max;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                Min = input.ReadUInt64();
+                break;
+              }
+              case 16: {
+                Max = input.ReadUInt64();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                Min = input.ReadUInt64();
+                break;
+              }
+              case 16: {
+                Max = input.ReadUInt64();
                 break;
               }
             }

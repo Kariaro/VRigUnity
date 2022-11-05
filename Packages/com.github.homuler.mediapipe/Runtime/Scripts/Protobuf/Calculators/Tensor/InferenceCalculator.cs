@@ -26,11 +26,11 @@ namespace Mediapipe {
           string.Concat(
             "CjdtZWRpYXBpcGUvY2FsY3VsYXRvcnMvdGVuc29yL2luZmVyZW5jZV9jYWxj",
             "dWxhdG9yLnByb3RvEgltZWRpYXBpcGUaJG1lZGlhcGlwZS9mcmFtZXdvcmsv",
-            "Y2FsY3VsYXRvci5wcm90byL5CAoaSW5mZXJlbmNlQ2FsY3VsYXRvck9wdGlv",
+            "Y2FsY3VsYXRvci5wcm90byKTCQoaSW5mZXJlbmNlQ2FsY3VsYXRvck9wdGlv",
             "bnMSEgoKbW9kZWxfcGF0aBgBIAEoCRIaCgd1c2VfZ3B1GAIgASgIOgVmYWxz",
             "ZUICGAESHAoJdXNlX25uYXBpGAMgASgIOgVmYWxzZUICGAESGgoOY3B1X251",
             "bV90aHJlYWQYBCABKAU6Ai0xEkAKCGRlbGVnYXRlGAUgASgLMi4ubWVkaWFw",
-            "aXBlLkluZmVyZW5jZUNhbGN1bGF0b3JPcHRpb25zLkRlbGVnYXRlGtgGCghE",
+            "aXBlLkluZmVyZW5jZUNhbGN1bGF0b3JPcHRpb25zLkRlbGVnYXRlGvIGCghE",
             "ZWxlZ2F0ZRJHCgZ0ZmxpdGUYASABKAsyNS5tZWRpYXBpcGUuSW5mZXJlbmNl",
             "Q2FsY3VsYXRvck9wdGlvbnMuRGVsZWdhdGUuVGZMaXRlSAASQQoDZ3B1GAIg",
             "ASgLMjIubWVkaWFwaXBlLkluZmVyZW5jZUNhbGN1bGF0b3JPcHRpb25zLkRl",
@@ -47,19 +47,19 @@ namespace Mediapipe {
             "cHRpb25zLkRlbGVnYXRlLkdwdS5JbmZlcmVuY2VVc2FnZToPU1VTVEFJTkVE",
             "X1NQRUVEIiYKA0FwaRIHCgNBTlkQABIKCgZPUEVOR0wQARIKCgZPUEVOQ0wQ",
             "AiJOCg5JbmZlcmVuY2VVc2FnZRIPCgtVTlNQRUNJRklFRBAAEhYKEkZBU1Rf",
-            "U0lOR0xFX0FOU1dFUhABEhMKD1NVU1RBSU5FRF9TUEVFRBACGi8KBU5uYXBp",
-            "EhEKCWNhY2hlX2RpchgBIAEoCRITCgttb2RlbF90b2tlbhgCIAEoCRoiCgdY",
-            "bm5wYWNrEhcKC251bV90aHJlYWRzGAEgASgFOgItMUIKCghkZWxlZ2F0ZTJU",
-            "CgNleHQSHC5tZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMY99PLoAEgASgL",
-            "MiUubWVkaWFwaXBlLkluZmVyZW5jZUNhbGN1bGF0b3JPcHRpb25zQkEKJWNv",
-            "bS5nb29nbGUubWVkaWFwaXBlLmNhbGN1bGF0b3IucHJvdG9CGEluZmVyZW5j",
-            "ZUNhbGN1bGF0b3JQcm90bw=="));
+            "U0lOR0xFX0FOU1dFUhABEhMKD1NVU1RBSU5FRF9TUEVFRBACGkkKBU5uYXBp",
+            "EhEKCWNhY2hlX2RpchgBIAEoCRITCgttb2RlbF90b2tlbhgCIAEoCRIYChBh",
+            "Y2NlbGVyYXRvcl9uYW1lGAMgASgJGiIKB1hubnBhY2sSFwoLbnVtX3RocmVh",
+            "ZHMYASABKAU6Ai0xQgoKCGRlbGVnYXRlMlQKA2V4dBIcLm1lZGlhcGlwZS5D",
+            "YWxjdWxhdG9yT3B0aW9ucxj308ugASABKAsyJS5tZWRpYXBpcGUuSW5mZXJl",
+            "bmNlQ2FsY3VsYXRvck9wdGlvbnNCQQolY29tLmdvb2dsZS5tZWRpYXBpcGUu",
+            "Y2FsY3VsYXRvci5wcm90b0IYSW5mZXJlbmNlQ2FsY3VsYXRvclByb3Rv"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions), global::Mediapipe.InferenceCalculatorOptions.Parser, new[]{ "ModelPath", "UseGpu", "UseNnapi", "CpuNumThread", "Delegate" }, null, null, new pb::Extension[] { global::Mediapipe.InferenceCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Parser, new[]{ "Tflite", "Gpu", "Nnapi", "Xnnpack" }, new[]{ "Delegate" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.TfLite), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.TfLite.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Gpu), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Gpu.Parser, new[]{ "UseAdvancedGpuApi", "Api", "AllowPrecisionLoss", "CachedKernelPath", "SerializedModelDir", "ModelToken", "Usage" }, null, new[]{ typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Gpu.Types.Api), typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Gpu.Types.InferenceUsage) }, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Nnapi), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Nnapi.Parser, new[]{ "CacheDir", "ModelToken" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Nnapi), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Nnapi.Parser, new[]{ "CacheDir", "ModelToken", "AcceleratorName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Xnnpack), global::Mediapipe.InferenceCalculatorOptions.Types.Delegate.Types.Xnnpack.Parser, new[]{ "NumThreads" }, null, null, null, null)})})
           }));
     }
@@ -1708,6 +1708,7 @@ namespace Mediapipe {
             public Nnapi(Nnapi other) : this() {
               cacheDir_ = other.cacheDir_;
               modelToken_ = other.modelToken_;
+              acceleratorName_ = other.acceleratorName_;
               _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
             }
 
@@ -1778,6 +1779,36 @@ namespace Mediapipe {
               modelToken_ = null;
             }
 
+            /// <summary>Field number for the "accelerator_name" field.</summary>
+            public const int AcceleratorNameFieldNumber = 3;
+            private readonly static string AcceleratorNameDefaultValue = "";
+
+            private string acceleratorName_;
+            /// <summary>
+            /// The name of an accelerator to be used for NNAPI delegate, e.g.
+            /// "google-edgetpu". When not specified, it will be selected by NNAPI.
+            /// </summary>
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+            [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+            public string AcceleratorName {
+              get { return acceleratorName_ ?? AcceleratorNameDefaultValue; }
+              set {
+                acceleratorName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+              }
+            }
+            /// <summary>Gets whether the "accelerator_name" field is set</summary>
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+            [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+            public bool HasAcceleratorName {
+              get { return acceleratorName_ != null; }
+            }
+            /// <summary>Clears the value of the "accelerator_name" field</summary>
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+            [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+            public void ClearAcceleratorName() {
+              acceleratorName_ = null;
+            }
+
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
             [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
             public override bool Equals(object other) {
@@ -1795,6 +1826,7 @@ namespace Mediapipe {
               }
               if (CacheDir != other.CacheDir) return false;
               if (ModelToken != other.ModelToken) return false;
+              if (AcceleratorName != other.AcceleratorName) return false;
               return Equals(_unknownFields, other._unknownFields);
             }
 
@@ -1804,6 +1836,7 @@ namespace Mediapipe {
               int hash = 1;
               if (HasCacheDir) hash ^= CacheDir.GetHashCode();
               if (HasModelToken) hash ^= ModelToken.GetHashCode();
+              if (HasAcceleratorName) hash ^= AcceleratorName.GetHashCode();
               if (_unknownFields != null) {
                 hash ^= _unknownFields.GetHashCode();
               }
@@ -1830,6 +1863,10 @@ namespace Mediapipe {
                 output.WriteRawTag(18);
                 output.WriteString(ModelToken);
               }
+              if (HasAcceleratorName) {
+                output.WriteRawTag(26);
+                output.WriteString(AcceleratorName);
+              }
               if (_unknownFields != null) {
                 _unknownFields.WriteTo(output);
               }
@@ -1848,6 +1885,10 @@ namespace Mediapipe {
                 output.WriteRawTag(18);
                 output.WriteString(ModelToken);
               }
+              if (HasAcceleratorName) {
+                output.WriteRawTag(26);
+                output.WriteString(AcceleratorName);
+              }
               if (_unknownFields != null) {
                 _unknownFields.WriteTo(ref output);
               }
@@ -1863,6 +1904,9 @@ namespace Mediapipe {
               }
               if (HasModelToken) {
                 size += 1 + pb::CodedOutputStream.ComputeStringSize(ModelToken);
+              }
+              if (HasAcceleratorName) {
+                size += 1 + pb::CodedOutputStream.ComputeStringSize(AcceleratorName);
               }
               if (_unknownFields != null) {
                 size += _unknownFields.CalculateSize();
@@ -1881,6 +1925,9 @@ namespace Mediapipe {
               }
               if (other.HasModelToken) {
                 ModelToken = other.ModelToken;
+              }
+              if (other.HasAcceleratorName) {
+                AcceleratorName = other.AcceleratorName;
               }
               _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
             }
@@ -1905,6 +1952,10 @@ namespace Mediapipe {
                     ModelToken = input.ReadString();
                     break;
                   }
+                  case 26: {
+                    AcceleratorName = input.ReadString();
+                    break;
+                  }
                 }
               }
             #endif
@@ -1926,6 +1977,10 @@ namespace Mediapipe {
                   }
                   case 18: {
                     ModelToken = input.ReadString();
+                    break;
+                  }
+                  case 26: {
+                    AcceleratorName = input.ReadString();
                     break;
                   }
                 }

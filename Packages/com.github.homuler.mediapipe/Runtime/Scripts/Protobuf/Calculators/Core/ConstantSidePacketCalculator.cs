@@ -27,21 +27,23 @@ namespace Mediapipe {
             "CkBtZWRpYXBpcGUvY2FsY3VsYXRvcnMvY29yZS9jb25zdGFudF9zaWRlX3Bh",
             "Y2tldF9jYWxjdWxhdG9yLnByb3RvEgltZWRpYXBpcGUaJG1lZGlhcGlwZS9m",
             "cmFtZXdvcmsvY2FsY3VsYXRvci5wcm90bxowbWVkaWFwaXBlL2ZyYW1ld29y",
-            "ay9mb3JtYXRzL2NsYXNzaWZpY2F0aW9uLnByb3RvIq0DCiNDb25zdGFudFNp",
-            "ZGVQYWNrZXRDYWxjdWxhdG9yT3B0aW9ucxJRCgZwYWNrZXQYASADKAsyQS5t",
-            "ZWRpYXBpcGUuQ29uc3RhbnRTaWRlUGFja2V0Q2FsY3VsYXRvck9wdGlvbnMu",
-            "Q29uc3RhbnRTaWRlUGFja2V0GtMBChJDb25zdGFudFNpZGVQYWNrZXQSEwoJ",
-            "aW50X3ZhbHVlGAEgASgFSAASFQoLZmxvYXRfdmFsdWUYAiABKAJIABIUCgpi",
-            "b29sX3ZhbHVlGAMgASgISAASFgoMc3RyaW5nX3ZhbHVlGAQgASgJSAASFgoM",
-            "dWludDY0X3ZhbHVlGAUgASgESAASQgoZY2xhc3NpZmljYXRpb25fbGlzdF92",
-            "YWx1ZRgGIAEoCzIdLm1lZGlhcGlwZS5DbGFzc2lmaWNhdGlvbkxpc3RIAEIH",
-            "CgV2YWx1ZTJdCgNleHQSHC5tZWRpYXBpcGUuQ2FsY3VsYXRvck9wdGlvbnMY",
-            "haruigEgASgLMi4ubWVkaWFwaXBlLkNvbnN0YW50U2lkZVBhY2tldENhbGN1",
-            "bGF0b3JPcHRpb25zQgyiAglNZWRpYVBpcGU="));
+            "ay9mb3JtYXRzL2NsYXNzaWZpY2F0aW9uLnByb3RvGiptZWRpYXBpcGUvZnJh",
+            "bWV3b3JrL2Zvcm1hdHMvbGFuZG1hcmsucHJvdG8i5QMKI0NvbnN0YW50U2lk",
+            "ZVBhY2tldENhbGN1bGF0b3JPcHRpb25zElEKBnBhY2tldBgBIAMoCzJBLm1l",
+            "ZGlhcGlwZS5Db25zdGFudFNpZGVQYWNrZXRDYWxjdWxhdG9yT3B0aW9ucy5D",
+            "b25zdGFudFNpZGVQYWNrZXQaiwIKEkNvbnN0YW50U2lkZVBhY2tldBITCglp",
+            "bnRfdmFsdWUYASABKAVIABIVCgtmbG9hdF92YWx1ZRgCIAEoAkgAEhQKCmJv",
+            "b2xfdmFsdWUYAyABKAhIABIWCgxzdHJpbmdfdmFsdWUYBCABKAlIABIWCgx1",
+            "aW50NjRfdmFsdWUYBSABKARIABJCChljbGFzc2lmaWNhdGlvbl9saXN0X3Zh",
+            "bHVlGAYgASgLMh0ubWVkaWFwaXBlLkNsYXNzaWZpY2F0aW9uTGlzdEgAEjYK",
+            "E2xhbmRtYXJrX2xpc3RfdmFsdWUYByABKAsyFy5tZWRpYXBpcGUuTGFuZG1h",
+            "cmtMaXN0SABCBwoFdmFsdWUyXQoDZXh0EhwubWVkaWFwaXBlLkNhbGN1bGF0",
+            "b3JPcHRpb25zGIWq7ooBIAEoCzIuLm1lZGlhcGlwZS5Db25zdGFudFNpZGVQ",
+            "YWNrZXRDYWxjdWxhdG9yT3B0aW9uc0IMogIJTWVkaWFQaXBl"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.ClassificationReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Mediapipe.CalculatorReflection.Descriptor, global::Mediapipe.ClassificationReflection.Descriptor, global::Mediapipe.LandmarkReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions), global::Mediapipe.ConstantSidePacketCalculatorOptions.Parser, new[]{ "Packet" }, null, null, new pb::Extension[] { global::Mediapipe.ConstantSidePacketCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket.Parser, new[]{ "IntValue", "FloatValue", "BoolValue", "StringValue", "Uint64Value", "ClassificationListValue" }, new[]{ "Value" }, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions), global::Mediapipe.ConstantSidePacketCalculatorOptions.Parser, new[]{ "Packet" }, null, null, new pb::Extension[] { global::Mediapipe.ConstantSidePacketCalculatorOptions.Extensions.Ext }, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket), global::Mediapipe.ConstantSidePacketCalculatorOptions.Types.ConstantSidePacket.Parser, new[]{ "IntValue", "FloatValue", "BoolValue", "StringValue", "Uint64Value", "ClassificationListValue", "LandmarkListValue" }, new[]{ "Value" }, null, null, null)})
           }));
     }
     #endregion
@@ -282,6 +284,9 @@ namespace Mediapipe {
             case ValueOneofCase.ClassificationListValue:
               ClassificationListValue = other.ClassificationListValue.Clone();
               break;
+            case ValueOneofCase.LandmarkListValue:
+              LandmarkListValue = other.LandmarkListValue.Clone();
+              break;
           }
 
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -435,6 +440,18 @@ namespace Mediapipe {
           }
         }
 
+        /// <summary>Field number for the "landmark_list_value" field.</summary>
+        public const int LandmarkListValueFieldNumber = 7;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Mediapipe.LandmarkList LandmarkListValue {
+          get { return valueCase_ == ValueOneofCase.LandmarkListValue ? (global::Mediapipe.LandmarkList) value_ : null; }
+          set {
+            value_ = value;
+            valueCase_ = value == null ? ValueOneofCase.None : ValueOneofCase.LandmarkListValue;
+          }
+        }
+
         private object value_;
         /// <summary>Enum of possible cases for the "value" oneof.</summary>
         public enum ValueOneofCase {
@@ -445,6 +462,7 @@ namespace Mediapipe {
           StringValue = 4,
           Uint64Value = 5,
           ClassificationListValue = 6,
+          LandmarkListValue = 7,
         }
         private ValueOneofCase valueCase_ = ValueOneofCase.None;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -481,6 +499,7 @@ namespace Mediapipe {
           if (StringValue != other.StringValue) return false;
           if (Uint64Value != other.Uint64Value) return false;
           if (!object.Equals(ClassificationListValue, other.ClassificationListValue)) return false;
+          if (!object.Equals(LandmarkListValue, other.LandmarkListValue)) return false;
           if (ValueCase != other.ValueCase) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
@@ -495,6 +514,7 @@ namespace Mediapipe {
           if (HasStringValue) hash ^= StringValue.GetHashCode();
           if (HasUint64Value) hash ^= Uint64Value.GetHashCode();
           if (valueCase_ == ValueOneofCase.ClassificationListValue) hash ^= ClassificationListValue.GetHashCode();
+          if (valueCase_ == ValueOneofCase.LandmarkListValue) hash ^= LandmarkListValue.GetHashCode();
           hash ^= (int) valueCase_;
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
@@ -538,6 +558,10 @@ namespace Mediapipe {
             output.WriteRawTag(50);
             output.WriteMessage(ClassificationListValue);
           }
+          if (valueCase_ == ValueOneofCase.LandmarkListValue) {
+            output.WriteRawTag(58);
+            output.WriteMessage(LandmarkListValue);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -572,6 +596,10 @@ namespace Mediapipe {
             output.WriteRawTag(50);
             output.WriteMessage(ClassificationListValue);
           }
+          if (valueCase_ == ValueOneofCase.LandmarkListValue) {
+            output.WriteRawTag(58);
+            output.WriteMessage(LandmarkListValue);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -599,6 +627,9 @@ namespace Mediapipe {
           }
           if (valueCase_ == ValueOneofCase.ClassificationListValue) {
             size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClassificationListValue);
+          }
+          if (valueCase_ == ValueOneofCase.LandmarkListValue) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(LandmarkListValue);
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -633,6 +664,12 @@ namespace Mediapipe {
                 ClassificationListValue = new global::Mediapipe.ClassificationList();
               }
               ClassificationListValue.MergeFrom(other.ClassificationListValue);
+              break;
+            case ValueOneofCase.LandmarkListValue:
+              if (LandmarkListValue == null) {
+                LandmarkListValue = new global::Mediapipe.LandmarkList();
+              }
+              LandmarkListValue.MergeFrom(other.LandmarkListValue);
               break;
           }
 
@@ -680,6 +717,15 @@ namespace Mediapipe {
                 ClassificationListValue = subBuilder;
                 break;
               }
+              case 58: {
+                global::Mediapipe.LandmarkList subBuilder = new global::Mediapipe.LandmarkList();
+                if (valueCase_ == ValueOneofCase.LandmarkListValue) {
+                  subBuilder.MergeFrom(LandmarkListValue);
+                }
+                input.ReadMessage(subBuilder);
+                LandmarkListValue = subBuilder;
+                break;
+              }
             }
           }
         #endif
@@ -722,6 +768,15 @@ namespace Mediapipe {
                 }
                 input.ReadMessage(subBuilder);
                 ClassificationListValue = subBuilder;
+                break;
+              }
+              case 58: {
+                global::Mediapipe.LandmarkList subBuilder = new global::Mediapipe.LandmarkList();
+                if (valueCase_ == ValueOneofCase.LandmarkListValue) {
+                  subBuilder.MergeFrom(LandmarkListValue);
+                }
+                input.ReadMessage(subBuilder);
+                LandmarkListValue = subBuilder;
                 break;
               }
             }

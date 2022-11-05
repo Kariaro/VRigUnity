@@ -103,10 +103,6 @@ namespace HardCoded.VRigUnity {
 			return vrmModel;
 		}
 
-		protected override void RenderCurrentFrame(TextureFrame textureFrame) {
-			guiScript.DrawImage(textureFrame);
-		}
-
 		public float GetTriangleArea(Vector3 A, Vector3 B, Vector3 C) {
 			Vector3 AB = new(B.x - A.x, B.y - A.y, B.z - A.z);
 			Vector3 AC = new(C.x - B.x, C.y - A.y, C.z - A.z);
@@ -190,6 +186,10 @@ namespace HardCoded.VRigUnity {
 
 		protected override void SetupScreen(ImageSource imageSource) {
 			canvas.SetupScreen(imageSource);
+		}
+
+		protected override void RenderCurrentFrame(TextureFrame textureFrame) {
+			canvas.ReadSync(textureFrame);
 		}
 
 		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {
