@@ -133,6 +133,7 @@ namespace HardCoded.VRigUnity {
 			return r1 || r2 || r3 || r4 || r5 || r6 || r7;
 		}
 
+		// TODO: For add a dropddown box for the asset modelComplexity
 		protected override IList<WaitForResult> RequestDependentAssets() {
 			return new List<WaitForResult> {
 				WaitForAsset("face_detection_short_range.bytes"),
