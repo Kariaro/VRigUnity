@@ -56,8 +56,8 @@ namespace HardCoded.VRigUnity {
 			annotationObject.SetActive(show);
 		}
 
-		public void DrawImage(TextureFrame textureFrame) {
-			unityCanvas.DrawImage(textureFrame);
+		public void ReadSync(TextureFrame textureFrame) {
+			unityCanvas.ReadSync(textureFrame);
 		}
 
 		// Annotations

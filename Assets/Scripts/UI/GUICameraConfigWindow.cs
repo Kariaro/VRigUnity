@@ -22,10 +22,6 @@ namespace HardCoded.VRigUnity {
 		private Button _virtualCameraUninstall;
 
 		void Start() {
-			Debug.Log("A: " + Settings.CameraName);
-			Debug.Log("B: " + Settings.CameraFlipped);
-			Debug.Log("C: " + Settings.CameraResolution);
-
 			_solution = SolutionUtils.GetSolution();
 			InitializeContents();
 		}
@@ -136,6 +132,11 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput.isOn = Settings.CameraFlipped;
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
+				Settings.CameraFlipped = _isHorizontallyFlippedInput.isOn;
+				settings.UpdateShowCamera();
+				if (!_solution.IsPaused()) {
+					_solution.Play();
+				}
 			});
 		}
 

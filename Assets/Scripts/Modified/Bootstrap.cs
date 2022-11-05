@@ -20,12 +20,10 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private IEnumerator Init() {
-			// Loading libraries needs to be done first
-			Logger.Info(_TAG, "Initializing Libraries...");
-			if (!LoadLibrary.TryLoadLibrary()) {
-				Logger.Error("Failed to try load library");
-			}
+			// Log settings
+			Settings.LogAll();
 
+			// Initialize mediapipe
 			Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
 			
 			Logger.Info(_TAG, "Initializing AssetManager...");
@@ -48,10 +46,10 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void DecideInferenceMode() {
-#if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
-			InferenceMode = InferenceMode.CPU;
-#else
+#if UNITY_ANDROID || UNITY_IOS
 			InferenceMode = InferenceMode.GPU;
+#else
+			InferenceMode = InferenceMode.CPU;
 #endif
 		}
 

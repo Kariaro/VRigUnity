@@ -3,6 +3,25 @@ using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
+		private const string _TAG = nameof(Settings);
+			
+		// Debug function to log all set values
+		public static void LogAll() {
+			// Camera
+			Logger.Info(_TAG, $"CameraName '{CameraName}'");
+			Logger.Info(_TAG, $"CameraFlipped '{CameraFlipped}'");
+			Logger.Info(_TAG, $"CameraResolution '{CameraResolution}'");
+
+			// UI
+			Logger.Info(_TAG, $"ModelFile '{ModelFile}'");
+			Logger.Info(_TAG, $"ImageFile '{ImageFile}'");
+			Logger.Info(_TAG, $"ShowCustomBackground '{ShowCustomBackground}'");
+			Logger.Info(_TAG, $"ShowCustomBackgroundColor '{ShowCustomBackgroundColor}'");
+
+			// Features
+			Logger.Info(_TAG, $"VMCPort '{VMCPort}'");
+		}
+
 		// Camera Settings
 		public static readonly string _CameraName = "camera.name";
 		public static readonly string _CameraFlipped = "camera.flipped";
