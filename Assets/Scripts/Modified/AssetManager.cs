@@ -27,7 +27,7 @@ namespace HardCoded.VRigUnity {
 		public override IEnumerator PrepareAssetAsync(string name, string uniqueKey, bool overwrite = true) {
 			var destFilePath = GetCachePathFor(uniqueKey);
 			if (File.Exists(destFilePath) && !overwrite) {
-				Logger.Info(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
+				// Logger.Info(_TAG, $"{name} will not be copied to {destFilePath} because it already exists");
 				yield break;
 			}
 

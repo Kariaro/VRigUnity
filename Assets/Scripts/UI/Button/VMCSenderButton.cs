@@ -1,13 +1,15 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using uOSC;
-using System;
-using VRM;
+using UnityEngine.EventSystems;
 
 namespace HardCoded.VRigUnity {
-	public class VMCSenderButton : MonoBehaviour {
+	public class VMCSenderButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 		public VMCSender vmcSender;
+		
+		[SerializeField] private RectTransform canvasRect;
+		[SerializeField] private CanvasGroup canvasGroup;
+		private bool m_canvasVisible;
 
 		[SerializeField] private TMP_Text buttonText;
 		[SerializeField] private TMP_Text portText;
@@ -21,8 +23,22 @@ namespace HardCoded.VRigUnity {
 		void Start() {
 			buttonImage = GetComponent<Image>();
 			toggleButton = GetComponent<Button>();
-
 			InitializeContents();
+		}
+
+		public void OnPointerEnter(PointerEventData data) {
+			m_canvasVisible = true;
+		}
+
+		public void OnPointerExit(PointerEventData data) {
+			m_canvasVisible = false;
+		}
+
+		void FixedUpdate() {
+			Vector3 pos = canvasRect.localPosition;
+			pos.y = Mathf.Lerp(pos.y, m_canvasVisible ? -24 : 0, 0.2f);
+			canvasRect.localPosition = pos;
+			canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, m_canvasVisible ? 1 : 0, 0.2f); 
 		}
 
 		private void InitializeContents() {

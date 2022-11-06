@@ -19,6 +19,9 @@ namespace HardCoded.VRigUnity {
 				toggles[i].onValueChanged.RemoveAllListeners();
 				toggles[i].onValueChanged.AddListener(delegate {
 					BoneSettings.Set(v, toggles[v].isOn);
+
+					// Event
+					SolutionUtils.GetSolution().OnBoneUpdate(v, toggles[v].isOn);
 				});
 			}
 		}

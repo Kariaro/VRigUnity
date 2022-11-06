@@ -11,23 +11,15 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected GameObject vrmModel;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
+
+		[Header("UI")]
 		[SerializeField] protected GUIScript guiScript;
 		[SerializeField] public CustomizableCanvas canvas;
 
-		// TODO: Move these into a struct
-		private RotStruct chestRotation = RotStruct.identity;
-		private RotStruct hipsRotation = RotStruct.identity;
-		private RotStruct hipsPosition = RotStruct.identity;
-		
-		private RotStruct neckRotation = RotStruct.identity;
-
-		protected RotStruct rUpperArm = RotStruct.identity;
-		protected RotStruct rLowerArm = RotStruct.identity;
-		protected RotStruct lUpperArm = RotStruct.identity;
-		protected RotStruct lLowerArm = RotStruct.identity;
-
-		private readonly HandValues RightHand = new();
-		private readonly HandValues LeftHand = new();
+		// Pose values
+		protected readonly PoseValues Pose = new();
+		protected readonly HandValues RightHand = new();
+		protected readonly HandValues LeftHand = new();
 		
 		private float mouthOpen = 0;
 
@@ -43,7 +35,7 @@ namespace HardCoded.VRigUnity {
 		// Testing values
 		[Header("Testing")]
 		public int TestInterpolation;
-		public float InterpolationValue = 0.4f; // 0.4 is really good for the current frame interval. Make this adjustable
+		public float InterpolationValue = 0.2f;
 		public static int TestInterpolationStatic;
 		public static float TestInterpolationValue;
 		
@@ -51,11 +43,11 @@ namespace HardCoded.VRigUnity {
 		protected Quaternion m_leftWrist = Quaternion.identity;
 		protected Quaternion m_rightWrist = Quaternion.identity;
 
-		public void ResetVrmModel() {
-			SetVrmModel(Instantiate(defaultVrmPrefab));
+		public void ResetVRMModel() {
+			SetVRMModel(Instantiate(defaultVrmPrefab));
 		}
 
-		public bool SetVrmModel(GameObject gameObject) {
+		public bool SetVRMModel(GameObject gameObject) {
 			VRMBlendShapeProxy blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();
 			Animator animator = gameObject.GetComponent<Animator>();
 
@@ -77,14 +69,18 @@ namespace HardCoded.VRigUnity {
 			return vrmModel;
 		}
 
-		public float GetTriangleArea(Vector3 A, Vector3 B, Vector3 C) {
-			Vector3 AB = new(B.x - A.x, B.y - A.y, B.z - A.z);
-			Vector3 AC = new(C.x - B.x, C.y - A.y, C.z - A.z);
-
-			float P1 = (AB.y * AC.z - AB.z * AC.y);
-			float P2 = (AB.z * AC.x - AB.x * AC.z);
-			float P3 = (AB.x * AC.y - AB.y * AC.x);
-			return 0.5f * Mathf.Sqrt(P1 * P1 + P2 * P2 + P3 * P3);
+		// Called when a bone is selected or deselected
+		public void OnBoneUpdate(int index, bool set) {
+			if (set) {
+				// Our program should now track the bone
+				// Make sure all parts are cleared
+				foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
+					Transform trans = animator.GetBoneTransform(bone);
+					if (trans != null) {
+						trans.localRotation = Quaternion.identity;
+					}
+				}
+			}
 		}
 
 		protected override void OnStartRun() {
@@ -181,7 +177,7 @@ namespace HardCoded.VRigUnity {
 
 					float width = Vector3.Distance(a, b);
 					float height = Vector3.Distance(c, m);
-					float area = GetTriangleArea(a, b, c);
+					float area = MovementUtils.GetTriangleArea(a, b, c);
 					float perc = height / width; //2 * (area / (width * height));
 
 					//perc = Mathf.Clamp01(perc);
@@ -215,7 +211,7 @@ namespace HardCoded.VRigUnity {
 				neckRotation = rot;
 			}
 
-			this.neckRotation.Set(neckRotation, TimeNow);
+			Pose.Neck.Set(neckRotation, TimeNow);
 			this.mouthOpen = mouthOpen;
 			this.rEyeOpen.Add(lEyeOpen);
 			this.lEyeOpen.Add(rEyeOpen);
@@ -259,7 +255,7 @@ namespace HardCoded.VRigUnity {
 		private void OnLeftHandLandmarks(Groups.HandPoints hand) {
 			Groups.HandRotation handGroup;
 			
-			handGroup = HandResolverOld.SolveLeftHand(hand);
+			// handGroup = HandResolverOld.SolveLeftHand(hand);
 			handGroup = HandResolver.SolveLeftHand(hand);
 
 			m_leftWrist = handGroup.Wrist;
@@ -286,7 +282,7 @@ namespace HardCoded.VRigUnity {
 		private void OnRightHandLandmarks(Groups.HandPoints hand) {
 			Groups.HandRotation handGroup;
 			
-			handGroup = HandResolverOld.SolveRightHand(hand);
+			// handGroup = HandResolverOld.SolveRightHand(hand);
 			handGroup = HandResolver.SolveRightHand(hand);
 
 			m_rightWrist = handGroup.Wrist;
@@ -318,7 +314,6 @@ namespace HardCoded.VRigUnity {
 
 			Quaternion chestRotation = Quaternion.identity;
 			Quaternion hipsRotation = Quaternion.identity;
-			Vector3 hipsPosition = Vector3.zero;
 			Quaternion rUpperArm = Quaternion.identity;
 			Quaternion rLowerArm = Quaternion.identity;
 			Quaternion lUpperArm = Quaternion.identity;
@@ -336,11 +331,11 @@ namespace HardCoded.VRigUnity {
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
 					chestRotation = rot;
 					hipsRotation = rot;
-					hipsPosition = new Vector3(
+					/*hipsPosition = new Vector3(
 						-(rShoulder.x + lShoulder.x) * 0.5f * 2,
 						-(rShoulder.z + lShoulder.z) * 0.5f,
 						(rShoulder.y + lShoulder.y) * 0.5f + 1.0f
-					);
+					);*/
 					bodyRotation = Mathf.Abs(Mathf.Cos(rot.eulerAngles.y * 1.6f));
 				}
 				float hep = handExtraPercentage * bodyRotation;
@@ -378,13 +373,12 @@ namespace HardCoded.VRigUnity {
 				// Catch all exceptions
 			}
 
-			this.chestRotation.Set(chestRotation, TimeNow);
-			//this.hipsPosition.Set(hipsPosition, TimeNow);
-			this.hipsRotation.Set(hipsRotation, TimeNow);
-			this.rUpperArm.Set(rUpperArm, TimeNow);
-			this.rLowerArm.Set(rLowerArm, TimeNow);
-			this.lUpperArm.Set(lUpperArm, TimeNow);
-			this.lLowerArm.Set(lLowerArm, TimeNow);
+			Pose.Chest.Set(chestRotation, TimeNow);
+			Pose.Hips.Set(hipsRotation, TimeNow);
+			Pose.RightUpperArm.Set(rUpperArm, TimeNow);
+			Pose.RightLowerArm.Set(rLowerArm, TimeNow);
+			Pose.LeftUpperArm.Set(lUpperArm, TimeNow);
+			Pose.LeftLowerArm.Set(lLowerArm, TimeNow);
 		}
 
 		// This is protected to allow being called from child classes
@@ -403,27 +397,27 @@ namespace HardCoded.VRigUnity {
 			// All transformations are inverted from left to right because the VMR
 			// models do not allow for mirroring.
 			if (BoneSettings.Get(BoneSettings.CHEST)) {
-				chestRotation.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Chest), time);
+				Pose.Chest.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Chest), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.NECK)) {
-				neckRotation.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Neck), time);
+				Pose.Neck.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.Neck), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.LEFT_SHOULDER)) {
-				lUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftUpperArm), time);
+				Pose.LeftUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftUpperArm), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.LEFT_ELBOW)) {
-				lLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
+				Pose.LeftLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_SHOULDER)) {
-				rUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightUpperArm), time);
+				Pose.RightUpperArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightUpperArm), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_ELBOW)) {
-				rLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightLowerArm), time);
+				Pose.RightLowerArm.UpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightLowerArm), time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {

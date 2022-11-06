@@ -44,6 +44,7 @@ namespace HardCoded.VRigUnity {
 			hasHandData = true;
 		}
 
+		[Range(0, 1)]
 		public float angleTest = 0;
 		public int test;
 
@@ -67,22 +68,67 @@ namespace HardCoded.VRigUnity {
 			//Debug.DrawRay(l_pos, m_leftWrist * rr, UnityEngine.Color.red);
 			
 			// First remove Z rotation as it does not change the wrist
-			Vector3 r_pos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+			Quaternion q_rWrist = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
 
-			Quaternion wrist = m_rightWrist;
-			Vector3 wristE = m_rightWrist.eulerAngles;
-			wrist = Quaternion.Euler(0, wristE.y, 0);
+			// This is in local
+			Vector3 wristE = q_rWrist.eulerAngles;
 
-			if (test == 1) {
-				wrist = m_rightWrist;
+			{
+				Vector3 r_wpos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+				Quaternion r_wrot = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
+
+				//Debug.DrawRay(r_wpos, r_wrot * uu, UnityEngine.Color.green);
+				//Debug.DrawRay(r_wpos, r_wrot * ff, UnityEngine.Color.blue);
+				//Debug.DrawRay(r_wpos, r_wrot * rr, UnityEngine.Color.red);
+
+
+				Vector3 r_apos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
+				Quaternion r_arot = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation;
+				Debug.DrawRay(r_apos, r_arot * uu, UnityEngine.Color.green);
+				Debug.DrawRay(r_apos, r_arot * ff, UnityEngine.Color.blue);
+				Debug.DrawRay(r_apos, r_arot * rr, UnityEngine.Color.red);
+
+				
+				Quaternion r_wrot2 = animator.GetBoneTransform(HumanBodyBones.LeftHand).localRotation;
+				Debug.DrawRay(r_wpos, r_wrot2 * -uu, UnityEngine.Color.green);
+				Debug.DrawRay(r_wpos, r_wrot2 * -rr, UnityEngine.Color.red);
+
+
+				r_wrot = animator.GetBoneTransform(HumanBodyBones.LeftHand).localRotation;
+				float wrs_r = r_wrot.eulerAngles.x;
+				float arm_r = r_arot.eulerAngles.x;
+				float da = Mathf.DeltaAngle(arm_r, wrs_r);
+				// Logger.Info($"{wrs_r} {arm_r} {da}");
+
+				// On the line up and forward
+
+				// Debug.DrawRay(r_wpos, r_wrot * uu, UnityEngine.Color.green);
+				// Debug.DrawRay(r_wpos, r_wrot * ff, UnityEngine.Color.blue);
+				// Debug.DrawRay(r_wpos, r_wrot * rr, UnityEngine.Color.red);
+
+				// animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation = r_arot * Quaternion.Euler(da / 2.0f, 0, 0);
+				
+				/*
+				Vector3 r_tpos = (r_wpos + r_apos) / 2.0f;
+				Quaternion r_trot = Quaternion.Slerp(r_wrot, r_arot, angleTest);
+				Debug.DrawRay(r_tpos, r_trot * uu, UnityEngine.Color.green);
+				Debug.DrawRay(r_tpos, r_trot * ff, UnityEngine.Color.blue);
+				Debug.DrawRay(r_tpos, r_trot * rr, UnityEngine.Color.red);
+				*/
+
+				// Point the red vector of the wrist towards the red vector of the arm
+				/*
+				Quaternion test = Quaternion.FromToRotation(r_wrot * rr, r_arot * rr);
+
+				
+				r_wrot = q_rWrist * test * Quaternion.Inverse(q_rWrist);
+
+				Debug.DrawRay(r_wpos, r_wrot * uu, UnityEngine.Color.green);
+				Debug.DrawRay(r_wpos, r_wrot * ff, UnityEngine.Color.blue);
+				Debug.DrawRay(r_wpos, r_wrot * rr, UnityEngine.Color.red);
+				*/
 			}
-
-			Debug.DrawRay(r_pos, wrist * uu, UnityEngine.Color.green);
-			Debug.DrawRay(r_pos, wrist * ff, UnityEngine.Color.blue);
-			Debug.DrawRay(r_pos, wrist * rr, UnityEngine.Color.red);
-
-			float y_rotation = m_rightWrist.eulerAngles.y;
-
+			
 
 			// Blue red around arm
 
@@ -94,14 +140,14 @@ namespace HardCoded.VRigUnity {
 			float time = TimeNow;
 			//Quaternion q_rUpperArm = rUpperArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightUpperArm), time);
 			//Quaternion q_rLowerArm = rLowerArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.RightLowerArm), time);
-			Quaternion q_lUpperArm = lUpperArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftUpperArm), time);
-			Quaternion q_lLowerArm = lLowerArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
+			Quaternion q_lUpperArm = Pose.LeftUpperArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftUpperArm), time);
+			Quaternion q_lLowerArm = Pose.LeftLowerArm.GetRawUpdateRotation(animator.GetBoneTransform(HumanBodyBones.LeftLowerArm), time);
 
 			float rotAngle = m_rightWrist.eulerAngles.x;
 
 			q_lLowerArm.ToAngleAxis(out float outAngle, out Vector3 outAxis);
 
-			Debug.DrawRay(r_pos, outAxis, UnityEngine.Color.white);
+			// Debug.DrawRay(r_pos, outAxis, UnityEngine.Color.white);
 
 			// We need to rotate rotAngkle around the lower arms Vector3.right axis
 			float r_maxAngle1 = 0 * Mathf.Clamp(-wristE.y / 40.0f, -10, 10);
@@ -135,8 +181,33 @@ namespace HardCoded.VRigUnity {
 
 
 
-			animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).transform.rotation = q_lUpperArm * Quaternion.Euler(r_maxAngle1, 0, 0);
-			animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).transform.rotation = q_lLowerArm * Quaternion.Euler(r_maxAngle2, 0, 0);
+			// animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
+			// animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+
+			// animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).transform.rotation = q_lUpperArm * Quaternion.Euler(r_maxAngle1, 0, 0);
+			
+			Vector3 lWristPos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+			Vector3 lWristFor = (m_rightWrist * Vector3.forward * 0.05f);
+			Vector3 lLowerArmPos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
+			Vector3 lLowerArmFor = (q_lLowerArm * Vector3.forward * 0.05f);
+
+			Debug.DrawLine(lWristPos, lWristPos + lWristFor);
+			Debug.DrawLine(lLowerArmPos, lLowerArmPos + lLowerArmFor);
+			Debug.DrawLine(lWristPos + lWristFor, lLowerArmPos + lLowerArmFor);
+
+			// Rotate (lLowerArmFor) such that (lWristPos + lWristFor, lLowerArmPos + lLowerArmFor)
+			// is smallest
+
+
+			// This is localRotation
+			//Quaternion g_lLowerArm = animator.GetBoneTransform(HumanBodyBones.LeftUpperArm).rotation * q_lLowerArm;
+			//g_lLowerArm.ToAngleAxis(out float lAngle, out Vector3 lAxis);
+
+			//Debug.DrawLine(lLowerArmPos, lLowerArmPos + lAxis * 0.05f, UnityEngine.Color.red);
+
+
+
+			// animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).transform.rotation = q_lLowerArm * Quaternion.Euler(r_maxAngle2, 0, 0);
 		}
 	}
 }

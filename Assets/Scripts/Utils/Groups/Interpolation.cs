@@ -79,6 +79,17 @@ namespace HardCoded.VRigUnity {
 		public RotStruct ThumbTip = RotStruct.identity;
 	}
 
+	public class PoseValues {
+		public RotStruct Neck = RotStruct.identity;
+		public RotStruct Chest = RotStruct.identity;
+		public RotStruct Hips = RotStruct.identity;
+		public RotStruct HipsPosition = RotStruct.identity;
+		public RotStruct RightUpperArm = RotStruct.identity;
+		public RotStruct RightLowerArm = RotStruct.identity;
+		public RotStruct LeftUpperArm = RotStruct.identity;
+		public RotStruct LeftLowerArm = RotStruct.identity;
+	}
+
 	public class FaceData {
 		public struct RollingAverage {
 			public float[] data;
