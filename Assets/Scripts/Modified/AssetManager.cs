@@ -57,7 +57,7 @@ namespace HardCoded.VRigUnity {
 
 		protected static bool GetResourceContents(string path, IntPtr dst) {
 			try {
-				Logger.Debug($"{path} is requested");
+				// Logger.Debug($"{path} is requested");
 
 				var cachePath = PathToResourceAsFile(path);
 				if (!File.Exists(cachePath)) {

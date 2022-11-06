@@ -268,7 +268,7 @@ MonoBehaviour:
   guiScript: {fileID: 284428453}
   canvas: {fileID: 548834502}
   TestInterpolation: 0
-  InterpolationValue: 0.2
+  InterpolationValue: 0.15
   handGroup: {fileID: 576270828}
   angleTest: 0
   test: 0
@@ -1849,7 +1849,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1903942791
 MonoBehaviour:
   m_ObjectHideFlags: 0

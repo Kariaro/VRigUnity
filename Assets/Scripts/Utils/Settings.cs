@@ -61,6 +61,7 @@ namespace HardCoded.VRigUnity {
 		public static SettingsTypes.Bool _ShowBgColor = new("gui.show.bgColor", false);
 		public static SettingsTypes.Int _VMCSenderPort = new("vmc.sender.port", 3333);
 		public static SettingsTypes.Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
+		public static SettingsTypes.Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -96,6 +97,10 @@ namespace HardCoded.VRigUnity {
 				_VMCReceiverPort.Set(value);
 				VMCReceiverPortListener?.Invoke(value);
 			}
+		}
+		public static bool AlwaysShowUI {
+			get => _AlwaysShowUI.Get();
+			set => _AlwaysShowUI.Set(value);
 		}
 
 		public delegate void VMCPortDelegate (int value);

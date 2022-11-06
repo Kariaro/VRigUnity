@@ -54,7 +54,7 @@
 			public const int LEFT_KNEE = 25;
 			public const int RIGHT_KNEE = 26;
 			public const int LEFT_ANKLE = 27;
-			public const int RIGHT_ANGLE = 28;
+			public const int RIGHT_ANKLE = 28;
 			public const int LEFT_HEEL = 29;
 			public const int RIGHT_HEEL = 30;
 			public const int LEFT_FOOT_INDEX = 31;

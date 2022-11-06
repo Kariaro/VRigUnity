@@ -20,13 +20,13 @@ namespace HardCoded.VRigUnity {
 		public bool refineFaceLandmarks = true;
 		public bool smoothLandmarks = true;
 
-		private float _minDetectionConfidence = 0.7f; // 0.7
+		private float _minDetectionConfidence = 0.5f; // 0.7
 		public float MinDetectionConfidence {
 			get => _minDetectionConfidence;
 			set => _minDetectionConfidence = Mathf.Clamp01(value);
 		}
 
-		private float _minTrackingConfidence = 0.7f; // 0.7
+		private float _minTrackingConfidence = 0.5f; // 0.7
 		public float MinTrackingConfidence {
 			get => _minTrackingConfidence;
 			set => _minTrackingConfidence = Mathf.Clamp01(value);

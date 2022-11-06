@@ -24,6 +24,10 @@ namespace HardCoded.VRigUnity {
 			curr = value;
 		}
 
+		public Quaternion Get() {
+			return curr;
+		}
+
 		private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
 			switch (TestInterpolationStatic) {
 				default: {
@@ -42,7 +46,8 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 			
-		public void UpdateRotation(Transform transform, float time) {
+		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
+			Transform transform = animator.GetBoneTransform(bone);
 			if (time - 1 > currTime) {
 				// If the part was lost we slowly put it back to it's original position
 				transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.identity, 0.1f);
@@ -55,8 +60,51 @@ namespace HardCoded.VRigUnity {
 			return GetUpdatedRotation(transform.rotation, curr, time);
 		}
 
-		public void UpdateLocalRotation(Transform transform, float time) {
+		public void UpdateLocalRotation(Animator animator, HumanBodyBones bone, float time) {
+			Transform transform = animator.GetBoneTransform(bone);
 			transform.localRotation = GetUpdatedRotation(transform.localRotation, curr, time);
+		}
+	}
+
+	public struct PosStruct {
+		public static PosStruct identity => new(Vector3.zero, 0);
+		
+		private float lastTime;
+		private float currTime;
+		private Vector3 curr;
+
+		public PosStruct(Vector3 init, float time) {
+			currTime = time;
+			lastTime = time;
+			curr = init;
+		}
+
+		public void Set(Vector3 value, float time) {
+			lastTime = currTime;
+			currTime = time;
+			curr = value;
+		}
+
+		public Vector3 Get() {
+			return curr;
+		}
+
+		private Vector3 GetUpdatedPosition(Vector3 current, Vector3 curr, float time) {
+			return Vector3.Lerp(current, curr, RotStruct.TestInterpolationValue);
+		}
+		
+		public void UpdatePosition(Animator animator, HumanBodyBones bone, float time) {
+			Transform transform = animator.GetBoneTransform(bone);
+			if (time - 1 > currTime) {
+				transform.position = Vector3.Lerp(transform.position, curr, 0.1f);
+			} else {
+				transform.position = GetUpdatedPosition(transform.position, curr, time);
+			}
+		}
+
+		
+		public Vector3 GetRawUpdatePosition(Vector3 last, float time) {
+			return GetUpdatedPosition(last, curr, time);
 		}
 	}
 
@@ -83,11 +131,15 @@ namespace HardCoded.VRigUnity {
 		public RotStruct Neck = RotStruct.identity;
 		public RotStruct Chest = RotStruct.identity;
 		public RotStruct Hips = RotStruct.identity;
-		public RotStruct HipsPosition = RotStruct.identity;
+		public PosStruct HipsPosition = PosStruct.identity;
 		public RotStruct RightUpperArm = RotStruct.identity;
 		public RotStruct RightLowerArm = RotStruct.identity;
 		public RotStruct LeftUpperArm = RotStruct.identity;
 		public RotStruct LeftLowerArm = RotStruct.identity;
+		public RotStruct RightUpperLeg = RotStruct.identity;
+		public RotStruct RightLowerLeg = RotStruct.identity;
+		public RotStruct LeftUpperLeg = RotStruct.identity;
+		public RotStruct LeftLowerLeg = RotStruct.identity;
 	}
 
 	public class FaceData {

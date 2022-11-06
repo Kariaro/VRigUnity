@@ -11,6 +11,7 @@ namespace HardCoded.VRigUnity {
 		public SettingsField vmcSenderPort;
 		public SettingsField vmcReceiverPort;
 		public SettingsField boneWindow;
+		public SettingsField alwaysShowUI;
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
@@ -24,6 +25,9 @@ namespace HardCoded.VRigUnity {
 			});
 			boneWindow = CreateSetting("Bone Window", builder => {
 				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, -1);	
+			});
+			alwaysShowUI = CreateSetting("Always show UI", builder => {
+				return builder.AddToggle((_, value) => { Settings.AlwaysShowUI = value; }, Settings.AlwaysShowUI);
 			});
 		}
 
