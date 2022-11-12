@@ -48,10 +48,22 @@ namespace HardCoded.VRigUnity {
 
 		// Bone Settings
 		public static SettingsTypes.Int _BoneMask = new("bone.mask", BoneSettings.Default);
+		public static SettingsTypes.Bool _UseWristRotation = new("bone.use.wristik", false);
+		public static SettingsTypes.Bool _UseLegRotation = new("boke.use.legs", false);
 
 		public static int BoneMask {
 			get => _BoneMask.Get();
 			set => _BoneMask.Set(value);
+		}
+
+		public static bool UseWristRotation {
+			get => _UseWristRotation.Get();
+			set => _UseWristRotation.Set(value);
+		}
+
+		public static bool UseLegRotation {
+			get => _UseLegRotation.Get();
+			set => _UseLegRotation.Set(value);
 		}
 
 		// Gui Settings

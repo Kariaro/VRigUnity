@@ -12,6 +12,8 @@ namespace HardCoded.VRigUnity {
 		public SettingsField vmcReceiverPort;
 		public SettingsField boneWindow;
 		public SettingsField alwaysShowUI;
+		public SettingsField expUseWrist;
+		public SettingsField expUseLegs;
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
@@ -24,10 +26,16 @@ namespace HardCoded.VRigUnity {
 				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, Settings.VMCReceiverPort, 3333, -1);	
 			});
 			boneWindow = CreateSetting("Bone Window", builder => {
-				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, -1);	
+				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, -1);
 			});
 			alwaysShowUI = CreateSetting("Always show UI", builder => {
 				return builder.AddToggle((_, value) => { Settings.AlwaysShowUI = value; }, Settings.AlwaysShowUI);
+			});
+			expUseWrist = CreateSetting("(Exp) Wrist rotation", builder => {
+				return builder.AddToggle((_, value) => { Settings.UseWristRotation = value; }, Settings.UseWristRotation);
+			});
+			expUseLegs = CreateSetting("(Exp) Leg rotation", builder => {
+				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation);
 			});
 		}
 

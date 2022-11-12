@@ -415,7 +415,6 @@ namespace HardCoded.VRigUnity {
 			Pose.RightLowerArm.Set(rLowerArm, TimeNow);
 			Pose.LeftUpperArm.Set(lUpperArm, TimeNow);
 			Pose.LeftLowerArm.Set(lLowerArm, TimeNow);
-			/*
 			if (hasRightLeg) {
 				Pose.RightUpperLeg.Set(rUpperLeg, TimeNow);
 				Pose.RightLowerLeg.Set(rLowerLeg, TimeNow);
@@ -425,7 +424,6 @@ namespace HardCoded.VRigUnity {
 				Pose.LeftUpperLeg.Set(lUpperLeg, TimeNow);
 				Pose.LeftLowerLeg.Set(lLowerLeg, TimeNow);
 			}
-			*/
 		}
 
 		// This is protected to allow being called from child classes
@@ -473,7 +471,7 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 
-			{ // Legs
+			if (Settings.UseLegRotation) { // Legs
 				if (BoneSettings.Get(BoneSettings.LEFT_HIP)) {
 					Pose.LeftUpperLeg.UpdateRotation(animator, HumanBodyBones.LeftUpperLeg, time);
 				}
@@ -566,19 +564,28 @@ namespace HardCoded.VRigUnity {
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), 0);
 			}
 
-			/*
-			// TODO: Clear values only when they were enabled
-			for (int i = 0; i < BoneSettings.Count; i++) {
-				if (!BoneSettings.Get(i)) {
-					foreach (HumanBodyBones bone in BoneSettings.GetBones(i)) {
-						Transform trans = animator.GetBoneTransform(bone);
-						if (trans != null) {
-							trans.localRotation = Quaternion.identity;
-						}
-					}
+			// Experimental
+			if (Settings.UseWristRotation) {
+				{
+					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
+					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
+					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation;
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
+					animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
+				}
+			
+				{
+					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
+					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).position;
+					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).rotation;
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
+					animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
 				}
 			}
-			*/
 		}
 	}
 }
