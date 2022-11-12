@@ -20,21 +20,16 @@ namespace HardCoded.VRigUnity {
 		public bool refineFaceLandmarks = true;
 		public bool smoothLandmarks = true;
 
-		private float _minDetectionConfidence = 0.5f; // 0.7
+		private float _minDetectionConfidence = 0.5f;
 		public float MinDetectionConfidence {
 			get => _minDetectionConfidence;
 			set => _minDetectionConfidence = Mathf.Clamp01(value);
 		}
 
-		private float _minTrackingConfidence = 0.5f; // 0.7
+		private float _minTrackingConfidence = 0.5f;
 		public float MinTrackingConfidence {
 			get => _minTrackingConfidence;
 			set => _minTrackingConfidence = Mathf.Clamp01(value);
-		}
-
-		public event EventHandler<OutputEventArgs<Detection>> OnPoseDetectionOutput {
-			add => _poseDetectionStream.AddListener(value);
-			remove => _poseDetectionStream.RemoveListener(value);
 		}
 
 		public event EventHandler<OutputEventArgs<NormalizedLandmarkList>> OnPoseLandmarksOutput {
@@ -62,47 +57,34 @@ namespace HardCoded.VRigUnity {
 			remove => _poseWorldLandmarksStream.RemoveListener(value);
 		}
 
-		public event EventHandler<OutputEventArgs<NormalizedRect>> OnPoseRoiOutput {
-			add => _poseRoiStream.AddListener(value);
-			remove => _poseRoiStream.RemoveListener(value);
-		}
-
 		private const string _InputStreamName = "input_video";
-		private const string _PoseDetectionStreamName = "pose_detection";
 		private const string _PoseLandmarksStreamName = "pose_landmarks";
 		private const string _FaceLandmarksStreamName = "face_landmarks";
 		private const string _LeftHandLandmarksStreamName = "left_hand_landmarks";
 		private const string _RightHandLandmarksStreamName = "right_hand_landmarks";
 		private const string _PoseWorldLandmarksStreamName = "pose_world_landmarks";
-		private const string _PoseRoiStreamName = "pose_roi";
 
-		private OutputStream<DetectionPacket, Detection> _poseDetectionStream;
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _poseLandmarksStream;
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _faceLandmarksStream;
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _leftHandLandmarksStream;
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _rightHandLandmarksStream;
 		private OutputStream<LandmarkListPacket, LandmarkList> _poseWorldLandmarksStream;
-		private OutputStream<NormalizedRectPacket, NormalizedRect> _poseRoiStream;
 
 		public override void StartRun(ImageSource imageSource) {
 			StartRun(BuildSidePacket(imageSource));
 		}
 
 		public override void Stop() {
-			_poseDetectionStream?.RemoveAllListeners();
-			_poseDetectionStream = null;
 			_poseLandmarksStream?.RemoveAllListeners();
-			_poseLandmarksStream = null;
 			_faceLandmarksStream?.RemoveAllListeners();
-			_faceLandmarksStream = null;
 			_leftHandLandmarksStream?.RemoveAllListeners();
-			_leftHandLandmarksStream = null;
 			_rightHandLandmarksStream?.RemoveAllListeners();
-			_rightHandLandmarksStream = null;
 			_poseWorldLandmarksStream?.RemoveAllListeners();
+			_poseLandmarksStream = null;
+			_faceLandmarksStream = null;
+			_leftHandLandmarksStream = null;
+			_rightHandLandmarksStream = null;
 			_poseWorldLandmarksStream = null;
-			_poseRoiStream?.RemoveAllListeners();
-			_poseRoiStream = null;
 
 			base.Stop();
 		}
@@ -111,29 +93,7 @@ namespace HardCoded.VRigUnity {
 			AddTextureFrameToInputStream(_InputStreamName, textureFrame);
 		}
 
-		public bool TryGetNext(
-			out Detection poseDetection,
-			out NormalizedLandmarkList poseLandmarks,
-			out NormalizedLandmarkList faceLandmarks,
-			out NormalizedLandmarkList leftHandLandmarks,
-			out NormalizedLandmarkList rightHandLandmarks,
-			out LandmarkList poseWorldLandmarks,
-			out NormalizedRect poseRoi,
-			bool allowBlock = true
-		) {
-			var currentTimestampMicrosec = GetCurrentTimestampMicrosec();
-			var r1 = TryGetNext(_poseDetectionStream, out poseDetection, allowBlock, currentTimestampMicrosec);
-			var r2 = TryGetNext(_poseLandmarksStream, out poseLandmarks, allowBlock, currentTimestampMicrosec);
-			var r3 = TryGetNext(_faceLandmarksStream, out faceLandmarks, allowBlock, currentTimestampMicrosec);
-			var r4 = TryGetNext(_leftHandLandmarksStream, out leftHandLandmarks, allowBlock, currentTimestampMicrosec);
-			var r5 = TryGetNext(_rightHandLandmarksStream, out rightHandLandmarks, allowBlock, currentTimestampMicrosec);
-			var r6 = TryGetNext(_poseWorldLandmarksStream, out poseWorldLandmarks, allowBlock, currentTimestampMicrosec);
-			var r7 = TryGetNext(_poseRoiStream, out poseRoi, allowBlock, currentTimestampMicrosec);
-
-			return r1 || r2 || r3 || r4 || r5 || r6 || r7;
-		}
-
-		// TODO: For add a dropddown box for the asset modelComplexity
+		// TODO: For add a dropdown box for the asset modelComplexity
 		protected override IList<WaitForResult> RequestDependentAssets() {
 			return new List<WaitForResult> {
 				WaitForAsset("face_detection_short_range.bytes"),
@@ -143,7 +103,6 @@ namespace HardCoded.VRigUnity {
 				WaitForAsset("hand_recrop.bytes"),
 				WaitForAsset("handedness.txt"),
 				WaitForAsset("palm_detection_full.bytes"),
-				WaitForAsset("pose_detection.bytes"),
 				WaitForPoseLandmarkModel(),
 			};
 		}
@@ -158,13 +117,11 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
-			_poseDetectionStream = new OutputStream<DetectionPacket, Detection>(CalculatorGraph, _PoseDetectionStreamName, true, TimeoutMicrosec);
 			_poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _PoseLandmarksStreamName, true, TimeoutMicrosec);
 			_faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _FaceLandmarksStreamName, true, TimeoutMicrosec);
 			_leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _LeftHandLandmarksStreamName, true, TimeoutMicrosec);
 			_rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _RightHandLandmarksStreamName, true, TimeoutMicrosec);
 			_poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(CalculatorGraph, _PoseWorldLandmarksStreamName, true, TimeoutMicrosec);
-			_poseRoiStream = new OutputStream<NormalizedRectPacket, NormalizedRect>(CalculatorGraph, _PoseRoiStreamName, true, TimeoutMicrosec);
 
 			using (var validatedGraphConfig = new ValidatedGraphConfig()) {
 				var status = validatedGraphConfig.Initialize(config);

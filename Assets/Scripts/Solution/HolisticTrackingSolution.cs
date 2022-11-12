@@ -78,9 +78,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void OnStartRun() {
-			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
@@ -89,10 +87,10 @@ namespace HardCoded.VRigUnity {
 			canvas.SetupAnnotations();
 		}
 
-		
 		public void ResetVRMAnimator() {
 			animator.Rebind();
 			foreach (BlendShapePreset preset in Enum.GetValues(typeof(BlendShapePreset))) {
+				// TODO: Remove memory allocation and cache
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(preset), 0);
 			}
 		}
@@ -115,21 +113,14 @@ namespace HardCoded.VRigUnity {
 			canvas.ReadSync(textureFrame);
 		}
 
-		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {
-			canvas.OnPoseDetectionOutput(eventArgs);
-		}
-
-		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			canvas.OnPoseLandmarksOutput(eventArgs);
-		}
-
-		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {
-			canvas.OnPoseRoiOutput(eventArgs);
-		}
-
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			canvas.OnFaceLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
+				return;
+			}
+
+			if (!BoneSettings.Get(BoneSettings.FACE)) {
+				// Do not compute the face if it is not enabled
 				return;
 			}
 
@@ -296,8 +287,12 @@ namespace HardCoded.VRigUnity {
 			RightHand.ThumbTip.Set(handGroup.ThumbIP, time);
 		}
 
+		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			canvas.OnPoseLandmarksOutput(eventArgs);
+		}
+
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
-			canvas.OnPoseWorldLandmarksOutput(eventArgs);
+			// canvas.OnPoseWorldLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -494,21 +489,21 @@ namespace HardCoded.VRigUnity {
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_FINGERS)) {
-				LeftHand.IndexPip.UpdateLocalRotation(animator, HumanBodyBones. RightIndexProximal, time);
-				LeftHand.IndexDip.UpdateLocalRotation(animator, HumanBodyBones. RightIndexIntermediate, time);
-				LeftHand.IndexTip.UpdateLocalRotation(animator, HumanBodyBones. RightIndexDistal, time);
+				LeftHand.IndexPip.UpdateLocalRotation(animator, HumanBodyBones.RightIndexProximal, time);
+				LeftHand.IndexDip.UpdateLocalRotation(animator, HumanBodyBones.RightIndexIntermediate, time);
+				LeftHand.IndexTip.UpdateLocalRotation(animator, HumanBodyBones.RightIndexDistal, time);
 				LeftHand.MiddlePip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleProximal, time);
 				LeftHand.MiddleDip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleIntermediate, time);
 				LeftHand.MiddleTip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleDistal, time);
-				LeftHand.RingPip.UpdateLocalRotation(animator, HumanBodyBones.  RightRingProximal, time);
-				LeftHand.RingDip.UpdateLocalRotation(animator, HumanBodyBones.  RightRingIntermediate, time);
-				LeftHand.RingTip.UpdateLocalRotation(animator, HumanBodyBones.  RightRingDistal, time);
-				LeftHand.PinkyPip.UpdateLocalRotation(animator, HumanBodyBones. RightLittleProximal, time);
-				LeftHand.PinkyDip.UpdateLocalRotation(animator, HumanBodyBones. RightLittleIntermediate, time);
-				LeftHand.PinkyTip.UpdateLocalRotation(animator, HumanBodyBones. RightLittleDistal, time);
-				LeftHand.ThumbPip.UpdateLocalRotation(animator, HumanBodyBones. RightThumbProximal, time);
-				LeftHand.ThumbDip.UpdateLocalRotation(animator, HumanBodyBones. RightThumbIntermediate, time);
-				LeftHand.ThumbTip.UpdateLocalRotation(animator, HumanBodyBones. RightThumbDistal, time);
+				LeftHand.RingPip.UpdateLocalRotation(animator, HumanBodyBones.RightRingProximal, time);
+				LeftHand.RingDip.UpdateLocalRotation(animator, HumanBodyBones.RightRingIntermediate, time);
+				LeftHand.RingTip.UpdateLocalRotation(animator, HumanBodyBones.RightRingDistal, time);
+				LeftHand.PinkyPip.UpdateLocalRotation(animator, HumanBodyBones.RightLittleProximal, time);
+				LeftHand.PinkyDip.UpdateLocalRotation(animator, HumanBodyBones.RightLittleIntermediate, time);
+				LeftHand.PinkyTip.UpdateLocalRotation(animator, HumanBodyBones.RightLittleDistal, time);
+				LeftHand.ThumbPip.UpdateLocalRotation(animator, HumanBodyBones.RightThumbProximal, time);
+				LeftHand.ThumbDip.UpdateLocalRotation(animator, HumanBodyBones.RightThumbIntermediate, time);
+				LeftHand.ThumbTip.UpdateLocalRotation(animator, HumanBodyBones.RightThumbDistal, time);
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
@@ -516,21 +511,21 @@ namespace HardCoded.VRigUnity {
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_FINGERS)) {
-				RightHand.IndexPip.UpdateLocalRotation(animator, HumanBodyBones. LeftIndexProximal, time);
-				RightHand.IndexDip.UpdateLocalRotation(animator, HumanBodyBones. LeftIndexIntermediate, time);
-				RightHand.IndexTip.UpdateLocalRotation(animator, HumanBodyBones. LeftIndexDistal, time);
+				RightHand.IndexPip.UpdateLocalRotation(animator, HumanBodyBones.LeftIndexProximal, time);
+				RightHand.IndexDip.UpdateLocalRotation(animator, HumanBodyBones.LeftIndexIntermediate, time);
+				RightHand.IndexTip.UpdateLocalRotation(animator, HumanBodyBones.LeftIndexDistal, time);
 				RightHand.MiddlePip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleProximal, time);
 				RightHand.MiddleDip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleIntermediate, time);
 				RightHand.MiddleTip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleDistal, time);
-				RightHand.RingPip.UpdateLocalRotation(animator, HumanBodyBones.  LeftRingProximal, time);
-				RightHand.RingDip.UpdateLocalRotation(animator, HumanBodyBones.  LeftRingIntermediate, time);
-				RightHand.RingTip.UpdateLocalRotation(animator, HumanBodyBones.  LeftRingDistal, time);
-				RightHand.PinkyPip.UpdateLocalRotation(animator, HumanBodyBones. LeftLittleProximal, time);
-				RightHand.PinkyDip.UpdateLocalRotation(animator, HumanBodyBones. LeftLittleIntermediate, time);
-				RightHand.PinkyTip.UpdateLocalRotation(animator, HumanBodyBones. LeftLittleDistal, time);
-				RightHand.ThumbPip.UpdateLocalRotation(animator, HumanBodyBones. LeftThumbProximal, time);
-				RightHand.ThumbDip.UpdateLocalRotation(animator, HumanBodyBones. LeftThumbIntermediate, time);
-				RightHand.ThumbTip.UpdateLocalRotation(animator, HumanBodyBones. LeftThumbDistal, time);
+				RightHand.RingPip.UpdateLocalRotation(animator, HumanBodyBones.LeftRingProximal, time);
+				RightHand.RingDip.UpdateLocalRotation(animator, HumanBodyBones.LeftRingIntermediate, time);
+				RightHand.RingTip.UpdateLocalRotation(animator, HumanBodyBones.LeftRingDistal, time);
+				RightHand.PinkyPip.UpdateLocalRotation(animator, HumanBodyBones.LeftLittleProximal, time);
+				RightHand.PinkyDip.UpdateLocalRotation(animator, HumanBodyBones.LeftLittleIntermediate, time);
+				RightHand.PinkyTip.UpdateLocalRotation(animator, HumanBodyBones.LeftLittleDistal, time);
+				RightHand.ThumbPip.UpdateLocalRotation(animator, HumanBodyBones.LeftThumbProximal, time);
+				RightHand.ThumbDip.UpdateLocalRotation(animator, HumanBodyBones.LeftThumbIntermediate, time);
+				RightHand.ThumbTip.UpdateLocalRotation(animator, HumanBodyBones.LeftThumbDistal, time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.FACE)) {
@@ -547,7 +542,6 @@ namespace HardCoded.VRigUnity {
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), lEyeValue);
 
 				// TODO: Update this code to make it more correct
-				//animator.GetBoneTransform(HumanBodyBones.Neck).transform.rotation = Quaternion.identity;
 				animator.GetBoneTransform(HumanBodyBones.LeftEye).localRotation = Quaternion.Euler(
 					(lEyeIris.Average().y - 0.14f) * -30,
 					lEyeIris.Average().x * -30,

@@ -622,10 +622,13 @@ namespace EVMC4U
             //ブレンドシェープ適用
             else if (message.address == "/VMC/Ext/Blend/Apply")
             {
-                if (BlendShapeSynchronize && blendShapeProxy != null)
-                {
-                    blendShapeProxy.SetValues(BlendShapeToValueDictionary);
-                }
+                if (!HardCoded.VRigUnity.BoneSettings.Get(HardCoded.VRigUnity.BoneSettings.FACE)) {
+                    // Only apply if we are not capturing the face
+                    if (BlendShapeSynchronize && blendShapeProxy != null)
+                    {
+                        blendShapeProxy.SetValues(BlendShapeToValueDictionary);
+                    }
+			    }
             }
         }
 

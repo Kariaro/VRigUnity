@@ -2,6 +2,7 @@
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
+	// TODO: Optimize this class
 	public class BoneSettings {
 		public const int FACE = 0;
 		public const int NECK = 1;

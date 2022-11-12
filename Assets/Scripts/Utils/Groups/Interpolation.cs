@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace HardCoded.VRigUnity {
 	public struct RotStruct {
-		public static int TestInterpolationStatic => HolisticTrackingSolution.TestInterpolationStatic;
 		public static float TestInterpolationValue => HolisticTrackingSolution.TestInterpolationValue;
 
 		public static RotStruct identity => new(Quaternion.identity, 0);
@@ -12,10 +11,17 @@ namespace HardCoded.VRigUnity {
 		private float currTime;
 		private Quaternion curr;
 
+		// Cache values
+		private Transform lastTransform;
+		private HumanBodyBones lastBone;
+
 		public RotStruct(Quaternion init, float time) {
 			currTime = time;
 			lastTime = time;
 			curr = init;
+
+			lastTransform = null;
+			lastBone = HumanBodyBones.LastBone;
 		}
 
 		public void Set(Quaternion value, float time) {
@@ -29,25 +35,20 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
-			switch (TestInterpolationStatic) {
-				default: {
-					return Quaternion.Slerp(current, curr, TestInterpolationValue);
-				}
+			return Quaternion.Slerp(current, curr, TestInterpolationValue);
+		}
 
-				// TODO: Remove these
-				case 1: {
-					float timeLength = currTime - lastTime;
-					float delta = (time - currTime) / timeLength;
-					return Quaternion.Lerp(current, curr, Mathf.Clamp01(delta));
-				}
-				case 2: {
-					return curr;
-				}
+		private Transform GetTransform(Animator animator, HumanBodyBones bone) {
+			if (lastTransform == null || lastBone != bone) {
+				lastBone = bone;
+				lastTransform = animator.GetBoneTransform(bone);
 			}
+
+			return lastTransform;
 		}
 			
 		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = animator.GetBoneTransform(bone);
+			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
 				// If the part was lost we slowly put it back to it's original position
 				transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.identity, 0.1f);
@@ -61,7 +62,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void UpdateLocalRotation(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = animator.GetBoneTransform(bone);
+			Transform transform = GetTransform(animator, bone);
 			transform.localRotation = GetUpdatedRotation(transform.localRotation, curr, time);
 		}
 	}
@@ -73,10 +74,17 @@ namespace HardCoded.VRigUnity {
 		private float currTime;
 		private Vector3 curr;
 
+		// Cache values
+		private Transform lastTransform;
+		private HumanBodyBones lastBone;
+
 		public PosStruct(Vector3 init, float time) {
 			currTime = time;
 			lastTime = time;
 			curr = init;
+
+			lastTransform = null;
+			lastBone = HumanBodyBones.LastBone;
 		}
 
 		public void Set(Vector3 value, float time) {
@@ -93,8 +101,17 @@ namespace HardCoded.VRigUnity {
 			return Vector3.Lerp(current, curr, RotStruct.TestInterpolationValue);
 		}
 		
+		private Transform GetTransform(Animator animator, HumanBodyBones bone) {
+			if (lastTransform == null || lastBone != bone) {
+				lastBone = bone;
+				lastTransform = animator.GetBoneTransform(bone);
+			}
+
+			return lastTransform;
+		}
+		
 		public void UpdatePosition(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = animator.GetBoneTransform(bone);
+			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
 				transform.position = Vector3.Lerp(transform.position, curr, 0.1f);
 			} else {
