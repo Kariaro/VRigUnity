@@ -20,6 +20,9 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private IEnumerator Init() {
+			// Log application version
+			Logger.Info(_TAG, $"Application version: {Application.version}");
+
 			// Log settings
 			Settings.LogAll();
 

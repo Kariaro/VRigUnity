@@ -1,13 +1,15 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using uOSC;
-using System;
-using VRM;
+using UnityEngine.EventSystems;
 
 namespace HardCoded.VRigUnity {
-	public class VMCButton : MonoBehaviour {
+	public class VMCSenderButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 		public VMCSender vmcSender;
+		
+		[SerializeField] private RectTransform canvasRect;
+		[SerializeField] private CanvasGroup canvasGroup;
+		private bool m_canvasVisible;
 
 		[SerializeField] private TMP_Text buttonText;
 		[SerializeField] private TMP_Text portText;
@@ -21,8 +23,22 @@ namespace HardCoded.VRigUnity {
 		void Start() {
 			buttonImage = GetComponent<Image>();
 			toggleButton = GetComponent<Button>();
-
 			InitializeContents();
+		}
+
+		public void OnPointerEnter(PointerEventData data) {
+			m_canvasVisible = true;
+		}
+
+		public void OnPointerExit(PointerEventData data) {
+			m_canvasVisible = false;
+		}
+
+		void FixedUpdate() {
+			Vector3 pos = canvasRect.localPosition;
+			pos.y = Mathf.Lerp(pos.y, m_canvasVisible ? -24 : 0, 0.2f);
+			canvasRect.localPosition = pos;
+			canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, m_canvasVisible ? 1 : 0, 0.2f); 
 		}
 
 		private void InitializeContents() {
@@ -30,14 +46,14 @@ namespace HardCoded.VRigUnity {
 			isVMCStarted = false;
 
 			// Setup settings listener (TODO: Remove)
-			Settings.VMCPortListener += (value) => {
+			Settings.VMCSenderPortListener += (value) => {
 				// Only display port changes when the VMC is closed
 				if (!isVMCStarted) {
 					portText.text = "Port " + value;
 				}
 			};
 
-			portText.text = "Port " + Settings.VMCPort;
+			portText.text = "Port " + Settings.VMCSenderPort;
 			
 			toggleButton.onClick.RemoveAllListeners();
 			toggleButton.onClick.AddListener(delegate {
@@ -48,18 +64,18 @@ namespace HardCoded.VRigUnity {
 		private void SetVMC(bool enable) {
 			isVMCStarted = enable;
 			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
-			buttonText.text = enable ? "Stop VMC" : "Start VMC";
+			buttonText.text = enable ? "Stop Sender VMC" : "Start Sender VMC";
 
 			// Start/Stop the VMC instance
 			if (enable) {
-				vmcSender.SetPort(Settings.VMCPort);	
+				vmcSender.SetPort(Settings.VMCSenderPort);	
 				vmcSender.StartVMC();
 			} else {
 				vmcSender.StopVMC();
 			}
 
 			// Update port
-			portText.text = "Port " + Settings.VMCPort;
+			portText.text = "Port " + Settings.VMCSenderPort;
 		}
 	}
 }

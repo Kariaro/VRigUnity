@@ -12,6 +12,9 @@ namespace HardCoded.VRigUnity {
 			Logger.Info(_TAG, $"CameraFlipped '{CameraFlipped}'");
 			Logger.Info(_TAG, $"CameraResolution '{CameraResolution}'");
 
+			// Bones
+			Logger.Info(_TAG, $"Bones '{BoneMask}'");
+
 			// UI
 			Logger.Info(_TAG, $"ModelFile '{ModelFile}'");
 			Logger.Info(_TAG, $"ImageFile '{ImageFile}'");
@@ -19,110 +22,117 @@ namespace HardCoded.VRigUnity {
 			Logger.Info(_TAG, $"ShowCustomBackgroundColor '{ShowCustomBackgroundColor}'");
 
 			// Features
-			Logger.Info(_TAG, $"VMCPort '{VMCPort}'");
+			Logger.Info(_TAG, $"VMCSenderPort '{VMCSenderPort}'");
+			Logger.Info(_TAG, $"VMCReceiverPort '{VMCReceiverPort}'");
 		}
 
 		// Camera Settings
-		public static readonly string _CameraName = "camera.name";
-		public static readonly string _CameraFlipped = "camera.flipped";
-		public static readonly string _CameraResolution = "camera.resolution";
+		public static SettingsTypes.String _CameraName = new("camera.name", "");
+		public static SettingsTypes.Bool _CameraFlipped = new("camera.flipped", false);
+		public static SettingsTypes.String _CameraResolution = new("camera.resolution", "");
 
 		public static string CameraName {
-			get => Data.GetString(_CameraName, "");
-			set => Data.SetString(_CameraName, value);
+			get => _CameraName.Get();
+			set => _CameraName.Set(value);
 		}
 
 		public static bool CameraFlipped {
-			get => Data.GetBool(_CameraFlipped, false);
-			set => Data.SetBool(_CameraFlipped, value);
+			get => _CameraFlipped.Get();
+			set => _CameraFlipped.Set(value);
 		}
 
 		public static string CameraResolution {
-			get => Data.GetString(_CameraResolution, "");
-			set => Data.SetString(_CameraResolution, value);
+			get => _CameraResolution.Get();
+			set => _CameraResolution.Set(value);
+		}
+
+		// Bone Settings
+		public static SettingsTypes.Int _BoneMask = new("bone.mask", BoneSettings.Default);
+		public static SettingsTypes.Bool _UseWristRotation = new("bone.use.wristik", false);
+		public static SettingsTypes.Bool _UseLegRotation = new("boke.use.legs", false);
+
+		public static int BoneMask {
+			get => _BoneMask.Get();
+			set => _BoneMask.Set(value);
+		}
+
+		public static bool UseWristRotation {
+			get => _UseWristRotation.Get();
+			set => _UseWristRotation.Set(value);
+		}
+
+		public static bool UseLegRotation {
+			get => _UseLegRotation.Get();
+			set => _UseLegRotation.Set(value);
 		}
 
 		// Gui Settings
-		public static readonly string _ModelFile = "gui.model";
-		public static readonly string _ImageFile = "gui.image";
-		public static readonly string _ShowCustomBackground = "gui.show.custombackground";
-		public static readonly string _ShowBgColor = "gui.show.bgColor";
-		public static readonly string _VMCPort = "vmc.port";
+		public static SettingsTypes.String _ModelFile = new("gui.model", "");
+		public static SettingsTypes.String _ImageFile = new("gui.image", "");
+		public static SettingsTypes.Bool _ShowCustomBackground = new("gui.show.custombackground", false);
+		public static SettingsTypes.Bool _ShowBgColor = new("gui.show.bgColor", false);
+		public static SettingsTypes.Int _VMCSenderPort = new("vmc.sender.port", 3333);
+		public static SettingsTypes.Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
+		public static SettingsTypes.Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
+		public static SettingsTypes.Int _GuiScale = new("gui.scale", 1);
 
 		public static string ModelFile {
-			get => Data.GetString(_ModelFile, "");
-			set => Data.SetString(_ModelFile, value);
+			get => _ModelFile.Get();
+			set => _ModelFile.Set(value);
 		}
 
 		public static string ImageFile {
-			get => Data.GetString(_ImageFile, "");
-			set => Data.SetString(_ImageFile, value);
+			get => _ImageFile.Get();
+			set => _ImageFile.Set(value);
 		}
 
 		public static bool ShowCustomBackground {
-			get => Data.GetBool(_ShowCustomBackground, false);
-			set => Data.SetBool(_ShowCustomBackground, value);
+			get => _ShowCustomBackground.Get();
+			set => _ShowCustomBackground.Set(value);
 		}
 
 		public static bool ShowCustomBackgroundColor {
-			get => Data.GetBool(_ShowBgColor, false);
-			set => Data.SetBool(_ShowBgColor, value);
+			get => _ShowBgColor.Get();
+			set => _ShowBgColor.Set(value);
 		}
 
-		public static int VMCPort {
-			get => Data.GetInt(_VMCPort, 3333);
+		public static int VMCSenderPort {
+			get => _VMCSenderPort.Get();
 			set {
-				Data.SetInt(_VMCPort, value);
-				VMCPortListener?.Invoke(value);
+				_VMCSenderPort.Set(value);
+				VMCSenderPortListener?.Invoke(value);
 			}
 		}
 
-		public delegate void VMCPortDelegate (int value);
-		public static event VMCPortDelegate VMCPortListener;
+		public static int VMCReceiverPort {
+			get => _VMCReceiverPort.Get();
+			set {
+				_VMCReceiverPort.Set(value);
+				VMCReceiverPortListener?.Invoke(value);
+			}
+		}
+
+		public static bool AlwaysShowUI {
+			get => _AlwaysShowUI.Get();
+			set => _AlwaysShowUI.Set(value);
+		}
+
+		public static int GuiScale {
+			get => _GuiScale.Get();
+			set {
+				_GuiScale.Set(value);
+				GuiScaleListener?.Invoke(value);
+			}
+		}
+
+		public delegate void IntDelegate (int value);
+		public static event IntDelegate VMCSenderPortListener;
+		public static event IntDelegate VMCReceiverPortListener;
+		public static event IntDelegate GuiScaleListener;
 
 		// Reset
 		public static void ResetSettings() {
 			PlayerPrefs.DeleteAll();
-		}
-
-		public static class Data {
-			public static void SetInt(string key, int value) {
-				PlayerPrefs.SetInt(key, value);
-			}
-			
-			public static int GetInt(string key, int def) {
-				return PlayerPrefs.GetInt(key, def);
-			}
-
-			public static void SetString(string key, string value) {
-				PlayerPrefs.SetString(key, value);
-			}
-			
-			public static string GetString(string key, string def) {
-				return PlayerPrefs.GetString(key, def);
-			}
-
-			public static void SetBool(string key, bool value) {
-				PlayerPrefs.SetInt(key, value ? 1 : 0);
-			}
-			
-			public static bool GetBool(string key, bool def) {
-				return PlayerPrefs.GetInt(key, def ? 1 : 0) != 0;
-			}
-
-			public static void SetVector3(string key, Vector3 value) {
-				PlayerPrefs.SetFloat($"{key}.x", value.x);
-				PlayerPrefs.SetFloat($"{key}.y", value.y);
-				PlayerPrefs.SetFloat($"{key}.z", value.z);
-			}
-
-			public static Vector3 GetVector3(string key, Vector3 def) {
-				return new Vector3(
-					PlayerPrefs.GetFloat($"{key}.x", def.x),
-					PlayerPrefs.GetFloat($"{key}.y", def.y),
-					PlayerPrefs.GetFloat($"{key}.z", def.z)
-				);
-			}
 		}
 	}
 }

@@ -15,9 +15,10 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private GameObject toggleTemplate;
 		[SerializeField] private GameObject buttonTemplate;
 		[SerializeField] private GameObject dropdownTemplate;
+		[SerializeField] private GameObject sliderTemplate;
 
 		public SettingsFieldTemplate AddToggle(Action<Toggle, bool> action, bool defaultValue = false) {
-			GameObject field = Instantiate(toggleTemplate, transform);
+			GameObject field = CreateInstance(toggleTemplate);
 			field.name = "ToggleField";
 			field.SetActive(true);
 
@@ -28,7 +29,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public SettingsFieldTemplate AddInputField(Action<TMP_InputField, string> action, string defaultValue = "") {
-			GameObject field = Instantiate(inputFieldTemplate, transform);
+			GameObject field = CreateInstance(inputFieldTemplate);
 			field.name = "InputField";
 			field.SetActive(true);
 
@@ -38,18 +39,12 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddNumberInput(Action<TMP_InputField, int> action, int min, int max, int value, int defaultValue, float width = 24) {
-			GameObject field = Instantiate(inputFieldTemplate, transform);
+		public SettingsFieldTemplate AddNumberInput(Action<TMP_InputField, int> action, int min, int max, int value, int defaultValue, float width = -1) {
+			GameObject field = CreateInstance(inputFieldTemplate);
 			field.name = "NumberInputField";
 			field.SetActive(true);
-
-			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
-			if (width < 0) {
-				layoutElement.flexibleWidth = 1;
-				layoutElement.minWidth = -1;
-			} else {
-				layoutElement.minWidth = width;
-			}
+			
+			ApplyLayout(field, width);
 
 			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
 			inputField.characterValidation = TMP_InputField.CharacterValidation.Integer;
@@ -79,18 +74,12 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddEnumDropdown<T>(Action<TMP_Dropdown, T> action, T value, T defaultValue, float width = 24) where T : System.Enum {
-			GameObject field = Instantiate(dropdownTemplate, transform);
+		public SettingsFieldTemplate AddEnumDropdown<T>(Action<TMP_Dropdown, T> action, T value, T defaultValue, float width = -1) where T : System.Enum {
+			GameObject field = CreateInstance(dropdownTemplate);
 			field.name = "EnumDropdownField";
 			field.SetActive(true);
-
-			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
-			if (width < 0) {
-				layoutElement.flexibleWidth = 1;
-				layoutElement.minWidth = -1;
-			} else {
-				layoutElement.minWidth = width;
-			}
+			
+			ApplyLayout(field, width);
 
 			List<string> options = new();
 			foreach (T item in Enum.GetValues(typeof(T))) {
@@ -108,18 +97,12 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddDropdown(Action<TMP_Dropdown, int> action, List<string> options, int index, int defaultIndex, float width = 24) {
-			GameObject field = Instantiate(dropdownTemplate, transform);
+		public SettingsFieldTemplate AddDropdown(Action<TMP_Dropdown, int> action, List<string> options, int index, int defaultIndex, float width = -1) {
+			GameObject field = CreateInstance(dropdownTemplate);
 			field.name = "DropdownField";
 			field.SetActive(true);
-
-			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
-			if (width < 0) {
-				layoutElement.flexibleWidth = 1;
-				layoutElement.minWidth = -1;
-			} else {
-				layoutElement.minWidth = width;
-			}
+			
+			ApplyLayout(field, width);
 
 			TMP_Dropdown dropdown = field.GetComponentInChildren<TMP_Dropdown>();
 			dropdown.AddOptions(options);
@@ -130,18 +113,12 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddButton(string name, Action<Button> action, float width = 24) {
-			GameObject field = Instantiate(buttonTemplate, transform);
+		public SettingsFieldTemplate AddButton(string name, Action<Button> action, float width = -1) {
+			GameObject field = CreateInstance(buttonTemplate);
 			field.name = "ButtonField";
 			field.SetActive(true);
 
-			LayoutElement layoutElement = field.GetComponent<LayoutElement>();
-			if (width < 0) {
-				layoutElement.flexibleWidth = 1;
-				layoutElement.minWidth = -1;
-			} else {
-				layoutElement.minWidth = width;
-			}
+			ApplyLayout(field, width);
 
 			TMP_Text text = field.GetComponentInChildren<TMP_Text>();
 			text.text = name;
@@ -149,6 +126,54 @@ namespace HardCoded.VRigUnity {
 			Button button = field.GetComponent<Button>();
 			button.onClick.AddListener(delegate { action.Invoke(button); });
 			return this;
+		}
+
+		public SettingsFieldTemplate AddFloatSlider(Action<Slider, float> action, float min, float max, float value, float width = -1) {
+			GameObject field = CreateInstance(sliderTemplate);
+			field.name = "SliderFloatField";
+
+			Slider sliderField = field.GetComponent<Slider>();
+			sliderField.maxValue = max;
+			sliderField.minValue = min;
+			sliderField.value = value;
+			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, sliderField.value); });
+			
+			field.SetActive(true);
+			ApplyLayout(field, width);
+			return this;
+		}
+
+		public SettingsFieldTemplate AddIntSlider(Action<Slider, int> action, int min, int max, int value, float width = -1) {
+			GameObject field = CreateInstance(sliderTemplate);
+			field.name = "SliderIntField";
+
+			Slider sliderField = field.GetComponent<Slider>();
+			sliderField.maxValue = max;
+			sliderField.minValue = min;
+			sliderField.value = value;
+			sliderField.wholeNumbers = true;
+			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, (int) sliderField.value); });
+			
+			field.SetActive(true);
+			ApplyLayout(field, width);
+			return this;
+		}
+
+		private void ApplyLayout(GameObject obj, float width) {
+			LayoutElement layoutElement = obj.GetComponent<LayoutElement>();
+			if (width < 0) {
+				layoutElement.flexibleWidth = 1;
+				layoutElement.minWidth = -1;
+			} else {
+				layoutElement.minWidth = width;
+			}
+		}
+
+		private GameObject CreateInstance(GameObject obj) {
+			GameObject result = Instantiate(obj);
+			result.transform.localScale = Vector3.one;
+			result.transform.SetParent(transform, false);
+			return result;
 		}
 
 		// This will remove all unused data inside this field
@@ -161,6 +186,8 @@ namespace HardCoded.VRigUnity {
 			Destroy(inputFieldTemplate);
 			Destroy(toggleTemplate);
 			Destroy(buttonTemplate);
+			Destroy(dropdownTemplate);
+			Destroy(sliderTemplate);
 
 			// Remove this field
 			Destroy(this);

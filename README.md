@@ -17,7 +17,6 @@ Features:
 
 ## Dependencies
 + [MediaPipeUnityPlugin v0.10.1](https://github.com/homuler/MediaPipeUnityPlugin)
-  + [OpenCV 3.4.16](https://opencv.org/releases/)
 + [UniVRM v0.99.4](https://github.com/vrm-c/UniVRM)
 + [StandaloneFileBrowser v1.2](https://github.com/gkngkc/UnityStandaloneFileBrowser)
 + [SimpleFileBrowser v1.5.7](https://github.com/yasirkula/UnitySimpleFileBrowser)

@@ -10,7 +10,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void FixedUpdate() {
-			float target = Application.isFocused ? 1 : 0;
+			bool focus = Settings.AlwaysShowUI || Application.isFocused;
+			float target = focus ? 1 : 0;
 			float alpha = canvasGroup.alpha;
 			float time = Time.fixedDeltaTime * timeMultiplier;
 			canvasGroup.alpha = (time * alpha) + ((1 - time) * target);

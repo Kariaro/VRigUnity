@@ -14,7 +14,7 @@ namespace HardCoded.VRigUnity {
 			set => graphRunner.TimeoutMillisec = value;
 		}
 
-		public WebCamSource ImageSourceProvider_ImageSource => SolutionUtils.GetImageSource();
+		public WebCamSource ImageSource => SolutionUtils.GetImageSource();
 
 		public override void Play() {
 			if (_coroutine != null) {
@@ -27,24 +27,24 @@ namespace HardCoded.VRigUnity {
 
 		public override void Pause() {
 			base.Pause();
-			ImageSourceProvider_ImageSource.Pause();
+			ImageSource.Pause();
 		}
 
 		public override void Resume() {
 			base.Resume();
-			var _ = StartCoroutine(ImageSourceProvider_ImageSource.Resume());
+			var _ = StartCoroutine(ImageSource.Resume());
 		}
 
 		public override void Stop() {
 			base.Stop();
 			StopCoroutine(_coroutine);
-			ImageSourceProvider_ImageSource.Stop();
+			ImageSource.Stop();
 			graphRunner.Stop();
 		}
 
 		private IEnumerator Run() {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
-			var imageSource = ImageSourceProvider_ImageSource;
+			var imageSource = ImageSource;
 
 			yield return imageSource.Play();
 

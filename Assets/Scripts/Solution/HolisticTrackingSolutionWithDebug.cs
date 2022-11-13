@@ -14,18 +14,14 @@ namespace HardCoded.VRigUnity {
 
 		protected override void OnStartRun() {
 			base.OnStartRun();
-			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
 		}
 
-		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {}
 		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {}
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {}
@@ -44,6 +40,10 @@ namespace HardCoded.VRigUnity {
 			hasHandData = true;
 		}
 
+		[Range(0, 1)]
+		public float angleTest = 0;
+		public int test;
+
 		new void FixedUpdate() {
 			if (handGroup != null && handPoints != null) {
 				handGroup.Apply(handPoints, animator.GetBoneTransform(HumanBodyBones.LeftHand).transform.position, 0.5f);
@@ -53,8 +53,30 @@ namespace HardCoded.VRigUnity {
 			if (hasHandData) {
 				HandResolver.SolveRightHand(handPoints);
 			}
-
+			
 			base.FixedUpdate();
+
+			/*
+			{
+				Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
+				Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
+				Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
+				Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation;
+				float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+				angle = Mathf.Clamp(angle / 4.0f, -45, 45);
+				animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
+			}
+			
+			{
+				Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
+				Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
+				Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).position;
+				Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).rotation;
+				float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+				angle = Mathf.Clamp(angle / 4.0f, -45, 45);
+				animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
+			}
+			*/
 		}
 	}
 }

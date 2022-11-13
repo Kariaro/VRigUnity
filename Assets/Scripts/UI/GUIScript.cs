@@ -11,6 +11,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] OrbitalCamera orbitalCamera;
 		[SerializeField] Vector3 modelTransform = Vector3.zero;
 		[SerializeField] CustomizableCanvas customizableCanvas;
+		[SerializeField] CanvasScaler canvasScaler;
 
 		private bool showWebCamImage;
 
@@ -19,11 +20,17 @@ namespace HardCoded.VRigUnity {
 			LoadVrmModel(Settings.ModelFile);
 			LoadCustomImage(Settings.ImageFile);
 			SetShowBackgroundImage(Settings.ShowCustomBackground);
+			
+			canvasScaler.scaleFactor = 1 + (Settings.GuiScale - 1) / 9.0f;
+			Settings.GuiScaleListener += (value) => {
+				// Scale the UI
+				canvasScaler.scaleFactor = 1 + (value - 1) / 9.0f;
+			};
 		}
 
 		public void ResetModel() {
 			Settings.ModelFile = "";
-			SolutionUtils.GetSolution().ResetVrmModel();
+			SolutionUtils.GetSolution().ResetVRMModel();
 		}
 
 		public void LoadVrmModel(string path) {
@@ -42,7 +49,7 @@ namespace HardCoded.VRigUnity {
 				loaded.ShowMeshes();
 				
 				Settings.ModelFile = path;
-				SolutionUtils.GetSolution().SetVrmModel(loaded.gameObject);
+				SolutionUtils.GetSolution().SetVRMModel(loaded.gameObject);
 			}
 		}
 
