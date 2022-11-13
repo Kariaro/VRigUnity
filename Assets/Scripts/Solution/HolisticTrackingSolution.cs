@@ -9,6 +9,8 @@ namespace HardCoded.VRigUnity {
 		[Header("Rig")]
 		[SerializeField] protected GameObject defaultVrmPrefab;
 		[SerializeField] protected GameObject vrmModel;
+		[SerializeField] protected RuntimeAnimatorController vrmController;
+		[SerializeField] protected VRMAnimator vrmAnimator;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
 
@@ -39,6 +41,13 @@ namespace HardCoded.VRigUnity {
 		public static int TestInterpolationStatic;
 		public static float TestInterpolationValue;
 
+		void Awake() {
+			if (vrmModel.GetComponent<VRMAnimator>() == null) {
+				vrmAnimator = vrmModel.AddComponent<VRMAnimator>();
+				vrmAnimator.controller = vrmController;
+			}
+		}
+
 		public void ResetVRMModel() {
 			SetVRMModel(Instantiate(defaultVrmPrefab));
 		}
@@ -54,7 +63,9 @@ namespace HardCoded.VRigUnity {
 			if (vrmModel != null) {
 				Destroy(vrmModel);
 			}
-
+			
+			this.vrmAnimator = gameObject.AddComponent<VRMAnimator>();
+			this.vrmAnimator.controller = vrmController;
 			this.vrmModel = gameObject;
 			this.blendShapeProxy = blendShapeProxy;
 			this.animator = animator;
@@ -403,6 +414,31 @@ namespace HardCoded.VRigUnity {
 				// Catch all exceptions
 			}
 
+			// Experimental
+			if (Settings.UseWristRotation) {
+				{
+					Vector3 w_pos = RightHand.Wrist.GetLastPosition();
+					Quaternion w_rot = RightHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.LeftLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.LeftLowerArm.GetLastRotation();
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle - 90, -90, 90);
+					lLowerArm *= Quaternion.Euler(angle, 0, 0);
+					// lUpperArm *= Quaternion.Euler(angle, 0, 0);
+				}
+			
+				{
+					Vector3 w_pos = LeftHand.Wrist.GetLastPosition();
+					Quaternion w_rot = LeftHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.RightLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.RightLowerArm.GetLastRotation();
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle - 90, -90, 90);
+					rLowerArm *= Quaternion.Euler(angle, 0, 0);
+					// rUpperArm *= Quaternion.Euler(angle, 0, 0);
+				}
+			}
+
 			Pose.Chest.Set(chestRotation, TimeNow);
 			Pose.Hips.Set(hipsRotation, TimeNow);
 			Pose.HipsPosition.Set(hipsPosition, TimeNow);
@@ -421,8 +457,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		// This is protected to allow being called from child classes
-		protected void FixedUpdate() {
+		public virtual void ModelUpdate() {
 			if (!vrmModel.activeInHierarchy) {
 				return;
 			}
@@ -556,29 +591,6 @@ namespace HardCoded.VRigUnity {
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), 0);
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), 0);
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), 0);
-			}
-
-			// Experimental
-			if (Settings.UseWristRotation) {
-				{
-					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
-					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
-					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
-					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation;
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
-					animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
-				}
-			
-				{
-					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
-					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).position;
-					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).rotation;
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
-					animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
-				}
 			}
 		}
 	}

@@ -1,16 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class SettingsTypes {
-		public abstract class Field<T> {
+		public static readonly List<IField> DefinedSettings = new();
+
+		public interface IField {
+			string Name();
+			void Init();
+			object RawValue();
+		}
+
+		public abstract class Field<T> : IField {
 			protected readonly string m_key;
 			protected readonly T m_def;
 			protected bool m_init;
 			protected Field(string key, T def) {
 				m_key = key;
 				m_def = def;
+				DefinedSettings.Add(this);
 			}
+
+			public string Name() {
+				return m_key;
+			}
+
+			public object RawValue() {
+				return Get();
+			}
+
+			public abstract void Init();
 			public abstract void Reset();
 			public abstract T Get();
 			public abstract void Set(T value);
@@ -24,12 +44,11 @@ namespace HardCoded.VRigUnity {
 				Set(m_def);
 			}
 
-			public override string Get() {
-				if (!m_init) {
-					m_init = true;
-					m_value = PlayerPrefs.GetString(m_key, m_def);
-				}
+			public override void Init() {
+				m_value = PlayerPrefs.GetString(m_key, m_def);
+			}
 
+			public override string Get() {
 				return m_value;
 			}
 
@@ -47,12 +66,11 @@ namespace HardCoded.VRigUnity {
 				Set(m_def);
 			}
 
-			public override bool Get() {
-				if (!m_init) {
-					m_init = true;
-					m_value = PlayerPrefs.GetInt(m_key, m_def ? 1 : 0) != 0;
-				}
+			public override void Init() {
+				m_value = PlayerPrefs.GetInt(m_key, m_def ? 1 : 0) != 0;
+			}
 
+			public override bool Get() {
 				return m_value;
 			}
 
@@ -70,12 +88,11 @@ namespace HardCoded.VRigUnity {
 				Set(m_def);
 			}
 
-			public override int Get() {
-				if (!m_init) {
-					m_init = true;
-					m_value = PlayerPrefs.GetInt(m_key, m_def);
-				}
+			public override void Init() {
+				m_value = PlayerPrefs.GetInt(m_key, m_def);
+			}
 
+			public override int Get() {
 				return m_value;
 			}
 
@@ -93,12 +110,11 @@ namespace HardCoded.VRigUnity {
 				Set(m_def);
 			}
 
-			public override float Get() {
-				if (!m_init) {
-					m_init = true;
-					m_value = PlayerPrefs.GetFloat(m_key, m_def);
-				}
+			public override void Init() {
+				m_value = PlayerPrefs.GetFloat(m_key, m_def);
+			}
 
+			public override float Get() {
 				return m_value;
 			}
 

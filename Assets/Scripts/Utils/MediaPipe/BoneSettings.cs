@@ -25,7 +25,11 @@ namespace HardCoded.VRigUnity {
 		public const int Count = 17;
 
 		// 16 bits set
-		public const int Default = (1 << (Count + 2)) - 1;
+		public const int Default = ((1 << (Count + 2)) - 1) & ~(
+			(1 << HIPS) |
+			(1 << LEFT_HIP) | (1 << LEFT_KNEE) | (1 << LEFT_ANKLE) |
+			(1 << RIGHT_HIP) | (1 << RIGHT_KNEE) | (1 << RIGHT_ANKLE)
+		);
 
 		public static bool Get(int index) {
 			return (Settings.BoneMask & (1 << index)) != 0;

@@ -34,6 +34,10 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void LoadVrmModel(string path) {
+			if (path == "") {
+				return;
+			}
+
 			if (!File.Exists(path)) {
 				Logger.Log($"Failed to load vrm model '{path}'");
 				return;
@@ -54,6 +58,10 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void LoadCustomImage(string path) {
+			if (path == "") {
+				return;
+			}
+
 			if (!File.Exists(path)) {
 				Logger.Log($"Failed to load background image '{path}'");
 				return;

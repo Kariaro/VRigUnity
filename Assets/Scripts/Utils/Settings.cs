@@ -1,29 +1,17 @@
 ﻿using System;
 using UnityEngine;
+using static HardCoded.VRigUnity.SettingsTypes;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
 		private const string _TAG = nameof(Settings);
-			
-		// Debug function to log all set values
-		public static void LogAll() {
-			// Camera
-			Logger.Info(_TAG, $"CameraName '{CameraName}'");
-			Logger.Info(_TAG, $"CameraFlipped '{CameraFlipped}'");
-			Logger.Info(_TAG, $"CameraResolution '{CameraResolution}'");
 
-			// Bones
-			Logger.Info(_TAG, $"Bones '{BoneMask}'");
-
-			// UI
-			Logger.Info(_TAG, $"ModelFile '{ModelFile}'");
-			Logger.Info(_TAG, $"ImageFile '{ImageFile}'");
-			Logger.Info(_TAG, $"ShowCustomBackground '{ShowCustomBackground}'");
-			Logger.Info(_TAG, $"ShowCustomBackgroundColor '{ShowCustomBackgroundColor}'");
-
-			// Features
-			Logger.Info(_TAG, $"VMCSenderPort '{VMCSenderPort}'");
-			Logger.Info(_TAG, $"VMCReceiverPort '{VMCReceiverPort}'");
+		// This must be called to initialize the system
+		public static void Init() {
+			foreach (IField field in SettingsTypes.DefinedSettings) {
+				field.Init();
+				Logger.Info(_TAG, $"{field.Name()} '{field.RawValue()}'");
+			}
 		}
 
 		// Camera Settings

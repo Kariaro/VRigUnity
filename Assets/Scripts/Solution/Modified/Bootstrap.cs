@@ -23,8 +23,8 @@ namespace HardCoded.VRigUnity {
 			// Log application version
 			Logger.Info(_TAG, $"Application version: {Application.version}");
 
-			// Log settings
-			Settings.LogAll();
+			// Init settings
+			Settings.Init();
 
 			// Initialize mediapipe
 			Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);

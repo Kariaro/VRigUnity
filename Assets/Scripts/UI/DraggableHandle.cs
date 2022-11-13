@@ -25,24 +25,25 @@ namespace HardCoded.VRigUnity {
 
 		private void CheckPosition() {
 			// TODO: This does not use the canvas scale factor
-			Vector2 screenSize = _canvas.pixelRect.size;
-			Vector2 parentSize = _parent.rect.size;
+			Vector2 screenSize = _canvas.pixelRect.size / _canvas.scaleFactor;
+			Vector2 parentSize = _parent.rect.size / _canvas.scaleFactor;
 			Vector2 center = _parent.anchoredPosition + (screenSize / 2f);
 			Vector2 topLeft = center - (parentSize / 2f);
 			Vector2 bottomRight = center - (parentSize / 2f);
 			Vector2 nudgeValue = Vector2.zero;
+			float border = _border / _canvas.scaleFactor;
 
-			if (topLeft.x > screenSize.x - _border) {
-				nudgeValue.x = screenSize.x - _border - topLeft.x;
+			if (topLeft.x > screenSize.x - border) {
+				nudgeValue.x = screenSize.x - border - topLeft.x;
 			}
-			if (bottomRight.x < _border - parentSize.x) {
-				nudgeValue.x = _border - parentSize.x - bottomRight.x;
+			if (bottomRight.x < border - parentSize.x) {
+				nudgeValue.x = border - parentSize.x - bottomRight.x;
 			}
-			if (topLeft.y > screenSize.y - _border) {
-				nudgeValue.y = screenSize.y - _border - topLeft.y;
+			if (topLeft.y > screenSize.y - border) {
+				nudgeValue.y = screenSize.y - border - topLeft.y;
 			}
-			if (bottomRight.y < _border - parentSize.y) {
-				nudgeValue.y = _border - parentSize.y - bottomRight.y;
+			if (bottomRight.y < border - parentSize.y) {
+				nudgeValue.y = border - parentSize.y - bottomRight.y;
 			}
 
 			_parent.anchoredPosition += nudgeValue;
