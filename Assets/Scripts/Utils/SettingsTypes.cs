@@ -84,5 +84,28 @@ namespace HardCoded.VRigUnity {
 				PlayerPrefs.SetInt(m_key, value);
 			}
 		}
+
+		public class Float : Field<float> {
+			private float m_value;
+			public Float(string key, float def) : base(key, def) {}
+			
+			public override void Reset() {
+				Set(m_def);
+			}
+
+			public override float Get() {
+				if (!m_init) {
+					m_init = true;
+					m_value = PlayerPrefs.GetFloat(m_key, m_def);
+				}
+
+				return m_value;
+			}
+
+			public override void Set(float value) {
+				m_value = value;
+				PlayerPrefs.SetFloat(m_key, value);
+			}
+		}
 	}
 }

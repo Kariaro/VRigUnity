@@ -74,6 +74,7 @@ namespace HardCoded.VRigUnity {
 		public static SettingsTypes.Int _VMCSenderPort = new("vmc.sender.port", 3333);
 		public static SettingsTypes.Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
 		public static SettingsTypes.Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
+		public static SettingsTypes.Int _GuiScale = new("gui.scale", 1);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -110,14 +111,24 @@ namespace HardCoded.VRigUnity {
 				VMCReceiverPortListener?.Invoke(value);
 			}
 		}
+
 		public static bool AlwaysShowUI {
 			get => _AlwaysShowUI.Get();
 			set => _AlwaysShowUI.Set(value);
 		}
 
-		public delegate void VMCPortDelegate (int value);
-		public static event VMCPortDelegate VMCSenderPortListener;
-		public static event VMCPortDelegate VMCReceiverPortListener;
+		public static int GuiScale {
+			get => _GuiScale.Get();
+			set {
+				_GuiScale.Set(value);
+				GuiScaleListener?.Invoke(value);
+			}
+		}
+
+		public delegate void IntDelegate (int value);
+		public static event IntDelegate VMCSenderPortListener;
+		public static event IntDelegate VMCReceiverPortListener;
+		public static event IntDelegate GuiScaleListener;
 
 		// Reset
 		public static void ResetSettings() {
