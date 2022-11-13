@@ -269,9 +269,9 @@ MonoBehaviour:
   animator: {fileID: 1321532674}
   guiScript: {fileID: 1079955782}
   canvas: {fileID: 1487202839}
-  TestInterpolation: 0
-  InterpolationValue: 0.1
+  InterpolationValue: 0.2
   handGroup: {fileID: 576270828}
+  fps: 60
   angleTest: 0
   test: 0
 --- !u!114 &576270828 stripped

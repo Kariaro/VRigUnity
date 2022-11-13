@@ -258,7 +258,7 @@ MonoBehaviour:
   guiScript: {fileID: 2129783507}
   canvas: {fileID: 1393820231}
   TestInterpolation: 0
-  InterpolationValue: 0.3
+  InterpolationValue: 0.2
 --- !u!114 &275874977
 MonoBehaviour:
   m_ObjectHideFlags: 0

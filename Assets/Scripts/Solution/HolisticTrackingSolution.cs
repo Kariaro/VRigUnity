@@ -36,9 +36,7 @@ namespace HardCoded.VRigUnity {
 		
 		// Testing values
 		[Header("Testing")]
-		public int TestInterpolation;
 		public float InterpolationValue = 0.2f;
-		public static int TestInterpolationStatic;
 		public static float TestInterpolationValue;
 
 		void Awake() {
@@ -130,11 +128,6 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			if (!BoneSettings.Get(BoneSettings.FACE)) {
-				// Do not compute the face if it is not enabled
-				return;
-			}
-
 			Quaternion neckRotation = Quaternion.identity;
 			float mouthOpen = 0;
 			float lEyeOpen = 0;
@@ -142,6 +135,38 @@ namespace HardCoded.VRigUnity {
 			Vector2 lEyeIris = Vector2.zero;
 			Vector2 rEyeIris = Vector2.zero;
 			
+			if (BoneSettings.Get(BoneSettings.FACE)) {
+				// Mouth
+				Vector3 a = ConvertPoint(eventArgs.value, 324);
+				Vector3 b = ConvertPoint(eventArgs.value, 78);
+				Vector3 c = ConvertPoint(eventArgs.value, 13);
+				Vector3 m = (a + b) / 2.0f;
+
+				float width = Vector3.Distance(a, b);
+				float height = Vector3.Distance(c, m);
+				float area = MovementUtils.GetTriangleArea(a, b, c);
+				float perc = height / width;
+
+				mouthOpen = perc * 2 - 0.1f;
+
+				// Eyes
+				lEyeOpen = FacePoints.CalculateEyeAspectRatio(
+					Array.ConvertAll(FacePoints.LeftEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				rEyeOpen = FacePoints.CalculateEyeAspectRatio(
+					Array.ConvertAll(FacePoints.RightEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				lEyeIris = FacePoints.CalculateIrisPosition(
+					Array.ConvertAll(FacePoints.LeftEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				rEyeIris = FacePoints.CalculateIrisPosition(
+					Array.ConvertAll(FacePoints.RightEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+			}
+
 			{
 				Vector3 faceUpDir;
 				Vector3 forwardDir;
@@ -160,51 +185,7 @@ namespace HardCoded.VRigUnity {
 					);
 				}
 
-				{
-					// Mouth
-					// left : 324
-					// right: 78
-					// top  : 13
-					
-					Vector3 a = ConvertPoint(eventArgs.value, 324);
-					Vector3 b = ConvertPoint(eventArgs.value, 78);
-					Vector3 c = ConvertPoint(eventArgs.value, 13);
-					Vector3 m = (a + b) / 2.0f;
-
-					float width = Vector3.Distance(a, b);
-					float height = Vector3.Distance(c, m);
-					float area = MovementUtils.GetTriangleArea(a, b, c);
-					float perc = height / width; //2 * (area / (width * height));
-
-					//perc = Mathf.Clamp01(perc);
-					// Debug.Log("w: " + width + ", h: " + height + ", awh: " + area + ", ah: " + (area / width) + ", aw: " + (area / height) + ", a: " + perc);
-
-					mouthOpen = perc * 2 - 0.1f;
-				}
-
-				{
-					lEyeOpen = FacePoints.CalculateEyeAspectRatio(
-						Array.ConvertAll(FacePoints.LeftEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					rEyeOpen = FacePoints.CalculateEyeAspectRatio(
-						Array.ConvertAll(FacePoints.RightEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					lEyeIris = FacePoints.CalculateIrisPosition(
-						Array.ConvertAll(FacePoints.LeftEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					rEyeIris = FacePoints.CalculateIrisPosition(
-						Array.ConvertAll(FacePoints.RightEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					// Debug.Log("l: " + lEyeOpen + ", r: " + rEyeOpen);
-				}
-
-				//Quaternion rot = Quaternion.FromToRotation(Vector3.up, faceUpDir);
-				Quaternion rot = Quaternion.LookRotation(-forwardDir, faceUpDir);
-				neckRotation = rot;
+				neckRotation = Quaternion.LookRotation(-forwardDir, faceUpDir);
 			}
 
 			Pose.Neck.Set(neckRotation, TimeNow);
@@ -462,7 +443,6 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			TestInterpolationStatic = TestInterpolation;
 			TestInterpolationValue = InterpolationValue;
 			float time = TimeNow;
 
@@ -470,7 +450,7 @@ namespace HardCoded.VRigUnity {
 			vrmModel.transform.position = guiScript.GetModelTransform();
 
 			// All transformations are inverted from left to right because the VMR
-			// models do not allow for mirroring.
+			// models do not allow for mirroring
 			if (BoneSettings.Get(BoneSettings.NECK)) {
 				Pose.Neck.UpdateRotation(animator, HumanBodyBones.Neck, time);
 			}
