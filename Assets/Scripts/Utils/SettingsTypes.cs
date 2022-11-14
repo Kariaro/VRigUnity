@@ -30,15 +30,19 @@ namespace HardCoded.VRigUnity {
 				return Get();
 			}
 
+			public T Default() {
+				return m_def;
+			}
+
 			public abstract void Init();
 			public abstract void Reset();
 			public abstract T Get();
 			public abstract void Set(T value);
 		}
 
-		public class String : Field<string> {
+		public class Text : Field<string> {
 			private string m_value;
-			public String(string key, string def) : base(key, def) {}
+			public Text(string key, string def) : base(key, def) {}
 			
 			public override void Reset() {
 				Set(m_def);

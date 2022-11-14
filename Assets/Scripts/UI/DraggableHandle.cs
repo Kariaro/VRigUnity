@@ -24,7 +24,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void CheckPosition() {
-			// TODO: This does not use the canvas scale factor
 			Vector2 screenSize = _canvas.pixelRect.size / _canvas.scaleFactor;
 			Vector2 parentSize = _parent.rect.size / _canvas.scaleFactor;
 			Vector2 center = _parent.anchoredPosition + (screenSize / 2f);

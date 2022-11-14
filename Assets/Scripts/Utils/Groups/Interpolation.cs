@@ -3,8 +3,6 @@ using System.Linq;
 
 namespace HardCoded.VRigUnity {
 	public struct RotStruct {
-		public static float TestInterpolationValue => HolisticTrackingSolution.TestInterpolationValue;
-
 		public static RotStruct identity => new(Quaternion.identity, 0);
 
 		private float lastTime;
@@ -49,7 +47,7 @@ namespace HardCoded.VRigUnity {
 			// If we have 120 fps this would be == 0.5
 			// If we have  30 fps this would be == 2.0
 			float td = Time.deltaTime * 60;
-			float iv = td * TestInterpolationValue;
+			float iv = td * Settings.TrackingInterpolation;
 			return Quaternion.Slerp(current, curr, iv);
 		}
 
@@ -122,7 +120,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private Vector3 GetUpdatedPosition(Vector3 current, Vector3 curr, float time) {
-			return Vector3.Lerp(current, curr, RotStruct.TestInterpolationValue);
+			return Vector3.Lerp(current, curr, Settings.TrackingInterpolation);
 		}
 		
 		private Transform GetTransform(Animator animator, HumanBodyBones bone) {

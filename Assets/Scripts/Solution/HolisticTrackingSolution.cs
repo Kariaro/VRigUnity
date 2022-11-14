@@ -33,11 +33,6 @@ namespace HardCoded.VRigUnity {
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		protected float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
-		
-		// Testing values
-		[Header("Testing")]
-		public float InterpolationValue = 0.2f;
-		public static float TestInterpolationValue;
 
 		void Awake() {
 			if (vrmModel.GetComponent<VRMAnimator>() == null) {
@@ -97,6 +92,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void ResetVRMAnimator() {
+			// TODO: What does rebind do?
 			animator.Rebind();
 			foreach (BlendShapePreset preset in Enum.GetValues(typeof(BlendShapePreset))) {
 				// TODO: Remove memory allocation and cache
@@ -284,7 +280,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
-			// canvas.OnPoseWorldLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -306,8 +301,8 @@ namespace HardCoded.VRigUnity {
 			bool hasRightLeg = false;
 
 			try {
-				Vector3 rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
-				Vector3 lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
+				Vector4 rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
+				Vector4 lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
 				Vector4 rHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_HIP);
 				Vector4 lHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_HIP);
 
@@ -336,8 +331,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					Vector3 rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
-					Vector3 rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
+					Vector4 rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
+					Vector4 rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
 					Vector3 vRigA = Vector3.left;
 					Vector3 vRigB = rElbow - rShoulder;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
@@ -346,11 +341,15 @@ namespace HardCoded.VRigUnity {
 					Vector3 vRigC = rHand - rElbow;
 					rot = Quaternion.FromToRotation(vRigA, vRigC);
 					rLowerArm = rot;
+
+					if (rHand.w < Settings.HandTrackingThreshold) {
+						rLowerArm = rUpperArm;
+					}
 				}
 
 				{
-					Vector3 lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
-					Vector3 lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
+					Vector4 lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
+					Vector4 lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
 					Vector3 vRigA = Vector3.right;
 					Vector3 vRigB = lElbow - lShoulder;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
@@ -359,6 +358,10 @@ namespace HardCoded.VRigUnity {
 					Vector3 vRigC = lHand - lElbow;
 					rot = Quaternion.FromToRotation(vRigA, vRigC);
 					lLowerArm = rot;
+
+					if (lHand.w < Settings.HandTrackingThreshold) {
+						lLowerArm = lUpperArm;
+					}
 				}
 
 				// Legs
@@ -443,7 +446,6 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			TestInterpolationValue = InterpolationValue;
 			float time = TimeNow;
 
 			// Apply the model transform

@@ -269,7 +269,6 @@ MonoBehaviour:
   animator: {fileID: 1321532674}
   guiScript: {fileID: 284428453}
   canvas: {fileID: 548834502}
-  TestInterpolation: 0
   InterpolationValue: 0.2
   handGroup: {fileID: 576270828}
   fps: 60
