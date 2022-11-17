@@ -73,6 +73,7 @@ namespace HardCoded.VRigUnity {
 		public static Bool _ShowBgColor = new("gui.show.bgColor", false);
 		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
 		public static Int _GuiScale = new("gui.scale", 1);
+		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -105,6 +106,11 @@ namespace HardCoded.VRigUnity {
 				_GuiScale.Set(value);
 				GuiScaleListener?.Invoke(value);
 			}
+		}
+
+		public static FlagScript.Flag Flag {
+			get => _Flag.Get();
+			set => _Flag.Set(value);
 		}
 
 		public delegate void IntDelegate (int value);

@@ -45,6 +45,9 @@ namespace HardCoded.VRigUnity {
 			CreateSetting($"(E) Interpolation ({Settings._TrackingInterpolation.Default():0.00})", builder => {
 				return builder.AddFloatTickSlider((_, value) => { Settings.TrackingInterpolation = value; }, 0.05f, 1f, 19, Settings.TrackingInterpolation, FieldData.None);
 			});
+			CreateSetting($"(E) Flag", builder => {
+			 	return builder.AddEnumDropdown((_, value) => { Settings.Flag = value; }, Settings.Flag, FieldData.None);
+			});
 		}
 
 		private SettingsField CreateSetting(string name, Func<SettingsFieldTemplate, SettingsFieldTemplate> builder) {
