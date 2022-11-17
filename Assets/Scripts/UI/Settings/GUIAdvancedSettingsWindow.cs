@@ -16,11 +16,13 @@ namespace HardCoded.VRigUnity {
 		public GUIBoneSettingsWindow boneSettingsWindow;
 		
 		void Start() {
-			CreateSetting("VMC Sender Port", builder => {
-				return builder.AddNumberInput((_, value) => { Settings.VMCSenderPort = value; }, 0, 65535, Settings.VMCSenderPort, 3333, FieldData.None);	
+			CreateSetting("VMC Sender", builder => {
+				return builder
+					.AddIpAddressField((_, value) => { Settings.VMCSenderAddress = value; }, true, "127.0.0.1", () => Settings.VMCSenderAddress, new(136, ""))
+					.AddNumberInput((_, value) => { Settings.VMCSenderPort = value; }, 0, 65535, Settings.VMCSenderPort, 3333, FieldData.None);	
 			});
 			CreateSetting("VMC Receiver Port", builder => {
-				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, Settings.VMCReceiverPort, 3333, FieldData.None);	
+				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, 3333, Settings.VMCReceiverPort, FieldData.None);	
 			});
 			CreateSetting("Bone Window", builder => {
 				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, FieldData.None);

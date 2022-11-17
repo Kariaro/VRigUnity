@@ -71,8 +71,6 @@ namespace HardCoded.VRigUnity {
 		public static Text _ImageFile = new("gui.image", "");
 		public static Bool _ShowCustomBackground = new("gui.show.custombackground", false);
 		public static Bool _ShowBgColor = new("gui.show.bgColor", false);
-		public static Int _VMCSenderPort = new("vmc.sender.port", 3333);
-		public static Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
 		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
 		public static Int _GuiScale = new("gui.scale", 1);
 
@@ -96,22 +94,6 @@ namespace HardCoded.VRigUnity {
 			set => _ShowBgColor.Set(value);
 		}
 
-		public static int VMCSenderPort {
-			get => _VMCSenderPort.Get();
-			set {
-				_VMCSenderPort.Set(value);
-				VMCSenderPortListener?.Invoke(value);
-			}
-		}
-
-		public static int VMCReceiverPort {
-			get => _VMCReceiverPort.Get();
-			set {
-				_VMCReceiverPort.Set(value);
-				VMCReceiverPortListener?.Invoke(value);
-			}
-		}
-
 		public static bool AlwaysShowUI {
 			get => _AlwaysShowUI.Get();
 			set => _AlwaysShowUI.Set(value);
@@ -126,9 +108,40 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public delegate void IntDelegate (int value);
-		public static event IntDelegate VMCSenderPortListener;
-		public static event IntDelegate VMCReceiverPortListener;
 		public static event IntDelegate GuiScaleListener;
+
+		// VMC Settings
+		public static SafeText _VMCSenderIP = new("vmc.sender.ip", "127.0.0.1");
+		public static Int _VMCSenderPort = new("vmc.sender.port", 3333);
+		public static Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
+
+		public static string VMCSenderAddress {
+			get => _VMCSenderIP.Get();
+			set {
+				_VMCSenderIP.Set(value);
+				VMCSenderListener?.Invoke(value, VMCSenderPort);
+			}
+		}
+
+		public static int VMCSenderPort {
+			get => _VMCSenderPort.Get();
+			set {
+				_VMCSenderPort.Set(value);
+				VMCSenderListener?.Invoke(VMCSenderAddress, value);
+			}
+		}
+
+		public static int VMCReceiverPort {
+			get => _VMCReceiverPort.Get();
+			set {
+				_VMCReceiverPort.Set(value);
+				VMCReceiverListener?.Invoke(null, value);
+			}
+		}
+		
+		public delegate void IpDelegate (string ip, int port);
+		public static event IpDelegate VMCSenderListener;
+		public static event IpDelegate VMCReceiverListener;
 
 		// Reset
 		public static void ResetSettings() {

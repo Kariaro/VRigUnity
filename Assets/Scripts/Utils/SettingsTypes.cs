@@ -26,7 +26,7 @@ namespace HardCoded.VRigUnity {
 				return m_key;
 			}
 
-			public object RawValue() {
+			public virtual object RawValue() {
 				return Get();
 			}
 
@@ -59,6 +59,14 @@ namespace HardCoded.VRigUnity {
 			public override void Set(string value) {
 				m_value = value;
 				PlayerPrefs.SetString(m_key, value);
+			}
+		}
+
+		// This is used when the content should not be printed to the console
+		public class SafeText : Text {
+			public SafeText(string key, string def) : base(key, def) {}
+			public override object RawValue() {
+				return new string('*', Get().Length);
 			}
 		}
 

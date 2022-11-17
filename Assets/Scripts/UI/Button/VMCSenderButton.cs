@@ -45,11 +45,10 @@ namespace HardCoded.VRigUnity {
 			buttonImage.color = toggleOnColor;
 			isVMCStarted = false;
 
-			// Setup settings listener (TODO: Remove)
-			Settings.VMCSenderPortListener += (value) => {
+			Settings.VMCSenderListener += (ip, port) => {
 				// Only display port changes when the VMC is closed
 				if (!isVMCStarted) {
-					portText.text = "Port " + value;
+					portText.text = "Port " + port;
 				}
 			};
 
@@ -68,6 +67,7 @@ namespace HardCoded.VRigUnity {
 
 			// Start/Stop the VMC instance
 			if (enable) {
+				vmcSender.SetAddress(Settings.VMCSenderAddress);
 				vmcSender.SetPort(Settings.VMCSenderPort);	
 				vmcSender.StartVMC();
 			} else {

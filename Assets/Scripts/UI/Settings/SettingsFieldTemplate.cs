@@ -30,7 +30,7 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddInputField(Action<TMP_InputField, string> action, string defaultValue, FieldData data) {
+		public SettingsFieldTemplate AddInputField(Action<TMP_InputField, string> action, string value, FieldData data) {
 			GameObject field = CreateInstance(inputFieldTemplate);
 			field.name = "InputField";
 			field.SetActive(true);
@@ -38,12 +38,34 @@ namespace HardCoded.VRigUnity {
 			ApplyLayout(field, data.Width);
 
 			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
-			inputField.text = defaultValue;
+			inputField.text = value;
 			inputField.onValueChanged.AddListener(delegate { action.Invoke(inputField, inputField.text); });
 			return this;
 		}
 
-		public SettingsFieldTemplate AddNumberInput(Action<TMP_InputField, int> action, int min, int max, int value, int defaultValue, FieldData data) {
+		public SettingsFieldTemplate AddIpAddressField(Action<TMP_InputField, string> action, bool hideIp, string defaultValue, Func<string> value, FieldData data) {
+			GameObject field = CreateInstance(inputFieldTemplate);
+			field.name = "IpAddressInputField";
+			field.SetActive(true);
+
+			ApplyLayout(field, data.Width);
+
+			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
+			inputField.text = hideIp ? "Ip Hidden" : SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue);
+			inputField.onDeselect.AddListener(delegate {
+				inputField.SetTextWithoutNotify(hideIp ? "Ip Hidden" : SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
+			});
+			inputField.onSelect.AddListener(delegate {
+				inputField.SetTextWithoutNotify(SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
+			});
+			inputField.onValueChanged.AddListener(delegate {
+				string value = SettingsFieldUtil.NormalizeIpAddress(inputField.text, defaultValue);
+				action.Invoke(inputField, value);
+			});
+			return this;
+		}
+
+		public SettingsFieldTemplate AddNumberInput(Action<TMP_InputField, int> action, int min, int max, int defaultValue, int value, FieldData data) {
 			GameObject field = CreateInstance(inputFieldTemplate);
 			field.name = "NumberInputField";
 			field.SetActive(true);

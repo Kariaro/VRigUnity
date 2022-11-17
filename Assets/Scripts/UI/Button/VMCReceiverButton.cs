@@ -45,11 +45,10 @@ namespace HardCoded.VRigUnity {
 			buttonImage.color = toggleOnColor;
 			isVMCStarted = false;
 
-			// Setup settings listener (TODO: Remove)
-			Settings.VMCReceiverPortListener += (value) => {
+			Settings.VMCReceiverListener += (ip, port) => {
 				// Only display port changes when the VMC is closed
 				if (!isVMCStarted) {
-					portText.text = "Port " + value;
+					portText.text = "Port " + port;
 				}
 			};
 
