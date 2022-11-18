@@ -58,6 +58,12 @@ namespace HardCoded.VRigUnity {
 			unityCanvas.ReadSync(textureFrame);
 		}
 
+		void Update() {
+			if (Settings.VirtualCamera != streamCamera.enabled) {
+				streamCamera.enabled = Settings.VirtualCamera;
+			}
+		}
+
 		// Annotations
 		public void SetupAnnotations() {
 			var imageSource = SolutionUtils.GetImageSource();

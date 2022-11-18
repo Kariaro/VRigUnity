@@ -13,10 +13,12 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public abstract class Field<T> : IField {
+			protected readonly Action<T> m_callback;
 			protected readonly string m_key;
 			protected readonly T m_def;
 			protected bool m_init;
-			protected Field(string key, T def) {
+			protected Field(string key, T def, Action<T> callback) {
+				m_callback = callback;
 				m_key = key;
 				m_def = def;
 				DefinedSettings.Add(this);
@@ -41,7 +43,7 @@ namespace HardCoded.VRigUnity {
 		}
 		
 		public class SafeText : Text {
-			public SafeText(string key, string def) : base(key, def) {}
+			public SafeText(string key, string def, Action<string> callback = null) : base(key, def, callback) {}
 			public override object RawValue() {
 				return new string('*', Get().Length);
 			}
@@ -49,7 +51,7 @@ namespace HardCoded.VRigUnity {
 
 		public class Text : Field<string> {
 			private string m_value;
-			public Text(string key, string def) : base(key, def) {}
+			public Text(string key, string def, Action<string> callback = null) : base(key, def, callback) {}
 			
 			public override void Reset() {
 				Set(m_def);
@@ -66,12 +68,20 @@ namespace HardCoded.VRigUnity {
 			public override void Set(string value) {
 				m_value = value;
 				PlayerPrefs.SetString(m_key, value);
+				m_callback?.Invoke(value);
+			}
+		}
+		
+		public class SafeBool : Bool {
+			public SafeBool(string key, bool def, Action<bool> callback = null) : base(key, def, callback) {}
+			public override object RawValue() {
+				return "*";
 			}
 		}
 
 		public class Bool : Field<bool> {
 			private bool m_value;
-			public Bool(string key, bool def) : base(key, def) {}
+			public Bool(string key, bool def, Action<bool> callback = null) : base(key, def, callback) {}
 			
 			public override void Reset() {
 				Set(m_def);
@@ -88,12 +98,20 @@ namespace HardCoded.VRigUnity {
 			public override void Set(bool value) {
 				m_value = value;
 				PlayerPrefs.SetInt(m_key, value ? 1 : 0);
+				m_callback?.Invoke(value);
+			}
+		}
+		
+		public class SafeInt : Int {
+			public SafeInt(string key, int def, Action<int> callback = null) : base(key, def, callback) {}
+			public override object RawValue() {
+				return "*";
 			}
 		}
 
 		public class Int : Field<int> {
 			private int m_value;
-			public Int(string key, int def) : base(key, def) {}
+			public Int(string key, int def, Action<int> callback = null) : base(key, def, callback) {}
 			
 			public override void Reset() {
 				Set(m_def);
@@ -110,12 +128,20 @@ namespace HardCoded.VRigUnity {
 			public override void Set(int value) {
 				m_value = value;
 				PlayerPrefs.SetInt(m_key, value);
+				m_callback?.Invoke(value);
+			}
+		}
+		
+		public class SafeFloat : Float {
+			public SafeFloat(string key, float def, Action<float> callback = null) : base(key, def, callback) {}
+			public override object RawValue() {
+				return "*";
 			}
 		}
 
 		public class Float : Field<float> {
 			private float m_value;
-			public Float(string key, float def) : base(key, def) {}
+			public Float(string key, float def, Action<float> callback = null) : base(key, def, callback) {}
 			
 			public override void Reset() {
 				Set(m_def);
@@ -132,11 +158,12 @@ namespace HardCoded.VRigUnity {
 			public override void Set(float value) {
 				m_value = value;
 				PlayerPrefs.SetFloat(m_key, value);
+				m_callback?.Invoke(value);
 			}
 		}
 
 		public class SafeEnumOf<T> : EnumOf<T> where T : Enum {
-			public SafeEnumOf(string key, T def) : base(key, def) {}
+			public SafeEnumOf(string key, T def, Action<T> callback = null) : base(key, def, callback) {}
 			public override object RawValue() {
 				return "*";
 			}
@@ -145,7 +172,7 @@ namespace HardCoded.VRigUnity {
 		public class EnumOf<T> : Field<T> where T : Enum {
 			private T m_eval;
 			private int m_value;
-			public EnumOf(string key, T def) : base(key, def) {}
+			public EnumOf(string key, T def, Action<T> callback = null) : base(key, def, callback) {}
 			
 			public override void Reset() {
 				Set(m_def);
@@ -164,6 +191,7 @@ namespace HardCoded.VRigUnity {
 				m_value = Convert.ToInt32(value);
 				m_eval = value;
 				PlayerPrefs.SetInt(m_key, m_value);
+				m_callback?.Invoke(value);
 			}
 		}
 	}

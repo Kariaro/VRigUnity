@@ -18,6 +18,7 @@ namespace HardCoded.VRigUnity {
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);
 		public static Text _CameraResolution = new("camera.resolution", "");
+		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
 			get => _CameraName.Get();
@@ -32,6 +33,11 @@ namespace HardCoded.VRigUnity {
 		public static string CameraResolution {
 			get => _CameraResolution.Get();
 			set => _CameraResolution.Set(value);
+		}
+
+		public static bool VirtualCamera {
+			get => _VirtualCamera.Get();
+			set => _VirtualCamera.Set(value);
 		}
 
 		// Bone Settings
@@ -72,7 +78,7 @@ namespace HardCoded.VRigUnity {
 		public static Bool _ShowCustomBackground = new("gui.show.custombackground", false);
 		public static Bool _ShowBgColor = new("gui.show.bgColor", false);
 		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
-		public static Int _GuiScale = new("gui.scale", 1);
+		public static Int _GuiScale = new("gui.scale", 1, value => GuiScaleListener?.Invoke(value));
 		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
 
 		public static string ModelFile {
@@ -102,10 +108,7 @@ namespace HardCoded.VRigUnity {
 
 		public static int GuiScale {
 			get => _GuiScale.Get();
-			set {
-				_GuiScale.Set(value);
-				GuiScaleListener?.Invoke(value);
-			}
+			set => _GuiScale.Set(value);
 		}
 
 		public static FlagScript.Flag Flag {
@@ -117,32 +120,23 @@ namespace HardCoded.VRigUnity {
 		public static event IntDelegate GuiScaleListener;
 
 		// VMC Settings
-		public static SafeText _VMCSenderIP = new("vmc.sender.ip", "127.0.0.1");
-		public static Int _VMCSenderPort = new("vmc.sender.port", 3333);
-		public static Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
+		public static SafeText _VMCSenderAddress = new("vmc.sender.ip", "127.0.0.1", value => VMCSenderListener?.Invoke(value, VMCSenderPort));
+		public static Int _VMCSenderPort = new("vmc.sender.port", 3333, value => VMCSenderListener?.Invoke(VMCSenderAddress, value));
+		public static Int _VMCReceiverPort = new("vmc.receiver.port", 39539, value => VMCReceiverListener?.Invoke(null, value));
 
 		public static string VMCSenderAddress {
-			get => _VMCSenderIP.Get();
-			set {
-				_VMCSenderIP.Set(value);
-				VMCSenderListener?.Invoke(value, VMCSenderPort);
-			}
+			get => _VMCSenderAddress.Get();
+			set => _VMCSenderAddress.Set(value);
 		}
 
 		public static int VMCSenderPort {
 			get => _VMCSenderPort.Get();
-			set {
-				_VMCSenderPort.Set(value);
-				VMCSenderListener?.Invoke(VMCSenderAddress, value);
-			}
+			set => _VMCSenderPort.Set(value);
 		}
 
 		public static int VMCReceiverPort {
 			get => _VMCReceiverPort.Get();
-			set {
-				_VMCReceiverPort.Set(value);
-				VMCReceiverListener?.Invoke(null, value);
-			}
+			set => _VMCReceiverPort.Set(value);
 		}
 		
 		public delegate void IpDelegate (string ip, int port);

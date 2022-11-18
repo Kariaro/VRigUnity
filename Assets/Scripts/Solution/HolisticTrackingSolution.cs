@@ -35,10 +35,7 @@ namespace HardCoded.VRigUnity {
 		protected float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
 		void Awake() {
-			if (vrmModel.GetComponent<VRMAnimator>() == null) {
-				vrmAnimator = vrmModel.AddComponent<VRMAnimator>();
-				vrmAnimator.controller = vrmController;
-			}
+			SetVRMModel(vrmModel);
 		}
 
 		public void ResetVRMModel() {
@@ -53,7 +50,7 @@ namespace HardCoded.VRigUnity {
 				return false;
 			}
 
-			if (vrmModel != null) {
+			if (vrmModel != null && vrmModel != gameObject) {
 				Destroy(vrmModel);
 			}
 			
@@ -62,6 +59,9 @@ namespace HardCoded.VRigUnity {
 			this.vrmModel = gameObject;
 			this.blendShapeProxy = blendShapeProxy;
 			this.animator = animator;
+
+			DefaultVRMAnimator();
+
 			return true;
 		}
 
@@ -76,7 +76,7 @@ namespace HardCoded.VRigUnity {
 			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
 				Transform trans = animator.GetBoneTransform(bone);
 				if (trans != null) {
-					trans.localRotation = Quaternion.identity;
+					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
 				}
 			}
 		}
@@ -89,6 +89,19 @@ namespace HardCoded.VRigUnity {
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
 
 			canvas.SetupAnnotations();
+		}
+
+		public void DefaultVRMAnimator() {
+			foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
+				if (bone == HumanBodyBones.LastBone) {
+					break;
+				}
+
+				Transform trans = animator.GetBoneTransform(bone);
+				if (trans != null) {
+					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
+				}
+			}
 		}
 
 		public void ResetVRMAnimator() {
@@ -450,6 +463,11 @@ namespace HardCoded.VRigUnity {
 
 			// Apply the model transform
 			vrmModel.transform.position = guiScript.GetModelTransform();
+
+			if (isPaused) {
+				DefaultVRMAnimator();
+				return;
+			}
 
 			// All transformations are inverted from left to right because the VMR
 			// models do not allow for mirroring

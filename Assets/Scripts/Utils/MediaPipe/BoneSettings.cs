@@ -151,5 +151,16 @@ namespace HardCoded.VRigUnity {
 
 			return true;
 		}
+
+		private static readonly Quaternion DefaultLeftUpperArm = Quaternion.Euler(0, 0, 75);
+		private static readonly Quaternion DefaultRightUpperArm = Quaternion.Euler(0, 0, -75);
+		private static readonly Quaternion DefaultRot = Quaternion.identity;
+		public static Quaternion GetDefaultRotation(HumanBodyBones bone) {
+			return bone switch {
+				HumanBodyBones.LeftUpperArm => DefaultLeftUpperArm,
+				HumanBodyBones.RightUpperArm => DefaultRightUpperArm,
+				_ => DefaultRot
+			};
+		}
 	}
 }

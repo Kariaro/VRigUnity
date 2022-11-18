@@ -67,8 +67,7 @@ namespace HardCoded.VRigUnity {
 		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
-				// If the part was lost we slowly put it back to it's original position
-				lastRotation = GetUpdatedRotation(lastRotation, Quaternion.identity, time);
+				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
 				transform.localRotation = lastRotation;
 			} else {
 				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
@@ -80,7 +79,7 @@ namespace HardCoded.VRigUnity {
 		public void UpdateLocalRotation(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
-				lastRotation = GetUpdatedRotation(lastRotation, Quaternion.identity, time);
+				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
 			} else {
 				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
 			}

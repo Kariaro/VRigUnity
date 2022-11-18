@@ -35,12 +35,6 @@ namespace HardCoded.VRigUnity {
 			return isPaused;
 		}
 
-		protected static void ReadFromImageSource(WebCamSource imageSource, TextureFrame textureFrame) {
-			// For some reason, when the image is coiped on GPU, latency tends to be high.
-			// So even when OpenGL ES is available, use CPU to copy images.
-			textureFrame.ReadTextureFromOnCPU(imageSource.GetCurrentTexture());
-		}
-
 		protected Bootstrap FindBootstrap() {
 			var bootstrap = SolutionUtils.GetBootstrap();
 			bootstrap.enabled = true;
