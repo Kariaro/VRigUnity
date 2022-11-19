@@ -9,11 +9,19 @@ on:
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 jobs:
-  buildWindows:
-    name: Build for Windows
+  build-project:
+    name: Build for ${{ matrix.systemName }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        systemName: [ "Windows" ]
+        targetPlatform: [ "StandaloneWindows64" ]
+        include:
+          - systemName: Linux
+            targetPlatform: StandaloneLinux64
+          - systemName: OSX
+            targetPlatform: StandaloneOSX
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -24,37 +32,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: Library
-          key: Library-VRigUnity-Windows64
-          restore-keys: |
-            Library-VRigUnity-
-            Library-
-      
-      - uses: game-ci/unity-builder@v2
-        with:
-          buildName: VRigUnity
-          targetPlatform: StandaloneWindows64
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-StandaloneWindows64
-          path: build/StandaloneWindows64
-
-  buildLinux:
-    name: Build for Linux
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Download libs
-        run: bash download_libs.sh "${{ inputs.tag }}"
-
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-VRigUnity-Linux64
+          key: Library-VRigUnity-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-VRigUnity-
             Library-
@@ -62,39 +40,10 @@ jobs:
       - uses: game-ci/unity-builder@v2
         with:
           buildName: VRigUnity
-          targetPlatform: StandaloneLinux64
+          versioning: None
+          targetPlatform: ${{ matrix.targetPlatform }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: build-StandaloneLinux64
-          path: build/StandaloneLinux64
-
-  buildOSX:
-    name: Build for OSX
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Download libs
-        run: bash download_libs.sh "${{ inputs.tag }}"
-
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-VRigUnity-OSX
-          restore-keys: |
-            Library-VRigUnity-
-            Library-
-
-      - uses: game-ci/unity-builder@v2
-        with:
-          buildName: VRigUnity
-          targetPlatform: StandaloneOSX
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-StandaloneOSX
-          path: build/StandaloneOSX
+          name: build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
