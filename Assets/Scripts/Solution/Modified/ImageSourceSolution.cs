@@ -1,4 +1,5 @@
 using Mediapipe.Unity;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -80,11 +81,15 @@ namespace HardCoded.VRigUnity {
 				}
 
 				// Copy current image to TextureFrame
-				ReadFromImageSource(imageSource, textureFrame);
+				// For some reason, when the image is coiped on GPU, latency tends to be high.
+				// So even when OpenGL ES is available, use CPU to copy images.
+				WebCamTexture tex = imageSource.GetCurrentTexture() as WebCamTexture;
+
+				// This is much faster if the type is (WebCamTexture)
+				textureFrame.ReadTextureFromOnCPU(tex);
 				AddTextureFrameToInputStream(textureFrame);
 				yield return new WaitForEndOfFrame();
 
-				// I don't care just render the image
 				RenderCurrentFrame(textureFrame);
 			}
 		}

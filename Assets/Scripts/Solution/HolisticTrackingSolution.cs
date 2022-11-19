@@ -9,6 +9,8 @@ namespace HardCoded.VRigUnity {
 		[Header("Rig")]
 		[SerializeField] protected GameObject defaultVrmPrefab;
 		[SerializeField] protected GameObject vrmModel;
+		[SerializeField] protected RuntimeAnimatorController vrmController;
+		[SerializeField] protected VRMAnimator vrmAnimator;
 		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
 		[SerializeField] protected Animator animator;
 
@@ -31,13 +33,10 @@ namespace HardCoded.VRigUnity {
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		protected float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
-		
-		// Testing values
-		[Header("Testing")]
-		public int TestInterpolation;
-		public float InterpolationValue = 0.2f;
-		public static int TestInterpolationStatic;
-		public static float TestInterpolationValue;
+
+		void Awake() {
+			SetVRMModel(vrmModel);
+		}
 
 		public void ResetVRMModel() {
 			SetVRMModel(Instantiate(defaultVrmPrefab));
@@ -51,13 +50,18 @@ namespace HardCoded.VRigUnity {
 				return false;
 			}
 
-			if (vrmModel != null) {
+			if (vrmModel != null && vrmModel != gameObject) {
 				Destroy(vrmModel);
 			}
-
+			
+			this.vrmAnimator = gameObject.AddComponent<VRMAnimator>();
+			this.vrmAnimator.controller = vrmController;
 			this.vrmModel = gameObject;
 			this.blendShapeProxy = blendShapeProxy;
 			this.animator = animator;
+
+			DefaultVRMAnimator();
+
 			return true;
 		}
 
@@ -72,7 +76,7 @@ namespace HardCoded.VRigUnity {
 			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
 				Transform trans = animator.GetBoneTransform(bone);
 				if (trans != null) {
-					trans.localRotation = Quaternion.identity;
+					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
 				}
 			}
 		}
@@ -87,7 +91,21 @@ namespace HardCoded.VRigUnity {
 			canvas.SetupAnnotations();
 		}
 
+		public void DefaultVRMAnimator() {
+			foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
+				if (bone == HumanBodyBones.LastBone) {
+					break;
+				}
+
+				Transform trans = animator.GetBoneTransform(bone);
+				if (trans != null) {
+					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
+				}
+			}
+		}
+
 		public void ResetVRMAnimator() {
+			// TODO: What does rebind do?
 			animator.Rebind();
 			foreach (BlendShapePreset preset in Enum.GetValues(typeof(BlendShapePreset))) {
 				// TODO: Remove memory allocation and cache
@@ -119,11 +137,6 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			if (!BoneSettings.Get(BoneSettings.FACE)) {
-				// Do not compute the face if it is not enabled
-				return;
-			}
-
 			Quaternion neckRotation = Quaternion.identity;
 			float mouthOpen = 0;
 			float lEyeOpen = 0;
@@ -131,6 +144,38 @@ namespace HardCoded.VRigUnity {
 			Vector2 lEyeIris = Vector2.zero;
 			Vector2 rEyeIris = Vector2.zero;
 			
+			if (BoneSettings.Get(BoneSettings.FACE)) {
+				// Mouth
+				Vector3 a = ConvertPoint(eventArgs.value, 324);
+				Vector3 b = ConvertPoint(eventArgs.value, 78);
+				Vector3 c = ConvertPoint(eventArgs.value, 13);
+				Vector3 m = (a + b) / 2.0f;
+
+				float width = Vector3.Distance(a, b);
+				float height = Vector3.Distance(c, m);
+				float area = MovementUtils.GetTriangleArea(a, b, c);
+				float perc = height / width;
+
+				mouthOpen = perc * 2 - 0.1f;
+
+				// Eyes
+				lEyeOpen = FacePoints.CalculateEyeAspectRatio(
+					Array.ConvertAll(FacePoints.LeftEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				rEyeOpen = FacePoints.CalculateEyeAspectRatio(
+					Array.ConvertAll(FacePoints.RightEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				lEyeIris = FacePoints.CalculateIrisPosition(
+					Array.ConvertAll(FacePoints.LeftEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+
+				rEyeIris = FacePoints.CalculateIrisPosition(
+					Array.ConvertAll(FacePoints.RightEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
+				);
+			}
+
 			{
 				Vector3 faceUpDir;
 				Vector3 forwardDir;
@@ -149,51 +194,7 @@ namespace HardCoded.VRigUnity {
 					);
 				}
 
-				{
-					// Mouth
-					// left : 324
-					// right: 78
-					// top  : 13
-					
-					Vector3 a = ConvertPoint(eventArgs.value, 324);
-					Vector3 b = ConvertPoint(eventArgs.value, 78);
-					Vector3 c = ConvertPoint(eventArgs.value, 13);
-					Vector3 m = (a + b) / 2.0f;
-
-					float width = Vector3.Distance(a, b);
-					float height = Vector3.Distance(c, m);
-					float area = MovementUtils.GetTriangleArea(a, b, c);
-					float perc = height / width; //2 * (area / (width * height));
-
-					//perc = Mathf.Clamp01(perc);
-					// Debug.Log("w: " + width + ", h: " + height + ", awh: " + area + ", ah: " + (area / width) + ", aw: " + (area / height) + ", a: " + perc);
-
-					mouthOpen = perc * 2 - 0.1f;
-				}
-
-				{
-					lEyeOpen = FacePoints.CalculateEyeAspectRatio(
-						Array.ConvertAll(FacePoints.LeftEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					rEyeOpen = FacePoints.CalculateEyeAspectRatio(
-						Array.ConvertAll(FacePoints.RightEyeEAR, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					lEyeIris = FacePoints.CalculateIrisPosition(
-						Array.ConvertAll(FacePoints.LeftEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					rEyeIris = FacePoints.CalculateIrisPosition(
-						Array.ConvertAll(FacePoints.RightEyeIrisPoint, i => (Vector3) ConvertPoint(eventArgs.value, i))
-					);
-
-					// Debug.Log("l: " + lEyeOpen + ", r: " + rEyeOpen);
-				}
-
-				//Quaternion rot = Quaternion.FromToRotation(Vector3.up, faceUpDir);
-				Quaternion rot = Quaternion.LookRotation(-forwardDir, faceUpDir);
-				neckRotation = rot;
+				neckRotation = Quaternion.LookRotation(-forwardDir, faceUpDir);
 			}
 
 			Pose.Neck.Set(neckRotation, TimeNow);
@@ -292,7 +293,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
-			// canvas.OnPoseWorldLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -314,8 +314,8 @@ namespace HardCoded.VRigUnity {
 			bool hasRightLeg = false;
 
 			try {
-				Vector3 rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
-				Vector3 lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
+				Vector4 rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
+				Vector4 lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
 				Vector4 rHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_HIP);
 				Vector4 lHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_HIP);
 
@@ -344,8 +344,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					Vector3 rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
-					Vector3 rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
+					Vector4 rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
+					Vector4 rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
 					Vector3 vRigA = Vector3.left;
 					Vector3 vRigB = rElbow - rShoulder;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
@@ -354,11 +354,15 @@ namespace HardCoded.VRigUnity {
 					Vector3 vRigC = rHand - rElbow;
 					rot = Quaternion.FromToRotation(vRigA, vRigC);
 					rLowerArm = rot;
+
+					if (rHand.w < Settings.HandTrackingThreshold) {
+						rLowerArm = rUpperArm;
+					}
 				}
 
 				{
-					Vector3 lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
-					Vector3 lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
+					Vector4 lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
+					Vector4 lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
 					Vector3 vRigA = Vector3.right;
 					Vector3 vRigB = lElbow - lShoulder;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
@@ -367,6 +371,10 @@ namespace HardCoded.VRigUnity {
 					Vector3 vRigC = lHand - lElbow;
 					rot = Quaternion.FromToRotation(vRigA, vRigC);
 					lLowerArm = rot;
+
+					if (lHand.w < Settings.HandTrackingThreshold) {
+						lLowerArm = lUpperArm;
+					}
 				}
 
 				// Legs
@@ -403,6 +411,31 @@ namespace HardCoded.VRigUnity {
 				// Catch all exceptions
 			}
 
+			// Experimental
+			if (Settings.UseWristRotation) {
+				{
+					Vector3 w_pos = RightHand.Wrist.GetLastPosition();
+					Quaternion w_rot = RightHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.LeftLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.LeftLowerArm.GetLastRotation();
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle - 90, -90, 90);
+					lLowerArm *= Quaternion.Euler(angle, 0, 0);
+					// lUpperArm *= Quaternion.Euler(angle, 0, 0);
+				}
+			
+				{
+					Vector3 w_pos = LeftHand.Wrist.GetLastPosition();
+					Quaternion w_rot = LeftHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.RightLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.RightLowerArm.GetLastRotation();
+					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+					angle = Mathf.Clamp(angle - 90, -90, 90);
+					rLowerArm *= Quaternion.Euler(angle, 0, 0);
+					// rUpperArm *= Quaternion.Euler(angle, 0, 0);
+				}
+			}
+
 			Pose.Chest.Set(chestRotation, TimeNow);
 			Pose.Hips.Set(hipsRotation, TimeNow);
 			Pose.HipsPosition.Set(hipsPosition, TimeNow);
@@ -421,21 +454,23 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		// This is protected to allow being called from child classes
-		protected void FixedUpdate() {
+		public virtual void ModelUpdate() {
 			if (!vrmModel.activeInHierarchy) {
 				return;
 			}
 
-			TestInterpolationStatic = TestInterpolation;
-			TestInterpolationValue = InterpolationValue;
 			float time = TimeNow;
 
 			// Apply the model transform
 			vrmModel.transform.position = guiScript.GetModelTransform();
 
+			if (isPaused) {
+				DefaultVRMAnimator();
+				return;
+			}
+
 			// All transformations are inverted from left to right because the VMR
-			// models do not allow for mirroring.
+			// models do not allow for mirroring
 			if (BoneSettings.Get(BoneSettings.NECK)) {
 				Pose.Neck.UpdateRotation(animator, HumanBodyBones.Neck, time);
 			}
@@ -556,29 +591,6 @@ namespace HardCoded.VRigUnity {
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), 0);
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), 0);
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), 0);
-			}
-
-			// Experimental
-			if (Settings.UseWristRotation) {
-				{
-					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.LeftHand).position;
-					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.LeftHand).rotation;
-					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).position;
-					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).rotation;
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
-					animator.GetBoneTransform(HumanBodyBones.LeftLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
-				}
-			
-				{
-					Vector3 w_pos = animator.GetBoneTransform(HumanBodyBones.RightHand).position;
-					Quaternion w_rot = animator.GetBoneTransform(HumanBodyBones.RightHand).rotation;
-					Vector3 a_pos = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).position;
-					Quaternion a_rot = animator.GetBoneTransform(HumanBodyBones.RightLowerArm).rotation;
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle / 4.0f, -45, 45);
-					animator.GetBoneTransform(HumanBodyBones.RightLowerArm).localRotation *= Quaternion.Euler(angle, 0, 0);
-				}
 			}
 		}
 	}

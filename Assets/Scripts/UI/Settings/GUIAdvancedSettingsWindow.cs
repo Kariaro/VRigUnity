@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
 	public class GUIAdvancedSettingsWindow : MonoBehaviour {
@@ -8,38 +10,43 @@ namespace HardCoded.VRigUnity {
 		public Transform contentTransform;
 	
 		[Header("Settings")]
-		public SettingsField vmcSenderPort;
-		public SettingsField vmcReceiverPort;
-		public SettingsField boneWindow;
-		public SettingsField alwaysShowUI;
-		public SettingsField expUseWrist;
-		public SettingsField expUseLegs;
-		public SettingsField guiScale;
+		public List<SettingsField> settings = new();
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
 		
 		void Start() {
-			vmcSenderPort = CreateSetting("VMC Sender Port", builder => {
-				return builder.AddNumberInput((_, value) => { Settings.VMCSenderPort = value; }, 0, 65535, Settings.VMCSenderPort, 3333);	
+			CreateSetting("VMC Sender", builder => {
+				return builder
+					.AddIpAddressField((_, value) => { Settings.VMCSenderAddress = value; }, true, "127.0.0.1", () => Settings.VMCSenderAddress, new(136, ""))
+					.AddNumberInput((_, value) => { Settings.VMCSenderPort = value; }, 0, 65535, Settings.VMCSenderPort, 3333, FieldData.None);	
 			});
-			vmcSenderPort = CreateSetting("VMC Receiver Port", builder => {
-				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, Settings.VMCReceiverPort, 3333);	
+			CreateSetting("VMC Receiver Port", builder => {
+				return builder.AddNumberInput((_, value) => { Settings.VMCReceiverPort = value; }, 0, 65535, 3333, Settings.VMCReceiverPort, FieldData.None);	
 			});
-			boneWindow = CreateSetting("Bone Window", builder => {
-				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); });
+			CreateSetting("Bone Window", builder => {
+				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, FieldData.None);
 			});
-			alwaysShowUI = CreateSetting("Always show UI", builder => {
-				return builder.AddToggle((_, value) => { Settings.AlwaysShowUI = value; }, Settings.AlwaysShowUI);
+			CreateSetting("Always show UI", builder => {
+				return builder.AddToggle((_, value) => { Settings.AlwaysShowUI = value; }, Settings.AlwaysShowUI, FieldData.None);
 			});
-			expUseWrist = CreateSetting("(Exp) Wrist rotation", builder => {
-				return builder.AddToggle((_, value) => { Settings.UseWristRotation = value; }, Settings.UseWristRotation);
+			CreateSetting("(E) Wrist rotation", builder => {
+				return builder.AddToggle((_, value) => { Settings.UseWristRotation = value; }, Settings.UseWristRotation, FieldData.None);
 			});
-			expUseLegs = CreateSetting("(Exp) Leg rotation", builder => {
-				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation);
+			CreateSetting("(E) Leg rotation", builder => {
+				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation, FieldData.None);
 			});
-			guiScale = CreateSetting("(Exp) Gui Scale", builder => {
-				return builder.AddIntSlider((_, value) => { Settings.GuiScale = value; }, 1, 10, Settings.GuiScale);
+			CreateSetting("(E) Gui Scale", builder => {
+				return builder.AddIntSlider((_, value) => { Settings.GuiScale = value; }, 1, 10, Settings.GuiScale, FieldData.None);
+			});
+			CreateSetting("(E) Hand threshold", builder => {
+				return builder.AddFloatTickSlider((_, value) => { Settings.HandTrackingThreshold = value; }, 0f, 1f, 10, Settings.HandTrackingThreshold, FieldData.None);
+			});
+			CreateSetting($"(E) Interpolation ({Settings._TrackingInterpolation.Default():0.00})", builder => {
+				return builder.AddFloatTickSlider((_, value) => { Settings.TrackingInterpolation = value; }, 0.05f, 1f, 19, Settings.TrackingInterpolation, FieldData.None);
+			});
+			CreateSetting($"(E) Flag", builder => {
+			 	return builder.AddEnumDropdown((_, value) => { Settings.Flag = value; }, Settings.Flag, FieldData.None);
 			});
 		}
 
@@ -48,7 +55,10 @@ namespace HardCoded.VRigUnity {
 			empty.transform.localScale = Vector3.one;
 			empty.transform.SetParent(contentTransform, false);
 			empty.SetActive(true);
-			return builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(name);
+
+			SettingsField field = builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(name);
+			settings.Add(field);
+			return field;
 		}
 	}
 }

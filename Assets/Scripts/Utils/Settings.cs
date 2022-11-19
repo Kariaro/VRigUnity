@@ -1,35 +1,24 @@
 ﻿using System;
 using UnityEngine;
+using static HardCoded.VRigUnity.SettingsTypes;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
 		private const string _TAG = nameof(Settings);
-			
-		// Debug function to log all set values
-		public static void LogAll() {
-			// Camera
-			Logger.Info(_TAG, $"CameraName '{CameraName}'");
-			Logger.Info(_TAG, $"CameraFlipped '{CameraFlipped}'");
-			Logger.Info(_TAG, $"CameraResolution '{CameraResolution}'");
 
-			// Bones
-			Logger.Info(_TAG, $"Bones '{BoneMask}'");
-
-			// UI
-			Logger.Info(_TAG, $"ModelFile '{ModelFile}'");
-			Logger.Info(_TAG, $"ImageFile '{ImageFile}'");
-			Logger.Info(_TAG, $"ShowCustomBackground '{ShowCustomBackground}'");
-			Logger.Info(_TAG, $"ShowCustomBackgroundColor '{ShowCustomBackgroundColor}'");
-
-			// Features
-			Logger.Info(_TAG, $"VMCSenderPort '{VMCSenderPort}'");
-			Logger.Info(_TAG, $"VMCReceiverPort '{VMCReceiverPort}'");
+		// This must be called to initialize the system
+		public static void Init() {
+			foreach (IField field in DefinedSettings) {
+				field.Init();
+				Logger.Info(_TAG, $"{field.Name()} '{field.RawValue()}'");
+			}
 		}
 
 		// Camera Settings
-		public static SettingsTypes.String _CameraName = new("camera.name", "");
-		public static SettingsTypes.Bool _CameraFlipped = new("camera.flipped", false);
-		public static SettingsTypes.String _CameraResolution = new("camera.resolution", "");
+		public static Text _CameraName = new("camera.name", "");
+		public static Bool _CameraFlipped = new("camera.flipped", false);
+		public static Text _CameraResolution = new("camera.resolution", "");
+		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
 			get => _CameraName.Get();
@@ -46,10 +35,17 @@ namespace HardCoded.VRigUnity {
 			set => _CameraResolution.Set(value);
 		}
 
+		public static bool VirtualCamera {
+			get => _VirtualCamera.Get();
+			set => _VirtualCamera.Set(value);
+		}
+
 		// Bone Settings
-		public static SettingsTypes.Int _BoneMask = new("bone.mask", BoneSettings.Default);
-		public static SettingsTypes.Bool _UseWristRotation = new("bone.use.wristik", false);
-		public static SettingsTypes.Bool _UseLegRotation = new("boke.use.legs", false);
+		public static Int _BoneMask = new("bone.mask", BoneSettings.Default);
+		public static Bool _UseWristRotation = new("bone.use.wristik", false);
+		public static Bool _UseLegRotation = new("boke.use.legs", false);
+		public static Float _HandTrackingThreshold = new("tracking.threshold.hand", 0f);
+		public static Float _TrackingInterpolation = new("tracking.interpolation", 0.1f);
 
 		public static int BoneMask {
 			get => _BoneMask.Get();
@@ -66,15 +62,24 @@ namespace HardCoded.VRigUnity {
 			set => _UseLegRotation.Set(value);
 		}
 
+		public static float HandTrackingThreshold {
+			get => _HandTrackingThreshold.Get();
+			set => _HandTrackingThreshold.Set(value);
+		}
+
+		public static float TrackingInterpolation {
+			get => _TrackingInterpolation.Get();
+			set => _TrackingInterpolation.Set(value);
+		}
+
 		// Gui Settings
-		public static SettingsTypes.String _ModelFile = new("gui.model", "");
-		public static SettingsTypes.String _ImageFile = new("gui.image", "");
-		public static SettingsTypes.Bool _ShowCustomBackground = new("gui.show.custombackground", false);
-		public static SettingsTypes.Bool _ShowBgColor = new("gui.show.bgColor", false);
-		public static SettingsTypes.Int _VMCSenderPort = new("vmc.sender.port", 3333);
-		public static SettingsTypes.Int _VMCReceiverPort = new("vmc.receiver.port", 39539);
-		public static SettingsTypes.Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
-		public static SettingsTypes.Int _GuiScale = new("gui.scale", 1);
+		public static Text _ModelFile = new("gui.model", "");
+		public static Text _ImageFile = new("gui.image", "");
+		public static Bool _ShowCustomBackground = new("gui.show.custombackground", false);
+		public static Bool _ShowBgColor = new("gui.show.bgColor", false);
+		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
+		public static Int _GuiScale = new("gui.scale", 1, value => GuiScaleListener?.Invoke(value));
+		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -96,22 +101,6 @@ namespace HardCoded.VRigUnity {
 			set => _ShowBgColor.Set(value);
 		}
 
-		public static int VMCSenderPort {
-			get => _VMCSenderPort.Get();
-			set {
-				_VMCSenderPort.Set(value);
-				VMCSenderPortListener?.Invoke(value);
-			}
-		}
-
-		public static int VMCReceiverPort {
-			get => _VMCReceiverPort.Get();
-			set {
-				_VMCReceiverPort.Set(value);
-				VMCReceiverPortListener?.Invoke(value);
-			}
-		}
-
 		public static bool AlwaysShowUI {
 			get => _AlwaysShowUI.Get();
 			set => _AlwaysShowUI.Set(value);
@@ -119,16 +108,40 @@ namespace HardCoded.VRigUnity {
 
 		public static int GuiScale {
 			get => _GuiScale.Get();
-			set {
-				_GuiScale.Set(value);
-				GuiScaleListener?.Invoke(value);
-			}
+			set => _GuiScale.Set(value);
+		}
+
+		public static FlagScript.Flag Flag {
+			get => _Flag.Get();
+			set => _Flag.Set(value);
 		}
 
 		public delegate void IntDelegate (int value);
-		public static event IntDelegate VMCSenderPortListener;
-		public static event IntDelegate VMCReceiverPortListener;
 		public static event IntDelegate GuiScaleListener;
+
+		// VMC Settings
+		public static SafeText _VMCSenderAddress = new("vmc.sender.ip", "127.0.0.1", value => VMCSenderListener?.Invoke(value, VMCSenderPort));
+		public static Int _VMCSenderPort = new("vmc.sender.port", 3333, value => VMCSenderListener?.Invoke(VMCSenderAddress, value));
+		public static Int _VMCReceiverPort = new("vmc.receiver.port", 39539, value => VMCReceiverListener?.Invoke(null, value));
+
+		public static string VMCSenderAddress {
+			get => _VMCSenderAddress.Get();
+			set => _VMCSenderAddress.Set(value);
+		}
+
+		public static int VMCSenderPort {
+			get => _VMCSenderPort.Get();
+			set => _VMCSenderPort.Set(value);
+		}
+
+		public static int VMCReceiverPort {
+			get => _VMCReceiverPort.Get();
+			set => _VMCReceiverPort.Set(value);
+		}
+		
+		public delegate void IpDelegate (string ip, int port);
+		public static event IpDelegate VMCSenderListener;
+		public static event IpDelegate VMCReceiverListener;
 
 		// Reset
 		public static void ResetSettings() {

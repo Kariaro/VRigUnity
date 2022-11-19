@@ -24,6 +24,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private GameObject annotationObject;
 		[SerializeField] private RectTransform annotationArea;
 		[SerializeField] private HolisticLandmarkListAnnotationController holisticAnnotationController;
+		private bool m_showAnnotations;
 
 		void Start() {
 			streamCanvas.SetCamera(streamCamera);
@@ -50,10 +51,17 @@ namespace HardCoded.VRigUnity {
 
 		public void ShowAnnotations(bool show) {
 			annotationObject.SetActive(show);
+			m_showAnnotations = show;
 		}
 
 		public void ReadSync(TextureFrame textureFrame) {
 			unityCanvas.ReadSync(textureFrame);
+		}
+
+		void Update() {
+			if (Settings.VirtualCamera != streamCamera.enabled) {
+				streamCamera.enabled = Settings.VirtualCamera;
+			}
 		}
 
 		// Annotations
@@ -74,19 +82,27 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void OnPoseLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
+			if (m_showAnnotations) {
+				holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
+			}
 		}
 
 		public void OnFaceLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
+			if (m_showAnnotations) {
+				holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
+			}
 		}
 
 		public void OnLeftHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
+			if (m_showAnnotations) {
+				holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
+			}
 		}
 
 		public void OnRightHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
+			if (m_showAnnotations) {
+				holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
+			}
 		}
 	}
 }

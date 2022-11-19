@@ -3,8 +3,6 @@ using System.Linq;
 
 namespace HardCoded.VRigUnity {
 	public struct RotStruct {
-		public static float TestInterpolationValue => HolisticTrackingSolution.TestInterpolationValue;
-
 		public static RotStruct identity => new(Quaternion.identity, 0);
 
 		private float lastTime;
@@ -12,7 +10,9 @@ namespace HardCoded.VRigUnity {
 		private Quaternion curr;
 
 		// Cache values
+		private Quaternion lastRotation;
 		private Transform lastTransform;
+		private Vector3 lastPosition;
 		private HumanBodyBones lastBone;
 
 		public RotStruct(Quaternion init, float time) {
@@ -21,6 +21,8 @@ namespace HardCoded.VRigUnity {
 			curr = init;
 
 			lastTransform = null;
+			lastPosition = Vector3.zero;
+			lastRotation = Quaternion.identity;
 			lastBone = HumanBodyBones.LastBone;
 		}
 
@@ -30,12 +32,23 @@ namespace HardCoded.VRigUnity {
 			curr = value;
 		}
 
-		public Quaternion Get() {
-			return curr;
+		// Used for non main thread IK calculations
+		public Quaternion GetLastRotation() {
+			return lastRotation;
+		}
+
+		// Used for non main thread IK calculations
+		public Vector3 GetLastPosition() {
+			return lastPosition;
 		}
 
 		private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
-			return Quaternion.Slerp(current, curr, TestInterpolationValue);
+			// 60 fps is the default speed so this should == 1
+			// If we have 120 fps this would be == 0.5
+			// If we have  30 fps this would be == 2.0
+			float td = Time.deltaTime * 60;
+			float iv = td * Settings.TrackingInterpolation;
+			return Quaternion.Slerp(current, curr, iv);
 		}
 
 		private Transform GetTransform(Animator animator, HumanBodyBones bone) {
@@ -46,24 +59,32 @@ namespace HardCoded.VRigUnity {
 
 			return lastTransform;
 		}
-			
-		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = GetTransform(animator, bone);
-			if (time - 1 > currTime) {
-				// If the part was lost we slowly put it back to it's original position
-				transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.identity, 0.1f);
-			} else {
-				transform.rotation = GetUpdatedRotation(transform.rotation, curr, time);
-			}
-		}
 
 		public Quaternion GetRawUpdateRotation(Transform transform, float time) {
 			return GetUpdatedRotation(transform.rotation, curr, time);
 		}
+			
+		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
+			Transform transform = GetTransform(animator, bone);
+			if (time - 1 > currTime) {
+				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
+				transform.localRotation = lastRotation;
+			} else {
+				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
+				transform.rotation = lastRotation;
+			}
+			lastPosition = transform.position;
+		}
 
 		public void UpdateLocalRotation(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
-			transform.localRotation = GetUpdatedRotation(transform.localRotation, curr, time);
+			if (time - 1 > currTime) {
+				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
+			} else {
+				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
+			}
+			transform.localRotation = lastRotation;
+			lastPosition = transform.position;
 		}
 	}
 
@@ -98,7 +119,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private Vector3 GetUpdatedPosition(Vector3 current, Vector3 curr, float time) {
-			return Vector3.Lerp(current, curr, RotStruct.TestInterpolationValue);
+			return Vector3.Lerp(current, curr, Settings.TrackingInterpolation);
 		}
 		
 		private Transform GetTransform(Animator animator, HumanBodyBones bone) {

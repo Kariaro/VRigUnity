@@ -24,19 +24,23 @@ namespace HardCoded.VRigUnity {
 			Vector3 ff = Vector3.forward * 0.1f;
 			Vector3 rr = Vector3.right * 0.1f;
 
-			Debug.DrawRay(a_pos, a_rot * uu, Color.green);
-			Debug.DrawRay(a_pos, a_rot * ff, Color.blue);
-			Debug.DrawRay(a_pos, a_rot * rr, Color.red);
+			if (ThreadObject.IsUnityThread()) {
+				Debug.DrawRay(a_pos, a_rot * uu, Color.green);
+				Debug.DrawRay(a_pos, a_rot * ff, Color.blue);
+				Debug.DrawRay(a_pos, a_rot * rr, Color.red);
 				
-			Debug.DrawRay(w_pos, w_rot * -uu, Color.green);
-			Debug.DrawRay(w_pos, w_rot * -rr, Color.red);
+				Debug.DrawRay(w_pos, w_rot * -uu, Color.green);
+				Debug.DrawRay(w_pos, w_rot * -rr, Color.red);
+			}
 
 			// The green rays should point approximately in the same direction
 			Vector3 w_for = w_rot * -uu;
 			Vector3 a_for = a_rot * -uu;
 			
-			Debug.DrawLine(w_pos, w_pos + w_for);
-			Debug.DrawLine(a_pos, a_pos + a_for);
+			if (ThreadObject.IsUnityThread()) {
+				Debug.DrawLine(w_pos, w_pos + w_for);
+				Debug.DrawLine(a_pos, a_pos + a_for);
+			}
 
 			// Rotate a point around the axis r_arot * rr
 			Vector3 wristPos = w_pos + w_for;
@@ -52,11 +56,16 @@ namespace HardCoded.VRigUnity {
 					closest = dst;
 					closestPos = s_point;
 					closestRot = i * 3.6f;
-					Debug.DrawLine(a_pos, s_point, Color.cyan);
+					
+					if (ThreadObject.IsUnityThread()) {
+						Debug.DrawLine(a_pos, s_point, Color.cyan);
+					}
 				}
 			}
 
-			Debug.DrawLine(closestPos, wristPos, Color.yellow);
+			if (ThreadObject.IsUnityThread()) {
+				Debug.DrawLine(closestPos, wristPos, Color.yellow);
+			}
 
 			return closestRot - 180.0f;
 		}

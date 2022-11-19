@@ -1,16 +1,12 @@
 using UnityEngine;
 using uOSC;
-using System;
-using VRM;
 using EVMC4U;
 
 namespace HardCoded.VRigUnity {
 	public class VMCReceiver : MonoBehaviour {
 		public GameObject vrmModel;
 		public ExternalReceiver vrmReceiver;
-
-		// uOSC server
-		private uOSC.uOscServer uServer = null;
+		private uOscServer uServer = null;
 
 		public int GetPort() {
 			return uServer.port;
@@ -33,7 +29,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Start() {
-			uServer = GetComponentInChildren<uOSC.uOscServer>(true);
+			uServer = GetComponentInChildren<uOscServer>(true);
 		}
 
 		void Update() {
