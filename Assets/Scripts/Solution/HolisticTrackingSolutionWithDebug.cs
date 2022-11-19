@@ -8,24 +8,21 @@ namespace HardCoded.VRigUnity {
 	public class HolisticTrackingSolutionWithDebug : HolisticTrackingSolution {
 		[Header("Debug")]
 		[SerializeField] private HandGroup handGroup;
-		
+		[SerializeField] private int fps = 60;
+
 		private Groups.HandPoints handPoints = new();
 		private bool hasHandData;
 
 		protected override void OnStartRun() {
 			base.OnStartRun();
-			graphRunner.OnPoseDetectionOutput += OnPoseDetectionOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-			graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
 		}
 
-		private void OnPoseDetectionOutput(object stream, OutputEventArgs<Detection> eventArgs) {}
 		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnPoseRoiOutput(object stream, OutputEventArgs<NormalizedRect> eventArgs) {}
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {}
@@ -44,7 +41,15 @@ namespace HardCoded.VRigUnity {
 			hasHandData = true;
 		}
 
-		new void FixedUpdate() {
+		void Update() {
+			Application.targetFrameRate = fps;
+		}
+
+		[Range(0, 1)]
+		public float angleTest = 0;
+		public int test;
+
+		public override void ModelUpdate() {
 			if (handGroup != null && handPoints != null) {
 				handGroup.Apply(handPoints, animator.GetBoneTransform(HumanBodyBones.LeftHand).transform.position, 0.5f);
 			}
@@ -53,8 +58,26 @@ namespace HardCoded.VRigUnity {
 			if (hasHandData) {
 				HandResolver.SolveRightHand(handPoints);
 			}
+			
+			if (Settings.UseWristRotation) {
+				{
+					Vector3 w_pos = RightHand.Wrist.GetLastPosition();
+					Quaternion w_rot = RightHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.LeftLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.LeftLowerArm.GetLastRotation();
+					MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+				}
+			
+				{
+					Vector3 w_pos = LeftHand.Wrist.GetLastPosition();
+					Quaternion w_rot = LeftHand.Wrist.GetLastRotation();
+					Vector3 a_pos = Pose.RightLowerArm.GetLastPosition();
+					Quaternion a_rot = Pose.RightLowerArm.GetLastRotation();
+					MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
+				}
+			}
 
-			base.FixedUpdate();
+			base.ModelUpdate();
 		}
 	}
 }

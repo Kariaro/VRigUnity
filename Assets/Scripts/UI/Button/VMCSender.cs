@@ -4,14 +4,20 @@ using System;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	[RequireComponent(typeof(uOSC.uOscClient))]
+	[RequireComponent(typeof(uOscClient))]
 	public class VMCSender : MonoBehaviour {
 		public GameObject vrmModel;
 		public Animator vrmAnimator;
 		public VRMBlendShapeProxy vrmBlendShapeProxy;
+		private uOscClient uClient = null;
 
-		// uOSC client
-		private uOSC.uOscClient uClient = null;
+		public string GetAddress() {
+			return uClient.address;
+		}
+
+		public void SetAddress(string address) {
+			uClient.address = address;
+		}
 
 		public int GetPort() {
 			return uClient.port;
@@ -30,7 +36,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Start() {
-			uClient = GetComponent<uOSC.uOscClient>();
+			uClient = GetComponent<uOscClient>();
 		}
 
 		void Update() {

@@ -10,6 +10,7 @@ namespace HardCoded.VRigUnity {
 		private const string SourcePath                = "Contents/Source/Dropdown";
 		private const string ResolutionPath            = "Contents/Resolution/Dropdown";
 		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
+		private const string VirtualCameraToggle       = "Contents/Virtual/Panel/Toggle";
 		private const string VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
 		private const string VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
 		
@@ -18,6 +19,7 @@ namespace HardCoded.VRigUnity {
 		private TMP_Dropdown _sourceInput;
 		private TMP_Dropdown _resolutionInput;
 		private Toggle _isHorizontallyFlippedInput;
+		private Toggle _virtualCameraToggle;
 		private Button _virtualCameraInstall;
 		private Button _virtualCameraUninstall;
 
@@ -141,6 +143,12 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void InitializeVirtualCamera() {
+			_virtualCameraToggle = transform.Find(VirtualCameraToggle).GetComponent<Toggle>();
+			_virtualCameraToggle.isOn = Settings.VirtualCamera;
+			_virtualCameraToggle.onValueChanged.AddListener(delegate {
+				Settings.VirtualCamera = _virtualCameraToggle.isOn;
+			});
+
 			_virtualCameraInstall = transform.Find(VirtualCameraInstall).GetComponent<Button>();
 			_virtualCameraUninstall = transform.Find(VirtualCameraUninstall).GetComponent<Button>();
 			_virtualCameraInstall.enabled = CameraCapture.IsVirtualCameraSupported;

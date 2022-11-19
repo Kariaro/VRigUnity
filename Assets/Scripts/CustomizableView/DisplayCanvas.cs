@@ -65,19 +65,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			/*
-			Texture2D tex = webcamImage.texture as Texture2D;
-			
-			// If the webcam image is not a texture2D
-			if (!(tex is Texture2D) || tex.width != textureFrame.width || tex.height != textureFrame.height) {
-				tex = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
-				webcamImage.texture = tex;
-				Logger.Info($"{webcamImage.texture}");
-				Logger.Info($"{webcamImage.color}");
-			}
-			*/
-			
-			float w = (UnityEngine.Screen.width / (float) UnityEngine.Screen.height);
+			float w = (Screen.width / (float) Screen.height);
 			float d = (textureFrame.height / (float) textureFrame.width) * w * 0.5f;
 
 			if (d < 0.5) {
@@ -96,9 +84,20 @@ namespace HardCoded.VRigUnity {
 				webcamImage.uvRect = new(1, 0, -1, 1);
 			}
 
-			// textureFrame.CopyTexture(webcamImage.texture);
 			webcamImage.color = Color.white;
-			webcamImage.texture = SolutionUtils.GetImageSource().GetCurrentTexture();
+			
+			// TODO: Compute how much cpu this uses
+			Texture2D tex = webcamImage.texture as Texture2D;
+			
+			// If the webcam image is not a texture2D
+			if (!(tex is Texture2D) || tex.width != textureFrame.width || tex.height != textureFrame.height) {
+				tex = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
+				webcamImage.texture = tex;
+			}
+
+			textureFrame.CopyTexture(webcamImage.texture);
+
+			//webcamImage.texture = SolutionUtils.GetImageSource().GetCurrentTexture();
 		}
 	}
 }

@@ -46,16 +46,11 @@ public class UnityCapture : MonoBehaviour {
 	[SerializeField] [Tooltip("How many milliseconds to wait for a new frame until sending is considered to be stopped")] public int Timeout = 1000;
 	[SerializeField] [Tooltip("Mirror captured output image")] public EMirrorMode MirrorMode = EMirrorMode.Disabled;
 	[SerializeField] [Tooltip("Introduce a frame of latency in favor of frame rate")] public bool DoubleBuffering = false;
-	[SerializeField] [Tooltip("Check to enable VSync during capturing")] public bool EnableVSync = false;
-	[SerializeField] [Tooltip("Set the desired render target frame rate")] public int TargetFrameRate = 60;
 	[SerializeField] [Tooltip("Check to disable output of warnings")] public bool HideWarnings = false;
 	[SerializeField] public Camera mainCamera;
 	Camera captureCamera;
 
 	void Awake() {
-		QualitySettings.vSyncCount = (EnableVSync ? 1 : 0);
-		Application.targetFrameRate = TargetFrameRate;
-
 		if (Application.runInBackground == false) {
 			Debug.LogWarning("Application.runInBackground switched to enabled for capture streaming");
 			Application.runInBackground = true;
@@ -91,6 +86,10 @@ public class UnityCapture : MonoBehaviour {
 	}
 
 	void OnPostRender() {
+		if (!HardCoded.VRigUnity.Settings.VirtualCamera) {
+			return;
+		}
+
 		switch (CaptureInterface.SendTexture(renderTexture, Timeout, DoubleBuffering, ResizeMode, MirrorMode)) {
 			case ECaptureSendResult.SUCCESS: break;
 			case ECaptureSendResult.WARNING_FRAMESKIP:               if (!HideWarnings) Debug.LogWarning("[UnityCapture] Capture device did skip a frame read, capture frame rate will not match render frame rate."); break;
