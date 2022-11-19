@@ -19,13 +19,18 @@ namespace HardCoded.VRigUnity {
 			return _assetManager;
 		}
 
-		private IEnumerator Init() {
+		void Awake() {
+			// Set target frame rate	
+			Application.targetFrameRate = 60;
+
 			// Log application version
 			Logger.Info(_TAG, $"Application version: {Application.version}");
 
 			// Init settings
 			Settings.Init();
+		}
 
+		private IEnumerator Init() {
 			// Initialize mediapipe
 			Protobuf.SetLogHandler(Protobuf.DefaultLogHandler);
 			

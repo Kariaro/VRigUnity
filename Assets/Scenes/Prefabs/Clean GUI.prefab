@@ -8673,7 +8673,7 @@ GameObject:
   - component: {fileID: 2106799567842481032}
   - component: {fileID: 7596974884050749002}
   - component: {fileID: 8167102391856570651}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Version Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9458,7 +9458,7 @@ GameObject:
   - component: {fileID: 9092698711018473106}
   - component: {fileID: 7116632197625501587}
   - component: {fileID: 1569265792065503742}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Model Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11161,7 +11161,7 @@ GameObject:
   - component: {fileID: 6235545684425541135}
   - component: {fileID: 7835974748642435369}
   - component: {fileID: 9034717193423579892}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Right Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11552,7 +11552,7 @@ GameObject:
   - component: {fileID: 3791656189188987702}
   - component: {fileID: 3791656189188987705}
   - component: {fileID: 1919300650305654395}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14388,7 +14388,7 @@ GameObject:
   - component: {fileID: 3791656190086555590}
   - component: {fileID: 3791656190086555588}
   - component: {fileID: 3791656190086555591}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Help Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

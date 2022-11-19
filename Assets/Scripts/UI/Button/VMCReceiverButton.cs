@@ -4,12 +4,11 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace HardCoded.VRigUnity {
-	public class VMCReceiverButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+	public class VMCReceiverButton : BaseButton {
 		public VMCReceiver vmcReceiver;
 		
 		[SerializeField] private RectTransform canvasRect;
 		[SerializeField] private CanvasGroup canvasGroup;
-		private bool m_canvasVisible;
 
 		[SerializeField] private TMP_Text buttonText;
 		[SerializeField] private TMP_Text portText;
@@ -26,19 +25,11 @@ namespace HardCoded.VRigUnity {
 			InitializeContents();
 		}
 
-		public void OnPointerEnter(PointerEventData data) {
-			m_canvasVisible = true;
-		}
-
-		public void OnPointerExit(PointerEventData data) {
-			m_canvasVisible = false;
-		}
-
 		void FixedUpdate() {
 			Vector3 pos = canvasRect.localPosition;
-			pos.y = Mathf.Lerp(pos.y, m_canvasVisible ? -24 : 0, 0.2f);
+			pos.y = Mathf.Lerp(pos.y, Hover ? -24 : 0, 0.2f);
 			canvasRect.localPosition = pos;
-			canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, m_canvasVisible ? 1 : 0, 0.2f); 
+			canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, Hover ? 1 : 0, 0.2f); 
 		}
 
 		private void InitializeContents() {
