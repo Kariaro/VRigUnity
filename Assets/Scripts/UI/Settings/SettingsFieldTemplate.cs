@@ -51,15 +51,15 @@ namespace HardCoded.VRigUnity {
 			ApplyLayout(field, data.Width);
 
 			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
-			inputField.text = hideIp ? "Ip Hidden" : SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue);
+			inputField.text = hideIp ? "Ip Hidden" : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue);
 			inputField.onDeselect.AddListener(delegate {
-				inputField.SetTextWithoutNotify(hideIp ? "Ip Hidden" : SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
+				inputField.SetTextWithoutNotify(hideIp ? "Ip Hidden" : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
 			});
 			inputField.onSelect.AddListener(delegate {
-				inputField.SetTextWithoutNotify(SettingsFieldUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
+				inputField.SetTextWithoutNotify(SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
 			});
 			inputField.onValueChanged.AddListener(delegate {
-				string value = SettingsFieldUtil.NormalizeIpAddress(inputField.text, defaultValue);
+				string value = SettingsUtil.NormalizeIpAddress(inputField.text, defaultValue);
 				action.Invoke(inputField, value);
 			});
 			return this;
@@ -233,13 +233,27 @@ namespace HardCoded.VRigUnity {
 			return result;
 		}
 
-		// This will remove all unused data inside this field
+		public void BuildDivider(string name, float height = 24) {
+			gameObject.name = "Divider(" + name + ")";
+			fieldName.text = name;
+			fieldName.margin = new(-20, 0, 0, 0);
+			fieldName.fontStyle = TMPro.FontStyles.Bold;
+			LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
+			layoutElement.minHeight = height;
+			DestroyThis();
+		}
+
 		public SettingsField Build(string name) {
 			gameObject.name = "Field(" + name + ")";
 			fieldName.text = name;
 
 			SettingsField field = gameObject.AddComponent<SettingsField>();
-			
+			DestroyThis();
+			return field;
+		}
+		
+		// This will remove all unused data inside this field
+		private void DestroyThis() {
 			Destroy(inputFieldTemplate);
 			Destroy(toggleTemplate);
 			Destroy(buttonTemplate);
@@ -248,7 +262,6 @@ namespace HardCoded.VRigUnity {
 
 			// Remove this field
 			Destroy(this);
-			return field;
 		}
 
 		public struct FieldData {

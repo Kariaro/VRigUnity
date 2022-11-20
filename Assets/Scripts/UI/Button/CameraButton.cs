@@ -52,6 +52,7 @@ namespace HardCoded.VRigUnity {
 
 				imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
 
+				// TODO: If the camera failed give an error message
 				SolutionUtils.GetSolution().Play();
 			} else {
 				SolutionUtils.GetSolution().ResetVRMAnimator();

@@ -80,6 +80,7 @@ namespace HardCoded.VRigUnity {
 		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
 		public static Int _GuiScale = new("gui.scale", 1, value => GuiScaleListener?.Invoke(value));
 		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
+		public static Int _AntiAliasing = new("view.antialiasing", 0);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -114,6 +115,11 @@ namespace HardCoded.VRigUnity {
 		public static FlagScript.Flag Flag {
 			get => _Flag.Get();
 			set => _Flag.Set(value);
+		}
+
+		public static int AntiAliasing {
+			get => _AntiAliasing.Get();
+			set => _AntiAliasing.Set(value);
 		}
 
 		public delegate void IntDelegate (int value);

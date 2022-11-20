@@ -194,21 +194,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		/// <summary>
-		///	 Configure and initialize the <see cref="CalculatorGraph" />.
-		/// </summary>
-		/// <remarks>
-		///	 This is the main process in <see cref="InitializeCalculatorGraph" />.<br />
-		///	 At least, <c>calculatorGraph.Initialize</c> must be called here.
-		///	 In addition to that, <see cref="OutputStream" /> instances should be initialized.
-		/// </remarks>
-		/// <param name="config">
-		///	 A <see cref="CalculatorGraphConfig" /> instance corresponding to <see cref="textConfig" />.<br />
-		///	 It can be dynamically modified here.
-		/// </param>
-		protected virtual Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
-			return CalculatorGraph.Initialize(config);
-		}
+		protected abstract Status ConfigureCalculatorGraph(CalculatorGraphConfig config);
 
 		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
