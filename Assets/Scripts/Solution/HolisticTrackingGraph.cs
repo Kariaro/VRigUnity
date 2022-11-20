@@ -103,6 +103,7 @@ namespace HardCoded.VRigUnity {
 				WaitForAsset("hand_recrop.bytes"),
 				WaitForAsset("handedness.txt"),
 				WaitForAsset("palm_detection_full.bytes"),
+				WaitForAsset("pose_detection.bytes"),
 				WaitForPoseLandmarkModel(),
 			};
 		}
