@@ -1889,7 +1889,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 428597543407232571}
-  _canvas: {fileID: 0}
   _border: 100
 --- !u!114 &1695916151483003090
 MonoBehaviour:
@@ -3086,7 +3085,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 2382184279865931419}
-  _canvas: {fileID: 0}
   _border: 50
 --- !u!1 &1049165663939636863
 GameObject:
@@ -5094,7 +5092,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 5402821730618818543}
-  _canvas: {fileID: 0}
   _border: 50
 --- !u!1 &1988855618739659739
 GameObject:
@@ -10404,7 +10401,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 3791656189185371686}
-  _canvas: {fileID: 0}
   _border: 50
 --- !u!1 &3791656189188987711
 GameObject:
@@ -21154,7 +21150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parent: {fileID: 355928425682122651}
-  _canvas: {fileID: 0}
   _border: 50
 --- !u!1 &6246912487637845703
 GameObject:

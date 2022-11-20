@@ -1103,7 +1103,6 @@ GameObject:
   - component: {fileID: 6447137187830256559}
   - component: {fileID: 6447137187830256545}
   - component: {fileID: 6447137187830256544}
-  - component: {fileID: 8878480711362263504}
   m_Layer: 0
   m_Name: Stream Camera
   m_TagString: Untagged
@@ -1181,25 +1180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eebce988c7c9f4459cec5eef6786b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8878480711362263504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6447137187830256556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f1106d3744ef824496276c8274506b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CaptureDevice: 0
-  ResizeMode: 1
-  Timeout: 1000
-  MirrorMode: 1
-  DoubleBuffering: 0
-  HideWarnings: 1
-  mainCamera: {fileID: 3840394562969064526}
 --- !u!1 &6447137188151484112
 GameObject:
   m_ObjectHideFlags: 0

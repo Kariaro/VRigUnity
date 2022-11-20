@@ -29,24 +29,23 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void CheckPosition() {
-			Vector2 parentSize = _parent.rect.size;
+			Vector2 size = _parent.rect.size;
 			Vector2 screenSize = canvas.pixelRect.size / canvas.scaleFactor;
-			Vector2 center = _parent.anchoredPosition + (screenSize / 2f);
-			Vector2 topLeft = center - (parentSize / 2f);
+			Vector2 botLeft = _parent.anchoredPosition - (size / 2f) + (screenSize / 2f);
 			Vector2 nudgeValue = Vector2.zero;
-			float border = _border / canvas.scaleFactor;
+			float border = _border;
 
-			if (topLeft.x > screenSize.x - border) {
-				nudgeValue.x = screenSize.x - border - topLeft.x;
+			if (botLeft.x > screenSize.x - border) {
+				nudgeValue.x = screenSize.x - border - botLeft.x;
 			}
-			if (topLeft.x < border - parentSize.x) {
-				nudgeValue.x = border - parentSize.x - topLeft.x;
+			if (botLeft.x < border - size.x) {
+				nudgeValue.x = border - size.x - botLeft.x;
 			}
-			if (topLeft.y > screenSize.y - border) {
-				nudgeValue.y = screenSize.y - border - topLeft.y;
+			if (botLeft.y > screenSize.y - border) {
+				nudgeValue.y = screenSize.y - border - botLeft.y;
 			}
-			if (topLeft.y < 0) {
-				nudgeValue.y = 0 - topLeft.y;
+			if (botLeft.y < 0) {
+				nudgeValue.y = 0 - botLeft.y;
 			}
 
 			_parent.anchoredPosition += nudgeValue;
