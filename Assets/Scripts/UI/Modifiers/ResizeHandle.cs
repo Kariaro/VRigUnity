@@ -55,7 +55,7 @@ namespace HardCoded.VRigUnity {
 			Vector2 size = parent.rect.size;
 			Vector2 screenSize = canvas.pixelRect.size / canvas.scaleFactor;
 			if (newSize.y > parent.sizeDelta.y + parent.anchoredPosition.y - (size.y / 2f) + (screenSize.y / 2f)) {
-				newSize.y = parent.sizeDelta.y;
+				newSize.y = parent.sizeDelta.y + parent.anchoredPosition.y - (size.y / 2f) + (screenSize.y / 2f);
 			}
 
 			Vector2 posAdj = (newSize - parent.sizeDelta) / 2f;

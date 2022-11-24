@@ -10,7 +10,6 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
 		[SerializeField] GameObject cameraConfigWindow;
-		[SerializeField] GameObject backgroundConfigWindow;
 
 		public void SelectModel() {
 			var extensions = new [] {
@@ -63,10 +62,6 @@ namespace HardCoded.VRigUnity {
 
 		public void OpenCameraSettings() {
 			cameraConfigWindow.SetActive(true);
-		}
-
-		public void OpenBackgroundSettings() {
-			backgroundConfigWindow.SetActive(true);
 		}
 
 		public void OpenGithub() {

@@ -263,7 +263,7 @@ MonoBehaviour:
   textureFramePool: {fileID: 275874970}
   defaultVrmPrefab: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
   vrmModel: {fileID: 1321532676}
-  vrmController: {fileID: 9100000, guid: 928d756bab7978f41a1347dcea5f5a48, type: 2}
+  vrmController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
   vrmAnimator: {fileID: 0}
   blendShapeProxy: {fileID: 1321532675}
   animator: {fileID: 1321532674}
@@ -559,6 +559,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3181082426570656820, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
     - target: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
       propertyPath: m_Name
       value: DebugModel

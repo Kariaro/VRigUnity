@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Linq;
+using System;
 
 namespace HardCoded.VRigUnity {
 	public struct RotStruct {
@@ -60,11 +61,31 @@ namespace HardCoded.VRigUnity {
 			return lastTransform;
 		}
 
+		public Transform GetTransform() {
+			return lastTransform;
+		}
+
 		public Quaternion GetRawUpdateRotation(Transform transform, float time) {
 			return GetUpdatedRotation(transform.rotation, curr, time);
 		}
 			
 		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
+			Transform transform = GetTransform(animator, bone);
+			if (time - 1 > currTime) {
+				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
+				if (!Settings.UseFullIK) {
+					transform.localRotation = lastRotation;
+				}
+			} else {
+				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
+				if (!Settings.UseFullIK) {
+					transform.rotation = lastRotation;
+				}
+			}
+			lastPosition = transform.position;
+		}
+
+		public void UpdateRotation2(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
 				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
@@ -169,7 +190,17 @@ namespace HardCoded.VRigUnity {
 		public RotStruct Neck = RotStruct.identity;
 		public RotStruct Chest = RotStruct.identity;
 		public RotStruct Hips = RotStruct.identity;
+
 		public PosStruct HipsPosition = PosStruct.identity;
+
+		public PosStruct RightShoulder = PosStruct.identity;
+		public PosStruct RightElbow = PosStruct.identity;
+		public PosStruct RightHand = PosStruct.identity;
+		
+		public PosStruct LeftShoulder = PosStruct.identity;
+		public PosStruct LeftElbow = PosStruct.identity;
+		public PosStruct LeftHand = PosStruct.identity;
+		
 		public RotStruct RightUpperArm = RotStruct.identity;
 		public RotStruct RightLowerArm = RotStruct.identity;
 		public RotStruct LeftUpperArm = RotStruct.identity;

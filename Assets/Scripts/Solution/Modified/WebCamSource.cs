@@ -1,33 +1,28 @@
 using Mediapipe.Unity;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// TODO: Update this class to make this more unique to this project
 namespace HardCoded.VRigUnity {
 	public class WebCamSource : ImageSource {
-		[Tooltip("For the default resolution, the one whose width is closest to this value will be chosen")]
-		[SerializeField] private int _preferableDefaultWidth = 848;
-
 		private const string _TAG = nameof(WebCamSource);
 
 		[SerializeField]
 		private ResolutionStruct[] _defaultAvailableResolutions = new ResolutionStruct[] {
-			new ResolutionStruct(1920, 1080, 30),
-			new ResolutionStruct(1600, 896, 30),
-			new ResolutionStruct(1280, 720, 30),
-			new ResolutionStruct(960, 540, 30),
-			new ResolutionStruct(848, 480, 30),
-			new ResolutionStruct(640, 480, 30),
-			new ResolutionStruct(640, 360, 30),
-			new ResolutionStruct(424, 240, 30),
-			new ResolutionStruct(320, 240, 30),
-			new ResolutionStruct(176, 144, 30),
+			new(1920, 1080, 30),
+			new(1600, 896, 30),
+			new(1280, 720, 30),
+			new(960, 540, 30),
+			new(848, 480, 30),
+			new(640, 480, 30),
+			new(640, 360, 30),
+			new(424, 240, 30),
+			new(320, 240, 30),
+			new(176, 144, 30),
 		};
 
-		private static readonly object _PermissionLock = new object();
+		private static readonly object _PermissionLock = new();
 		private static bool _IsPermitted = false;
 
 		private WebCamTexture _webCamTexture;
@@ -127,6 +122,7 @@ namespace HardCoded.VRigUnity {
 			webCamDevice = availableSources[sourceId];
 		}
 
+
 		public override IEnumerator Play() {
 			yield return new WaitUntil(() => _isInitialized);
 			if (!_IsPermitted) {
@@ -174,7 +170,7 @@ namespace HardCoded.VRigUnity {
 				return new ResolutionStruct();
 			}
 
-			return resolutions.OrderBy(resolution => resolution, new ResolutionStructComparer(_preferableDefaultWidth)).First();
+			return _defaultAvailableResolutions[5];
 		}
 
 		private void InitializeWebCamTexture() {
@@ -195,30 +191,6 @@ namespace HardCoded.VRigUnity {
 
 			if (webCamTexture.width <= 16) {
 				throw new TimeoutException("Failed to start WebCam");
-			}
-		}
-
-		private class ResolutionStructComparer : IComparer<ResolutionStruct> {
-			private readonly int _preferableDefaultWidth;
-
-			public ResolutionStructComparer(int preferableDefaultWidth) {
-				_preferableDefaultWidth = preferableDefaultWidth;
-			}
-
-			public int Compare(ResolutionStruct a, ResolutionStruct b) {
-				var aDiff = Mathf.Abs(a.width - _preferableDefaultWidth);
-				var bDiff = Mathf.Abs(b.width - _preferableDefaultWidth);
-				if (aDiff != bDiff) {
-					return aDiff - bDiff;
-				}
-
-				if (a.height != b.height) {
-					// prefer smaller height
-					return a.height - b.height;
-				}
-
-				// prefer smaller frame rate
-				return (int)(a.frameRate - b.frameRate);
 			}
 		}
 	}

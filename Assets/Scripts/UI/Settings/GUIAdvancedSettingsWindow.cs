@@ -63,6 +63,12 @@ namespace HardCoded.VRigUnity {
 						});
 					}, FieldData.None);
 			});
+			CreateSetting("Gui Scale", builder => {
+				return builder.AddIntSlider((_, value) => { Settings.GuiScale = value; }, 1, 10, Settings.GuiScale, FieldData.None);
+			});
+			CreateSetting($"Flag", builder => {
+			 	return builder.AddEnumDropdown((_, value) => { Settings.Flag = value; }, Settings.Flag, FieldData.None);
+			});
 
 			AddDivider("Experimental Settings");
 			CreateSetting("(E) Bone Window", builder => {
@@ -74,17 +80,14 @@ namespace HardCoded.VRigUnity {
 			CreateSetting("(E) Leg rotation", builder => {
 				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation, FieldData.None);
 			});
-			CreateSetting("(E) Gui Scale", builder => {
-				return builder.AddIntSlider((_, value) => { Settings.GuiScale = value; }, 1, 10, Settings.GuiScale, FieldData.None);
+			CreateSetting("(E) Full IK", builder => {
+				return builder.AddToggle((_, value) => { Settings.UseFullIK = value; }, Settings.UseFullIK, FieldData.None);
 			});
 			CreateSetting("(E) Hand threshold", builder => {
 				return builder.AddFloatTickSlider((_, value) => { Settings.HandTrackingThreshold = value; }, 0f, 1f, 10, Settings.HandTrackingThreshold, FieldData.None);
 			});
 			CreateSetting($"(E) Interpolation ({Settings._TrackingInterpolation.Default():0.00})", builder => {
 				return builder.AddFloatTickSlider((_, value) => { Settings.TrackingInterpolation = value; }, 0.05f, 1f, 19, Settings.TrackingInterpolation, FieldData.None);
-			});
-			CreateSetting($"(E) Flag", builder => {
-			 	return builder.AddEnumDropdown((_, value) => { Settings.Flag = value; }, Settings.Flag, FieldData.None);
 			});
 		}
 

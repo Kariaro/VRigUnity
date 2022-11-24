@@ -38,5 +38,9 @@ namespace HardCoded.VRigUnity {
 				_ => 0
 			};
 		}
+
+		public static float GetUIScaleValue(int value) {
+			return 1 + (value - 1) / 9.0f;
+		}
 	}
 }
