@@ -58,24 +58,6 @@ namespace HardCoded.VRigUnity {
 			if (hasHandData) {
 				HandResolver.SolveRightHand(handPoints);
 			}
-			
-			if (Settings.UseWristRotation) {
-				{
-					Vector3 w_pos = RightHand.Wrist.GetLastPosition();
-					Quaternion w_rot = RightHand.Wrist.GetLastRotation();
-					Vector3 a_pos = Pose.LeftLowerArm.GetLastPosition();
-					Quaternion a_rot = Pose.LeftLowerArm.GetLastRotation();
-					MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-				}
-			
-				{
-					Vector3 w_pos = LeftHand.Wrist.GetLastPosition();
-					Quaternion w_rot = LeftHand.Wrist.GetLastRotation();
-					Vector3 a_pos = Pose.RightLowerArm.GetLastPosition();
-					Quaternion a_rot = Pose.RightLowerArm.GetLastRotation();
-					MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-				}
-			}
 
 			base.ModelUpdate();
 		}

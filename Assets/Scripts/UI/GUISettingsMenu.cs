@@ -4,7 +4,7 @@ using UnityEngine;
 using static HardCoded.VRigUnity.FileDialogUtils;
 
 namespace HardCoded.VRigUnity {
-	public class GUISettingsMenu : MonoBehaviour {
+	public class GUISettingsMenu : GUIWindow {
 		[SerializeField] GUIScript settings;
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;

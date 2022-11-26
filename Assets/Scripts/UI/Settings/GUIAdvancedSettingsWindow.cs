@@ -5,7 +5,7 @@ using static HardCoded.VRigUnity.FileDialogUtils;
 using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
-	public class GUIAdvancedSettingsWindow : MonoBehaviour {
+	public class GUIAdvancedSettingsWindow : GUIWindow {
 		public static bool ShowCamera { set; get; }
 
 		// Parent
@@ -14,7 +14,7 @@ namespace HardCoded.VRigUnity {
 		[Header("Template")]
 		public GameObject emptySetting;
 		public Transform contentTransform;
-	
+		
 		[Header("Settings")]
 		public List<SettingsField> settings = new();
 
@@ -73,9 +73,6 @@ namespace HardCoded.VRigUnity {
 			AddDivider("Experimental Settings");
 			CreateSetting("(E) Bone Window", builder => {
 				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, FieldData.None);
-			});
-			CreateSetting("(E) Wrist rotation", builder => {
-				return builder.AddToggle((_, value) => { Settings.UseWristRotation = value; }, Settings.UseWristRotation, FieldData.None);
 			});
 			CreateSetting("(E) Leg rotation", builder => {
 				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation, FieldData.None);

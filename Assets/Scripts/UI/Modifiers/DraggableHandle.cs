@@ -21,6 +21,9 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
+			// Make this element the top sibling
+			transform.SetAsLastSibling();
+
 			// TODO: If the Transform is dragged outside the screen it should remember the original drag point
 			_parent.anchoredPosition += eventData.delta / canvas.scaleFactor;
 

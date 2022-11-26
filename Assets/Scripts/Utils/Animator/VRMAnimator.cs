@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Animations.Rigging;
+﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class VRMAnimator : MonoBehaviour {
@@ -74,8 +72,10 @@ namespace HardCoded.VRigUnity {
 				anim.runtimeAnimatorController = controller;
 				PerformRigging();
 			} else {
+				if (anim.runtimeAnimatorController != null) {
+					anim.WriteDefaultValues();
+				}
 				anim.runtimeAnimatorController = null;
-				anim.WriteDefaultValues();
 			}
 
 			// anim.WriteDefaultValues();

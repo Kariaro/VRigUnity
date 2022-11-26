@@ -1,7 +1,8 @@
 using Mediapipe.Unity;
-using System;
+using System.Linq;
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace HardCoded.VRigUnity {
 	public abstract class ImageSourceSolution<T> : Solution where T : GraphRunner {
@@ -9,13 +10,8 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected TextureFramePool textureFramePool;
 
 		private Coroutine _coroutine;
-
-		public long TimeoutMillisec {
-			get => graphRunner.TimeoutMillisec;
-			set => graphRunner.TimeoutMillisec = value;
-		}
-
-		public WebCamSource ImageSource => SolutionUtils.GetImageSource();
+		private WebCamSource ImageSource => SolutionUtils.GetImageSource();
+		private Action<string> _errorListener;
 
 		public override void Play() {
 			if (_coroutine != null) {
@@ -43,14 +39,36 @@ namespace HardCoded.VRigUnity {
 			graphRunner.Stop();
 		}
 
+		// TODO: Make this an event
+		public void SetErrorListener(Action<string> action) {
+			_errorListener = action;
+		}
+
 		private IEnumerator Run() {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
 			var imageSource = ImageSource;
 
-			yield return imageSource.Play();
+			{
+				var sourceId = imageSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
+				if (sourceId >= 0 && sourceId < imageSource.sourceCandidateNames.Length) {
+					imageSource.SelectSource(sourceId);
+				}
 
-			if (!imageSource.isPrepared) {
+				var resolutionId = imageSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
+				if (resolutionId >= 0 && resolutionId < imageSource.availableResolutions.Length) {
+					imageSource.SelectResolution(resolutionId);
+				}
+
+				imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
+			}
+
+
+			Exception wrapped = null;
+			yield return CorutineUtils.HandleExceptions(imageSource.Play(), error => wrapped = error);
+			
+			if (wrapped != null || !imageSource.isPrepared) {
 				Logger.Error(TAG, "Failed to start ImageSource, exiting...");
+				_errorListener?.Invoke($"Failed to start ImageSource '{Settings.CameraName}', exiting...");
 				yield break;
 			}
 
@@ -62,6 +80,7 @@ namespace HardCoded.VRigUnity {
 			yield return graphInitRequest;
 			if (graphInitRequest.isError) {
 				Logger.Error(TAG, graphInitRequest.error);
+				_errorListener?.Invoke($"Failed to start graph '{graphInitRequest.error}', exiting...");
 				yield break;
 			}
 

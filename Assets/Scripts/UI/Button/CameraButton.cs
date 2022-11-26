@@ -1,8 +1,6 @@
 using UnityEngine;
 using TMPro;
-using System.Linq;
 using UnityEngine.UI;
-using System.Collections;
 
 namespace HardCoded.VRigUnity {
 	public class CameraButton : MonoBehaviour {
@@ -20,6 +18,9 @@ namespace HardCoded.VRigUnity {
 			toggleButton = GetComponent<Button>();
 
 			InitializeContents();
+			SolutionUtils.GetSolution().SetErrorListener(error => {
+				SetCamera(false);
+			});
 		}
 
 		private void InitializeContents() {
@@ -38,20 +39,6 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Stop Camera" : "Start Camera";
 
 			if (enable) {
-				var imageSource = SolutionUtils.GetImageSource();
-
-				var sourceId = imageSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
-				if (sourceId >= 0 && sourceId < imageSource.sourceCandidateNames.Length) {
-					imageSource.SelectSource(sourceId);
-				}
-
-				var resolutionId = imageSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
-				if (resolutionId >= 0 && resolutionId < imageSource.availableResolutions.Length) {
-					imageSource.SelectResolution(resolutionId);
-				}
-
-				imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
-
 				// TODO: If the camera failed give an error message
 				SolutionUtils.GetSolution().Play();
 			} else {

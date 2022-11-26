@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUIBoneSettingsWindow : MonoBehaviour {
+	public class GUIBoneSettingsWindow : GUIWindow {
 		[SerializeField] private GUIScript settings;
 
 		public Toggle[] toggles;
 
-		void OnEnable() {
+		public override void OnEnable() {
+			base.OnEnable();
+
 			for (int i = 0; i < toggles.Length; i++) {
 				int v = i;
 				toggles[i].isOn = BoneSettings.Get(i);

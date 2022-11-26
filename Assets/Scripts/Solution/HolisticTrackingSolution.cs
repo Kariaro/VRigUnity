@@ -297,30 +297,31 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Quaternion chestRotation = Quaternion.identity;
-			Quaternion hipsRotation = Quaternion.identity;
-			Quaternion rUpperArm = Quaternion.identity;
-			Quaternion rLowerArm = Quaternion.identity;
-			Quaternion lUpperArm = Quaternion.identity;
-			Quaternion lLowerArm = Quaternion.identity;
-			Vector3 hipsPosition = Vector3.zero;
+			Quaternion chestRotation;
+			Quaternion hipsRotation;
+			Quaternion rUpperArm;
+			Quaternion rLowerArm;
+			Quaternion lUpperArm;
+			Quaternion lLowerArm;
+			Vector3 hipsPosition;
 
-			Quaternion rUpperLeg = Quaternion.identity;
-			Quaternion rLowerLeg = Quaternion.identity;
-			Quaternion lUpperLeg = Quaternion.identity;
-			Quaternion lLowerLeg = Quaternion.identity;
+			Quaternion rUpperLeg;
+			Quaternion rLowerLeg;
+			Quaternion lUpperLeg;
+			Quaternion lLowerLeg;
 
-			Vector4 rShoulder = Vector4.one * 0.0f;
-			Vector4 rElbow = Vector4.one * 0.5f;
-			Vector4 rHand = Vector4.one * 1.0f;
-			Vector4 lShoulder = Vector4.one * -0.0f;
-			Vector4 lElbow = Vector4.one * -0.5f;
-			Vector4 lHand = Vector4.one * -1.0f;
+			// Experimental IK
+			Vector4 rShoulder;
+			Vector4 rElbow;
+			Vector4 rHand;
+			Vector4 lShoulder;
+			Vector4 lElbow;
+			Vector4 lHand;
 
-			bool hasLeftLeg = false;
-			bool hasRightLeg = false;
+			bool hasLeftLeg;
+			bool hasRightLeg;
 
-			try {
+			{
 				rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
 				lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
 				Vector4 rHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_HIP);
@@ -414,51 +415,30 @@ namespace HardCoded.VRigUnity {
 
 					hasLeftLeg = lHip.w > 0.5 && lKnee.w > 0.5;
 				}
-			} catch {
-				// Catch all exceptions
-			}
-
-			// Experimental
-			if (Settings.UseWristRotation) {
-				{
-					Vector3 w_pos = RightHand.Wrist.GetLastPosition();
-					Quaternion w_rot = RightHand.Wrist.GetLastRotation();
-					Vector3 a_pos = Pose.LeftLowerArm.GetLastPosition();
-					Quaternion a_rot = Pose.LeftLowerArm.GetLastRotation();
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle - 90, -90, 90);
-					lLowerArm *= Quaternion.Euler(angle, 0, 0);
-					// lUpperArm *= Quaternion.Euler(angle, 0, 0);
-				}
-			
-				{
-					Vector3 w_pos = LeftHand.Wrist.GetLastPosition();
-					Quaternion w_rot = LeftHand.Wrist.GetLastRotation();
-					Vector3 a_pos = Pose.RightLowerArm.GetLastPosition();
-					Quaternion a_rot = Pose.RightLowerArm.GetLastRotation();
-					float angle = MovementUtils.GetArmWristAngle(a_pos, a_rot, w_pos, w_rot);
-					angle = Mathf.Clamp(angle - 90, -90, 90);
-					rLowerArm *= Quaternion.Euler(angle, 0, 0);
-					// rUpperArm *= Quaternion.Euler(angle, 0, 0);
-				}
 			}
 
 			float time = TimeNow;
 			Pose.Chest.Set(chestRotation, time);
 			Pose.Hips.Set(hipsRotation, time);
 			Pose.HipsPosition.Set(hipsPosition, time);
-			Pose.RightUpperArm.Set(rUpperArm, time);
-			Pose.RightLowerArm.Set(rLowerArm, time);
-			Pose.LeftUpperArm.Set(lUpperArm, time);
-			Pose.LeftLowerArm.Set(lLowerArm, time);
-			if (hasRightLeg) {
-				Pose.RightUpperLeg.Set(rUpperLeg, time);
-				Pose.RightLowerLeg.Set(rLowerLeg, time);
+			
+			if (!Settings.UseFullIK) {
+				Pose.RightUpperArm.Set(rUpperArm, time);
+				Pose.RightLowerArm.Set(rLowerArm, time);
+				Pose.LeftUpperArm.Set(lUpperArm, time);
+				Pose.LeftLowerArm.Set(lLowerArm, time);
 			}
 
-			if (hasLeftLeg) {
-				Pose.LeftUpperLeg.Set(lUpperLeg, time);
-				Pose.LeftLowerLeg.Set(lLowerLeg, time);
+			if (Settings.UseLegRotation) {
+				if (hasRightLeg) {
+					Pose.RightUpperLeg.Set(rUpperLeg, time);
+					Pose.RightLowerLeg.Set(rLowerLeg, time);
+				}
+
+				if (hasLeftLeg) {
+					Pose.LeftUpperLeg.Set(lUpperLeg, time);
+					Pose.LeftLowerLeg.Set(lLowerLeg, time);
+				}
 			}
 			
 			Pose.RightShoulder.Set(lShoulder, time);
@@ -578,6 +558,7 @@ namespace HardCoded.VRigUnity {
 				RightHand.ThumbTip. UpdateLocalRotation(animator, HumanBodyBones.LeftThumbDistal, time);
 			}
 
+			// Face
 			if (BoneSettings.Get(BoneSettings.FACE)) {
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), mouthOpen);
 
