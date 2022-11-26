@@ -32,7 +32,7 @@ namespace HardCoded.VRigUnity {
 		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
 		
 		private readonly long StartTicks = DateTime.Now.Ticks;
-		protected float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
+		public float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
 		void Awake() {
 			SetVRMModel(vrmModel);
@@ -365,6 +365,7 @@ namespace HardCoded.VRigUnity {
 
 					if (rHand.w < Settings.HandTrackingThreshold) {
 						rLowerArm = rUpperArm;
+						rHand = (Vector3) rElbow + vRigB;
 					}
 				}
 
@@ -382,6 +383,7 @@ namespace HardCoded.VRigUnity {
 
 					if (lHand.w < Settings.HandTrackingThreshold) {
 						lLowerArm = lUpperArm;
+						lHand = (Vector3) lElbow + vRigB;
 					}
 				}
 
@@ -419,7 +421,7 @@ namespace HardCoded.VRigUnity {
 
 			float time = TimeNow;
 			Pose.Chest.Set(chestRotation, time);
-			Pose.Hips.Set(hipsRotation, time);
+			// Pose.Hips.Set(hipsRotation, time);
 			Pose.HipsPosition.Set(hipsPosition, time);
 			
 			if (!Settings.UseFullIK) {
@@ -479,19 +481,13 @@ namespace HardCoded.VRigUnity {
 			}
 			
 			if (!Settings.UseFullIK) { // Arms
-				if (BoneSettings.Get(BoneSettings.LEFT_SHOULDER)) {
+				if (BoneSettings.Get(BoneSettings.LEFT_ARM)) {
 					Pose.LeftUpperArm.UpdateRotation(animator, HumanBodyBones.LeftUpperArm, time);
-				}
-
-				if (BoneSettings.Get(BoneSettings.LEFT_ELBOW)) {
 					Pose.LeftLowerArm.UpdateRotation(animator, HumanBodyBones.LeftLowerArm, time);
 				}
 
-				if (BoneSettings.Get(BoneSettings.RIGHT_SHOULDER)) {
+				if (BoneSettings.Get(BoneSettings.RIGHT_ARM)) {
 					Pose.RightUpperArm.UpdateRotation(animator, HumanBodyBones.RightUpperArm, time);
-				}
-
-				if (BoneSettings.Get(BoneSettings.RIGHT_ELBOW)) {
 					Pose.RightLowerArm.UpdateRotation(animator, HumanBodyBones.RightLowerArm, time);
 				}
 			}

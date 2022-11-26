@@ -43,6 +43,11 @@ namespace HardCoded.VRigUnity {
 			return lastPosition;
 		}
 
+		// Used to check if this value is set
+		public bool HasValue(float time) {
+			return time - 1 <= currTime;
+		}
+
 		private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
 			// 60 fps is the default speed so this should == 1
 			// If we have 120 fps this would be == 0.5

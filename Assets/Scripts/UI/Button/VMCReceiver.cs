@@ -4,8 +4,11 @@ using EVMC4U;
 
 namespace HardCoded.VRigUnity {
 	public class VMCReceiver : MonoBehaviour {
+		private static VMCReceiver _receiver;
+		public static VMCReceiver Receiver => _receiver;
+
 		public GameObject vrmModel;
-		public ExternalReceiver vrmReceiver;
+		public ExternalReceiver vmcReceiver;
 		private uOscServer uServer = null;
 
 		public int GetPort() {
@@ -16,27 +19,32 @@ namespace HardCoded.VRigUnity {
 			uServer.port = port;
 		}
 
+		public bool IsRunning() {
+			return uServer.isRunning;
+		}
+
 		public void StartVMC() {
-			vrmReceiver.Model = SolutionUtils.GetSolution().GetVRMModel();
-			vrmReceiver.gameObject.SetActive(true);
+			vmcReceiver.Model = SolutionUtils.GetSolution().GetVRMModel();
+			vmcReceiver.gameObject.SetActive(true);
 			uServer.StartServer();
 		}
 
 		public void StopVMC() {
-			vrmReceiver.gameObject.SetActive(false);
+			vmcReceiver.gameObject.SetActive(false);
 			uServer.StopServer();
 			SolutionUtils.GetSolution().ResetVRMAnimator();
 		}
 
 		void Start() {
 			uServer = GetComponentInChildren<uOscServer>(true);
+			_receiver = this;
 		}
 
 		void Update() {
 			// Check if the vrmModel exists
 			if (vrmModel == null) {
 				vrmModel = SolutionUtils.GetSolution().GetVRMModel();
-				vrmReceiver.Model = vrmModel;
+				vmcReceiver.Model = vrmModel;
 			}
 		}
 	}

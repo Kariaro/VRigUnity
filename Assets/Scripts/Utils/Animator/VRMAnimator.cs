@@ -19,6 +19,11 @@ namespace HardCoded.VRigUnity {
 
 		void PerformRigging() {
 			HolisticTrackingSolution sol = SolutionUtils.GetSolution();
+			float time = sol.TimeNow;
+			// TODO: Use spherical interpolation
+			// TODO: Fix hands when full body moves
+
+			// TODO: Left Target and Right Target
 
 			{
 				Transform shoulder = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
@@ -35,12 +40,21 @@ namespace HardCoded.VRigUnity {
 				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
 				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
 
-				LeftElbow = Vector3.Lerp(LeftElbow, fit_elbow, 0.2f);
-				LeftHand = Vector3.Lerp(LeftHand, fit_hand, 0.2f);
+				LeftElbow = Vector3.Lerp(LeftElbow, fit_elbow, Settings.TrackingInterpolation);
+				LeftHand = Vector3.Lerp(LeftHand, fit_hand, Settings.TrackingInterpolation);
 
 				rigger.leftHandHint.position = LeftElbow;
 				rigger.leftHandTarget.position = LeftHand;
 				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.GetLastRotation();
+				
+				if (!sol.LeftHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {
+					rigger.leftHandTarget.rotation = elbow.rotation;
+				}
+
+				if (!BoneSettings.Get(BoneSettings.RIGHT_ARM)) {
+					rigger.leftHandHint.position = new(0.3f, -1, 0);
+					rigger.leftHandTarget.position = new(0.3f, -1, 0);
+				}
 			}
 
 			{
@@ -58,12 +72,21 @@ namespace HardCoded.VRigUnity {
 				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
 				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
 
-				RightElbow = Vector3.Lerp(RightElbow, fit_elbow, 0.2f);
-				RightHand = Vector3.Lerp(RightHand, fit_hand, 0.2f);
+				RightElbow = Vector3.Lerp(RightElbow, fit_elbow, Settings.TrackingInterpolation * 2.0f);
+				RightHand = Vector3.Lerp(RightHand, fit_hand, Settings.TrackingInterpolation * 2.0f);
 
 				rigger.rightHandHint.position = RightElbow;
 				rigger.rightHandTarget.position = RightHand;
 				rigger.rightHandTarget.rotation = sol.RightHand.Wrist.GetLastRotation();
+
+				if (!sol.RightHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
+					rigger.rightHandTarget.rotation = elbow.rotation;
+				}
+
+				if (!BoneSettings.Get(BoneSettings.LEFT_ARM)) {
+					rigger.rightHandHint.position = new(-0.3f, -1, 0);
+					rigger.rightHandTarget.position = new(-0.3f, -1, 0);
+				}
 			}
 		}
 
@@ -72,14 +95,17 @@ namespace HardCoded.VRigUnity {
 				anim.runtimeAnimatorController = controller;
 				PerformRigging();
 			} else {
-				if (anim.runtimeAnimatorController != null) {
-					anim.WriteDefaultValues();
-				}
 				anim.runtimeAnimatorController = null;
+				anim.WriteDefaultValues();
 			}
 
-			// anim.WriteDefaultValues();
 			SolutionUtils.GetSolution().ModelUpdate();
+
+			// Apply VMC Receiver
+			VMCReceiver receiver = VMCReceiver.Receiver;
+			if (receiver.IsRunning()) {
+				receiver.vmcReceiver.ModelUpdate();
+			}
 		}
 	}
 }
