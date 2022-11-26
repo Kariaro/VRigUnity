@@ -1,32 +1,31 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace HardCoded.VRigUnity {
 	public class VRMAnimator : MonoBehaviour {
+		private RigAnimator rigger;
 		private Animator anim;
-		public RuntimeAnimatorController controller;
-
-		public Vector3 VecC;
-		public Vector3 VecD;
 		
+		public RuntimeAnimatorController controller;
+		public Vector3 LeftElbow;
+		public Vector3 LeftHand;
+		public Vector3 RightElbow;
+		public Vector3 RightHand;
+
 		void Start() {
 			anim = GetComponent<Animator>();
+			rigger = gameObject.AddComponent<RigAnimator>();
+			rigger.SetupRigging();
 		}
 
-		void OnAnimatorIK(int layerIndex) {
+		void PerformRigging() {
 			HolisticTrackingSolution sol = SolutionUtils.GetSolution();
-
-			// By default the IK is always in global
-			anim.SetIKRotation(AvatarIKGoal.RightHand, sol.LeftHand.Wrist.GetLastRotation() * Quaternion.Euler(0, 90, 0));
-			anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 1f);
-
-			anim.SetIKRotation(AvatarIKGoal.LeftHand, sol.RightHand.Wrist.GetLastRotation() * Quaternion.Euler(0, -90, 0));
-			anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
 
 			{
 				Transform shoulder = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
 				Transform elbow = anim.GetBoneTransform(HumanBodyBones.RightLowerArm);
 				Transform hand = anim.GetBoneTransform(HumanBodyBones.RightHand);
-
 				float se_dist = Vector3.Distance(shoulder.position, elbow.position);
 				float eh_dist = Vector3.Distance(elbow.position, hand.position);
 
@@ -38,10 +37,12 @@ namespace HardCoded.VRigUnity {
 				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
 				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
 
-				VecC = Vector3.Lerp(VecC, fit_hand, 0.2f);
+				LeftElbow = Vector3.Lerp(LeftElbow, fit_elbow, 0.2f);
+				LeftHand = Vector3.Lerp(LeftHand, fit_hand, 0.2f);
 
-				anim.SetIKPosition(AvatarIKGoal.RightHand, VecC);
-				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
+				rigger.leftHandHint.position = LeftElbow;
+				rigger.leftHandTarget.position = LeftHand;
+				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.GetLastRotation();
 			}
 
 			{
@@ -59,18 +60,22 @@ namespace HardCoded.VRigUnity {
 				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
 				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
 
-				VecD = Vector3.Lerp(VecD, fit_hand, 0.2f);
+				RightElbow = Vector3.Lerp(RightElbow, fit_elbow, 0.2f);
+				RightHand = Vector3.Lerp(RightHand, fit_hand, 0.2f);
 
-				anim.SetIKPosition(AvatarIKGoal.LeftHand, VecD);
-				anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
+				rigger.rightHandHint.position = RightElbow;
+				rigger.rightHandTarget.position = RightHand;
+				rigger.rightHandTarget.rotation = sol.RightHand.Wrist.GetLastRotation();
 			}
 		}
 
 		void LateUpdate() {
 			if (Settings.UseFullIK) {
 				anim.runtimeAnimatorController = controller;
+				PerformRigging();
 			} else {
 				anim.runtimeAnimatorController = null;
+				anim.WriteDefaultValues();
 			}
 
 			// anim.WriteDefaultValues();
