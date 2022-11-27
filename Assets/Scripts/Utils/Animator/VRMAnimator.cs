@@ -5,6 +5,7 @@ namespace HardCoded.VRigUnity {
 		private RigAnimator rigger;
 		private Animator anim;
 		
+		public bool slerp;
 		public RuntimeAnimatorController controller;
 		public Vector3 LeftElbow;
 		public Vector3 LeftHand;
@@ -36,15 +37,14 @@ namespace HardCoded.VRigUnity {
 				Vector3 ai_elbow = sol.Pose.LeftElbow.Get();
 				Vector3 ai_hand = sol.Pose.LeftHand.Get();
 				
-				Vector3 fit_shoulder = shoulder.position;
-				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
-				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
+				LeftElbow = Vector3.Slerp(LeftElbow, (ai_shoulder - ai_elbow).normalized * se_dist, Settings.TrackingInterpolation);
+				LeftHand = Vector3.Slerp(LeftHand, (ai_elbow - ai_hand).normalized * eh_dist, Settings.TrackingInterpolation);
 
-				LeftElbow = Vector3.Lerp(LeftElbow, fit_elbow, Settings.TrackingInterpolation);
-				LeftHand = Vector3.Lerp(LeftHand, fit_hand, Settings.TrackingInterpolation);
+				Vector3 lElbow = shoulder.position + LeftElbow;
+				Vector3 lHand = lElbow + LeftHand;
 
-				rigger.leftHandHint.position = LeftElbow;
-				rigger.leftHandTarget.position = LeftHand;
+				rigger.leftHandHint.position = lElbow;
+				rigger.leftHandTarget.position = lHand;
 				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.GetLastRotation();
 				
 				if (!sol.LeftHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {
@@ -52,8 +52,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				if (!BoneSettings.Get(BoneSettings.RIGHT_ARM)) {
-					rigger.leftHandHint.position = new(0.3f, -1, 0);
-					rigger.leftHandTarget.position = new(0.3f, -1, 0);
+					rigger.leftHandHint.position = new(0.5f, -1, 0);
+					rigger.leftHandTarget.position = new(0.5f, -1, 0);
 				}
 			}
 
@@ -67,16 +67,15 @@ namespace HardCoded.VRigUnity {
 				Vector3 ai_shoulder = sol.Pose.RightShoulder.Get();
 				Vector3 ai_elbow = sol.Pose.RightElbow.Get();
 				Vector3 ai_hand = sol.Pose.RightHand.Get();
-				
-				Vector3 fit_shoulder = shoulder.position;
-				Vector3 fit_elbow = fit_shoulder + (ai_shoulder - ai_elbow).normalized * se_dist;
-				Vector3 fit_hand = fit_elbow + (ai_elbow - ai_hand).normalized * eh_dist;
 
-				RightElbow = Vector3.Lerp(RightElbow, fit_elbow, Settings.TrackingInterpolation * 2.0f);
-				RightHand = Vector3.Lerp(RightHand, fit_hand, Settings.TrackingInterpolation * 2.0f);
+				RightElbow = Vector3.Slerp(RightElbow, (ai_shoulder - ai_elbow).normalized * se_dist, Settings.TrackingInterpolation);
+				RightHand = Vector3.Slerp(RightHand, (ai_elbow - ai_hand).normalized * eh_dist, Settings.TrackingInterpolation);
 
-				rigger.rightHandHint.position = RightElbow;
-				rigger.rightHandTarget.position = RightHand;
+				Vector3 rElbow = shoulder.position + RightElbow;
+				Vector3 rHand = rElbow + RightHand;
+
+				rigger.rightHandHint.position = rElbow;
+				rigger.rightHandTarget.position = rHand;
 				rigger.rightHandTarget.rotation = sol.RightHand.Wrist.GetLastRotation();
 
 				if (!sol.RightHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
@@ -84,8 +83,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				if (!BoneSettings.Get(BoneSettings.LEFT_ARM)) {
-					rigger.rightHandHint.position = new(-0.3f, -1, 0);
-					rigger.rightHandTarget.position = new(-0.3f, -1, 0);
+					rigger.rightHandHint.position = new(-0.5f, -1, 0);
+					rigger.rightHandTarget.position = new(-0.5f, -1, 0);
 				}
 			}
 		}

@@ -39,7 +39,6 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Stop Camera" : "Start Camera";
 
 			if (enable) {
-				// TODO: If the camera failed give an error message
 				SolutionUtils.GetSolution().Play();
 			} else {
 				SolutionUtils.GetSolution().ResetVRMAnimator();
