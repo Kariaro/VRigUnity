@@ -97,7 +97,7 @@ namespace HardCoded.VRigUnity {
 				anim.runtimeAnimatorController = null;
 				anim.WriteDefaultValues();
 			}
-
+			
 			SolutionUtils.GetSolution().ModelUpdate();
 
 			// Apply VMC Receiver

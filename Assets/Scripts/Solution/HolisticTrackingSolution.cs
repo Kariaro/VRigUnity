@@ -31,7 +31,9 @@ namespace HardCoded.VRigUnity {
 		public FaceData.RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
 		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
 		
+		// API Getters
 		private readonly long StartTicks = DateTime.Now.Ticks;
+		public GameObject VrmModel => vrmModel;
 		public float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
 
 		void Awake() {
@@ -63,10 +65,6 @@ namespace HardCoded.VRigUnity {
 			DefaultVRMAnimator();
 
 			return true;
-		}
-
-		public GameObject GetVRMModel() {
-			return vrmModel;
 		}
 
 		// Called when a bone is selected or deselected

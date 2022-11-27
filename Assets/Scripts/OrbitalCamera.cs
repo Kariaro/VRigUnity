@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -38,6 +36,13 @@ namespace HardCoded.VRigUnity {
 			get => currentDepth;
 		}
 
+		private bool IsMouseInGameWindow {
+			get {
+				Vector2 mouse = Input.mousePosition;
+				return mouse.x >= 0 && mouse.y >= 0 && mouse.x <= Screen.width && mouse.y <= Screen.height;
+			}
+		}
+
 		void Start() {
 			Depth = defaultDepth;
 		}
@@ -49,7 +54,7 @@ namespace HardCoded.VRigUnity {
 		
 		void LateUpdate() {
 			bool cameraEvent = !EventSystem.current.IsPointerOverGameObject();
-			if (cameraEvent) {
+			if (cameraEvent && IsMouseInGameWindow) {
 				Depth -= Input.mouseScrollDelta.y / 10.0f;
 
 				if (Input.GetMouseButtonDown(0)) {
@@ -88,7 +93,7 @@ namespace HardCoded.VRigUnity {
 				case Type.Panning: {
 					// Pan in the forward direction of the rotation
 					float scale = dragSpeed * Depth;
-					Vector3 offset = transform.rotation * new Vector3(-mouse.x * scale, mouse.y * scale, 0);
+					Vector3 offset = transform.rotation * new Vector3(-mouse.x, mouse.y, 0) * scale * 0.4f;
 					transform.position = transform.position + offset;
 					break;
 				}

@@ -24,7 +24,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void StartVMC() {
-			vmcReceiver.Model = SolutionUtils.GetSolution().GetVRMModel();
+			vmcReceiver.Model = SolutionUtils.GetSolution().VrmModel;
 			vmcReceiver.gameObject.SetActive(true);
 			uServer.StartServer();
 		}
@@ -43,7 +43,7 @@ namespace HardCoded.VRigUnity {
 		void Update() {
 			// Check if the vrmModel exists
 			if (vrmModel == null) {
-				vrmModel = SolutionUtils.GetSolution().GetVRMModel();
+				vrmModel = SolutionUtils.GetSolution().VrmModel;
 				vmcReceiver.Model = vrmModel;
 			}
 		}

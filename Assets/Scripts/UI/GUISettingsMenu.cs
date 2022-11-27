@@ -9,7 +9,6 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
-		[SerializeField] GameObject cameraConfigWindow;
 
 		public void SelectModel() {
 			var extensions = new [] {
@@ -58,10 +57,6 @@ namespace HardCoded.VRigUnity {
 
 		public void SetShowCamera(bool show) {
 			settings.SetShowCamera(show);
-		}
-
-		public void OpenCameraSettings() {
-			cameraConfigWindow.SetActive(true);
 		}
 
 		public void OpenGithub() {

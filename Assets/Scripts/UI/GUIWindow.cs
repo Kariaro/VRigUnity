@@ -5,5 +5,14 @@ namespace HardCoded.VRigUnity {
 		public virtual void OnEnable() {
 			transform.SetAsLastSibling();
 		}
+
+		public void ShowWindow() {
+			transform.SetAsLastSibling();
+			gameObject.SetActive(true);
+		}
+
+		public void HideWindow() {
+			gameObject.SetActive(false);
+		}
 	}
 }
