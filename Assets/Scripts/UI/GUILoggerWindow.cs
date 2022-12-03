@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 namespace HardCoded.VRigUnity {
 	public class GUILoggerWindow : GUIWindow {
@@ -18,8 +18,6 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public GUIScript guiScript;
-
 		[Header("Template")]
 		public GameObject emptyLog;
 		public Transform contentTransform;
@@ -27,9 +25,6 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Settings")]
 		public int maxLogs = 128;
-
-		[HideInInspector]
-		public List<string> logs = new();
 
 		private string FilterString(TMP_Text tmp, string message) {
 			string result = "";
@@ -50,26 +45,35 @@ namespace HardCoded.VRigUnity {
 		public Color evenColor = new(0.5660378f, 0.2269491f, 0.2269491f);
 		public Color oddColor;
 
+
 		public void OpenLogsFolder() {
-			// TODO: Implement
+			static string CombinePaths(params string[] paths) {
+				if (paths == null) {
+					throw new ArgumentNullException("paths");
+				}
+				return paths.Aggregate(Path.Combine);
+			}
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+			var path = CombinePaths(Environment.GetEnvironmentVariable("AppData"), "..", "LocalLow", Application.companyName, Application.productName);
+			System.Diagnostics.Process.Start("explorer.exe", path);
+#elif UNITY_STANDALONE_LINUX
+			var path = CombinePaths("~/.config/unity3d", Application.companyName, Application.productName);
+			System.Diagnostics.Process.Start("open", path);
+#elif UNITY_STANDALONE_OSX
+			var path = CombinePaths("~~/Library/Logs", Application.companyName, Application.productName);
+			System.Diagnostics.Process.Start("open", path);
+#else
+#  warning Opening logs path is not implemented
+#endif
 		}
 
 		public void AddMessage(Logger.LogLevel level, string tag, object obj) {
-			// Every other one should have a different background
-
 			string color = level switch {
 				Logger.LogLevel.Fatal or Logger.LogLevel.Error => "red",
 				Logger.LogLevel.Warn => "yellow",
 				_ => "white"
 			};
-
-			switch (level) {
-				case Logger.LogLevel.Fatal or Logger.LogLevel.Error:
-					loggerButton.HasErrors = true;
-					break;
-			}
-
-			// TODO: Errors should have a more red background
 
 			string value;
 			if (tag != null) {
@@ -91,8 +95,18 @@ namespace HardCoded.VRigUnity {
 			TMP_Text text = empty.GetComponentInChildren<TMP_Text>();
 			text.text = FilterString(text, value);
 
+			var imageColor = evenMessage ? evenColor : oddColor;
+
+			switch (level) {
+				case Logger.LogLevel.Fatal or Logger.LogLevel.Error: {
+					loggerButton.HasErrors = true;
+					imageColor = new((imageColor.r + 1f) / 2.0f, imageColor.g, imageColor.b);
+					break;
+				}
+			}
+
 			Image image = empty.GetComponent<Image>();
-			image.color = evenMessage ? evenColor : oddColor;
+			image.color = imageColor;
 			evenMessage = !evenMessage;
 
 			TMP_TextInfo info = text.GetTextInfo(text.text);

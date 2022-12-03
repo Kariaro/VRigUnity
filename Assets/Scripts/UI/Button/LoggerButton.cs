@@ -9,7 +9,6 @@ namespace HardCoded.VRigUnity {
 		[SerializeField]
 		private TMP_Text text;
 		private Button button;
-		
 		private bool hasErrors;
 		
 		public bool HasErrors {
