@@ -21,10 +21,9 @@ namespace HardCoded.VRigUnity {
 			LoadCustomImage(Settings.ImageFile);
 			SetShowBackgroundImage(Settings.ShowCustomBackground);
 			
-			canvasScaler.scaleFactor = 1 + (Settings.GuiScale - 1) / 9.0f;
+			canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
 			Settings.GuiScaleListener += (value) => {
-				// Scale the UI
-				canvasScaler.scaleFactor = 1 + (value - 1) / 9.0f;
+				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
 			};
 		}
 

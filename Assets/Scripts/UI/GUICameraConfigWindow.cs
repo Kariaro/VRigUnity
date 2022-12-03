@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUICameraConfigWindow : MonoBehaviour {
+	public class GUICameraConfigWindow : GUIWindow {
 		private const string SourcePath                = "Contents/Source/Dropdown";
 		private const string ResolutionPath            = "Contents/Resolution/Dropdown";
 		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class SettingsFieldUtil {
+	public class SettingsUtil {
 		public static bool IsValidIpAddress(string ip) {
 			string[] parts = ip.Split('.');
 			if (parts.Length != 4) {
@@ -28,6 +28,19 @@ namespace HardCoded.VRigUnity {
 
 			string[] parts = ip.Split('.');
 			return int.Parse(parts[0]) + "." + int.Parse(parts[1]) + "." + int.Parse(parts[2]) + "." + int.Parse(parts[3]);
+		}
+
+		public static int GetQualityValue(int index) {
+			return index switch {
+				3 => 8,
+				2 => 4,
+				1 => 2,
+				_ => 0
+			};
+		}
+
+		public static float GetUIScaleValue(int value) {
+			return 1 + (value - 1) / 9.0f;
 		}
 	}
 }

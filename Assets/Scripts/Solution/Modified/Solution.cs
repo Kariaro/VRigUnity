@@ -10,7 +10,9 @@ namespace HardCoded.VRigUnity {
 		protected bool isPaused;
 
 		protected virtual IEnumerator Start() {
-			bootstrap = FindBootstrap();
+			bootstrap = SolutionUtils.GetBootstrap();
+			bootstrap.enabled = true;
+
 			yield return new WaitUntil(() => bootstrap.IsFinished);
 			isPaused = true;
 		}
@@ -33,12 +35,6 @@ namespace HardCoded.VRigUnity {
 
 		public bool IsPaused() {
 			return isPaused;
-		}
-
-		protected Bootstrap FindBootstrap() {
-			var bootstrap = SolutionUtils.GetBootstrap();
-			bootstrap.enabled = true;
-			return bootstrap;
 		}
 	}
 }

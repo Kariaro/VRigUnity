@@ -311,6 +311,10 @@ namespace EVMC4U
 
         }
 
+        public void ModelUpdate() {
+            Update();
+		}
+
         //データ受信イベント
         private void OnDataReceived(uOSC.Message message)
         {

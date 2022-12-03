@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUIColorPickerWindow : MonoBehaviour {
+	public class GUIColorPickerWindow : GUIWindow {
 		private const string _InputFieldPath   = "Contents/InputField";
 		private const string _DisplayImagePath = "Contents/DisplayImage";
 		private const string _RedSliderPath    = "Contents/Red";

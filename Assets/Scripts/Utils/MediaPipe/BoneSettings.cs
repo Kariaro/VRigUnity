@@ -6,27 +6,24 @@ namespace HardCoded.VRigUnity {
 	public class BoneSettings {
 		public const int FACE = 0;
 		public const int NECK = 1;
-		public const int LEFT_SHOULDER = 2;
-		public const int LEFT_ELBOW = 3;
-		public const int LEFT_WRIST = 4;
-		public const int LEFT_FINGERS = 5;
-		public const int RIGHT_SHOULDER = 6;
-		public const int RIGHT_ELBOW = 7;
-		public const int RIGHT_WRIST = 8;
-		public const int RIGHT_FINGERS = 9;
-		public const int CHEST = 10;
-		public const int HIPS = 11;
-		public const int LEFT_HIP = 12;
-		public const int LEFT_KNEE = 13;
-		public const int LEFT_ANKLE = 14;
-		public const int RIGHT_HIP = 15;
-		public const int RIGHT_KNEE = 16;
-		public const int RIGHT_ANKLE = 17;
-		public const int Count = 17;
+		public const int LEFT_ARM = 2;
+		public const int LEFT_WRIST = 3;
+		public const int LEFT_FINGERS = 4;
+		public const int RIGHT_ARM = 5;
+		public const int RIGHT_WRIST = 6;
+		public const int RIGHT_FINGERS = 7;
+		public const int CHEST = 8;
+		public const int HIPS = 9;
+		public const int LEFT_HIP = 10;
+		public const int LEFT_KNEE = 11;
+		public const int LEFT_ANKLE = 12;
+		public const int RIGHT_HIP = 13;
+		public const int RIGHT_KNEE = 14;
+		public const int RIGHT_ANKLE = 15;
+		public const int Count = RIGHT_ANKLE;
 
 		// 16 bits set
 		public const int Default = ((1 << (Count + 2)) - 1) & ~(
-			(1 << HIPS) |
 			(1 << LEFT_HIP) | (1 << LEFT_KNEE) | (1 << LEFT_ANKLE) |
 			(1 << RIGHT_HIP) | (1 << RIGHT_KNEE) | (1 << RIGHT_ANKLE)
 		);
@@ -54,8 +51,10 @@ namespace HardCoded.VRigUnity {
 			HumanBodyBones.Jaw
 		};
 
-		private static readonly HumanBodyBones[] LEFT_SHOULDER_BONES = new [] { HumanBodyBones.LeftUpperArm };
-		private static readonly HumanBodyBones[] LEFT_ELBOW_BONES = new [] { HumanBodyBones.LeftLowerArm };
+		private static readonly HumanBodyBones[] LEFT_ARM_BONES = new [] {
+			HumanBodyBones.LeftUpperArm,
+			HumanBodyBones.LeftLowerArm
+		};
 		private static readonly HumanBodyBones[] LEFT_WRIST_BONES = new [] { HumanBodyBones.LeftHand };
 		private static readonly HumanBodyBones[] LEFT_FINGERS_BONES = new [] {
 			HumanBodyBones.LeftIndexProximal,
@@ -75,8 +74,10 @@ namespace HardCoded.VRigUnity {
 			HumanBodyBones.LeftThumbDistal
 		};
 		
-		private static readonly HumanBodyBones[] RIGHT_SHOULDER_BONES = new [] { HumanBodyBones.RightUpperArm };
-		private static readonly HumanBodyBones[] RIGHT_ELBOW_BONES = new [] { HumanBodyBones.RightLowerArm };
+		private static readonly HumanBodyBones[] RIGHT_ARM_BONES = new [] {
+			HumanBodyBones.RightUpperArm,
+			HumanBodyBones.RightLowerArm
+		};
 		private static readonly HumanBodyBones[] RIGHT_WRIST_BONES = new [] { HumanBodyBones.RightHand };
 		private static readonly HumanBodyBones[] RIGHT_FINGERS_BONES = new [] {
 			HumanBodyBones.RightIndexProximal,
@@ -115,12 +116,10 @@ namespace HardCoded.VRigUnity {
 			return index switch {
 				FACE => FACE_BONES,
 				NECK => NECK_BONES,
-				LEFT_SHOULDER => LEFT_SHOULDER_BONES,
-				LEFT_ELBOW => LEFT_ELBOW_BONES,
+				LEFT_ARM => LEFT_ARM_BONES,
 				LEFT_WRIST => LEFT_WRIST_BONES,
 				LEFT_FINGERS => LEFT_FINGERS_BONES,
-				RIGHT_SHOULDER => RIGHT_SHOULDER_BONES,
-				RIGHT_ELBOW => RIGHT_ELBOW_BONES,
+				RIGHT_ARM => RIGHT_ARM_BONES,
 				RIGHT_WRIST => RIGHT_WRIST_BONES,
 				RIGHT_FINGERS => RIGHT_FINGERS_BONES,
 				CHEST => CHEST_BONES,
@@ -152,8 +151,8 @@ namespace HardCoded.VRigUnity {
 			return true;
 		}
 
-		private static readonly Quaternion DefaultLeftUpperArm = Quaternion.Euler(0, 0, 75);
-		private static readonly Quaternion DefaultRightUpperArm = Quaternion.Euler(0, 0, -75);
+		private static readonly Quaternion DefaultLeftUpperArm = Quaternion.Euler(0, 0, 80);
+		private static readonly Quaternion DefaultRightUpperArm = Quaternion.Euler(0, 0, -80);
 		private static readonly Quaternion DefaultRot = Quaternion.identity;
 		public static Quaternion GetDefaultRotation(HumanBodyBones bone) {
 			return bone switch {

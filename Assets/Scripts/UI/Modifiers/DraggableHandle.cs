@@ -4,11 +4,12 @@ using UnityEngine.EventSystems;
 namespace HardCoded.VRigUnity {
 	public class DraggableHandle : MonoBehaviour, IDragHandler {
 		[SerializeField] RectTransform _parent;
-		[SerializeField] Canvas _canvas;
 		[SerializeField] float _border = 50;
 		
+		private Canvas canvas;
+		
 		void Start() {
-			_canvas = gameObject.GetComponentInParent<Canvas>();
+			canvas = GetComponentInParent<Canvas>();
 		}
 
 		void LateUpdate() {
@@ -16,33 +17,38 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void OnDrag(PointerEventData eventData) {
+			if (eventData.used) {
+				return;
+			}
+
+			// Make this element the top sibling
+			transform.SetAsLastSibling();
+
 			// TODO: If the Transform is dragged outside the screen it should remember the original drag point
-			_parent.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+			_parent.anchoredPosition += eventData.delta / canvas.scaleFactor;
 
 			// Make sure the window is within the correct position
 			CheckPosition();
 		}
 
 		private void CheckPosition() {
-			Vector2 screenSize = _canvas.pixelRect.size / _canvas.scaleFactor;
-			Vector2 parentSize = _parent.rect.size / _canvas.scaleFactor;
-			Vector2 center = _parent.anchoredPosition + (screenSize / 2f);
-			Vector2 topLeft = center - (parentSize / 2f);
-			Vector2 bottomRight = center - (parentSize / 2f);
+			Vector2 size = _parent.rect.size;
+			Vector2 screenSize = canvas.pixelRect.size / canvas.scaleFactor;
+			Vector2 botLeft = _parent.anchoredPosition - (size / 2f) + (screenSize / 2f);
 			Vector2 nudgeValue = Vector2.zero;
-			float border = _border / _canvas.scaleFactor;
+			float border = _border;
 
-			if (topLeft.x > screenSize.x - border) {
-				nudgeValue.x = screenSize.x - border - topLeft.x;
+			if (botLeft.x > screenSize.x - border) {
+				nudgeValue.x = screenSize.x - border - botLeft.x;
 			}
-			if (bottomRight.x < border - parentSize.x) {
-				nudgeValue.x = border - parentSize.x - bottomRight.x;
+			if (botLeft.x < border - size.x) {
+				nudgeValue.x = border - size.x - botLeft.x;
 			}
-			if (topLeft.y > screenSize.y - border) {
-				nudgeValue.y = screenSize.y - border - topLeft.y;
+			if (botLeft.y > screenSize.y - border) {
+				nudgeValue.y = screenSize.y - border - botLeft.y;
 			}
-			if (bottomRight.y < border - parentSize.y) {
-				nudgeValue.y = border - parentSize.y - bottomRight.y;
+			if (botLeft.y < 0) {
+				nudgeValue.y = 0 - botLeft.y;
 			}
 
 			_parent.anchoredPosition += nudgeValue;
