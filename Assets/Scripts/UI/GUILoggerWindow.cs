@@ -11,7 +11,7 @@ namespace HardCoded.VRigUnity {
 		public static GUILoggerWindow Window {
 			get {
 				if (_loggerWindow == null) {
-					_loggerWindow = FindObjectOfType<GUILoggerWindow>();
+					_loggerWindow = FindObjectOfType<GUILoggerWindow>(true);
 				}
 
 				return _loggerWindow;
@@ -44,7 +44,6 @@ namespace HardCoded.VRigUnity {
 		private bool evenMessage;
 		public Color evenColor = new(0.5660378f, 0.2269491f, 0.2269491f);
 		public Color oddColor;
-
 
 		public void OpenLogsFolder() {
 			static string CombinePaths(params string[] paths) {

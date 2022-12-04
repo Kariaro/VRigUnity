@@ -49,7 +49,6 @@ namespace HardCoded.VRigUnity {
 				Vector3 handForwardDir = plane.normal;
 
 				Quaternion rot = Quaternion.LookRotation(handForwardDir, handUpDir) * Quaternion.Euler(0, 90, -90);
-				// rot = Quaternion.Euler(0, 90, -90);
 				angles.Add(new(MediaPipe.Hand.WRIST, rot.eulerAngles));
 			}
 
@@ -76,39 +75,41 @@ namespace HardCoded.VRigUnity {
 			float[] zAngles = GetZAngles(hand);
 
 			for (int i = 0; i < 20; i++) {
-				if (xAngles[i] != 0 || zAngles[i] != 0) {
-					if (type == HandType.Left) {
-						// Flip the x angles when left
-						xAngles[i] = -xAngles[i];
-						zAngles[i] = -zAngles[i];
+				if (xAngles[i] == 0 && zAngles[i] == 0) {
+					continue;
+				}
+
+				if (type == HandType.Left) {
+					// Flip the x angles when left
+					xAngles[i] = -xAngles[i];
+					zAngles[i] = -zAngles[i];
+				}
+
+				if (i >= MediaPipe.Hand.THUMB_CMC && i <= MediaPipe.Hand.THUMB_TIP) {
+					// The thumb needs to rotate around Y for X
+					if (i == MediaPipe.Hand.THUMB_CMC) {
+						// By default it has around 20 degree offset from the next segment
+						xAngles[i] -= 20 * (type == HandType.Left ? -1 : 1);
 					}
 
-					if (i >= MediaPipe.Hand.THUMB_CMC && i <= MediaPipe.Hand.THUMB_TIP) {
-						// The thumb needs to rotate around Y for X
-						if (i == MediaPipe.Hand.THUMB_CMC) {
-							// By default it has around 20 degree offset from the next segment
-							xAngles[i] -= 20 * (type == HandType.Left ? -1 : 1);
-						}
+					data.Add(new(i, new(0, -xAngles[i], 0)));
+				} else {
+					// TODO: This is just a visual helper for hands but is not reqired
 
-						data.Add(new(i, new(0, -xAngles[i], 0)));
+					// If the x_angle is greather than 45 we will lerp the z_angle towards zero
+					if (xAngles[i] > 45) {
+						// When the x_angle is greater than 90 the z_angle will be zero
+						zAngles[i] = Mathf.Max(0, Mathf.Lerp(zAngles[i], 0, (xAngles[i] - 45) / 45.0f));
+					}
+
+					// xAngles can never go more than 120 degrees
+					if (type == HandType.Right) {
+						xAngles[i] = Mathf.Clamp(xAngles[i], -10, 110);
 					} else {
-						// TODO: This is just a visual helper for hands but is not reqired
-
-						// If the x_angle is greather than 45 we will lerp the z_angle towards zero
-						if (xAngles[i] > 45) {
-							// When the x_angle is greater than 90 the z_angle will be zero
-							zAngles[i] = Mathf.Max(0, Mathf.Lerp(zAngles[i], 0, (xAngles[i] - 45) / 45.0f));
-						}
-
-						// xAngles can never go more than 120 degrees
-						if (type == HandType.Right) {
-							xAngles[i] = Mathf.Clamp(xAngles[i], -10, 110);
-						} else {
-							xAngles[i] = -Mathf.Clamp(-xAngles[i], -10, 110);
-						}
-
-						data.Add(new(i, new(0, zAngles[i], xAngles[i])));
+						xAngles[i] = -Mathf.Clamp(-xAngles[i], -10, 110);
 					}
+
+					data.Add(new(i, new(0, zAngles[i], xAngles[i])));
 				}
 			}
 
@@ -165,6 +166,7 @@ namespace HardCoded.VRigUnity {
 				for (int j = 0, k = mcp; k <= tip - 1; j++, k++) {
 					data[k] = angles[j];
 					
+#if UNITY_EDITOR
 					// Debug visualization code
 					if (ThreadObject.IsUnityThread()) {
 						Color[] color = { Color.white, Color.red, Color.green, Color.blue, Color.cyan };
@@ -175,6 +177,7 @@ namespace HardCoded.VRigUnity {
 							Debug.DrawLine(a, b, color[i]);
 						}
 					}
+#endif
 				}
 			}
 
@@ -215,6 +218,7 @@ namespace HardCoded.VRigUnity {
 				// These angles should be between -25 and 25 degrees
 				angle = Mathf.Clamp(angle, -25, 25);
 
+#if UNITY_EDITOR
 				// Debug visualization code
 				if (ThreadObject.IsUnityThread()) {
 					Color[] color = { Color.red, Color.green, Color.blue, Color.cyan };
@@ -244,6 +248,7 @@ namespace HardCoded.VRigUnity {
 						Debug.DrawLine(a, b, color[i]);
 					}
 				}
+#endif
 
 				data[Fingers[i + 1][0]] = angle;
 			}

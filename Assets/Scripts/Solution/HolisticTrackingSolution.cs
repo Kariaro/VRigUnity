@@ -219,7 +219,6 @@ namespace HardCoded.VRigUnity {
 			OnLeftHandLandmarks(handPoints);
 		}
 
-		
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			canvas.OnRightHandLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
@@ -295,158 +294,38 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Quaternion chestRotation;
-			Quaternion hipsRotation;
-			Quaternion rUpperArm;
-			Quaternion rLowerArm;
-			Quaternion lUpperArm;
-			Quaternion lLowerArm;
-			Vector3 hipsPosition;
-
-			Quaternion rUpperLeg;
-			Quaternion rLowerLeg;
-			Quaternion lUpperLeg;
-			Quaternion lLowerLeg;
-
-			// Experimental IK
-			Vector4 rShoulder;
-			Vector4 rElbow;
-			Vector4 rHand;
-			Vector4 lShoulder;
-			Vector4 lElbow;
-			Vector4 lHand;
-
-			bool hasLeftLeg;
-			bool hasRightLeg;
-
-			{
-				rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
-				lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
-				Vector4 rHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_HIP);
-				Vector4 lHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_HIP);
-
-				{
-					Vector3 vRigA = Vector3.left;
-					Vector3 vRigB = rShoulder - lShoulder;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					chestRotation = rot;
-
-					vRigA = Vector3.left;
-					vRigB = rHip - lHip;
-					rot = Quaternion.FromToRotation(vRigA, vRigB);
-					hipsRotation = rot;
-
-					float mul = 1000;
-					hipsPosition = new Vector3(
-						(rHip.y + lHip.y) * 0.5f * mul,
-						0, // -(rHip.z + lHip.z) * 0.5f * mul,
-						0 // (rHip.y + lHip.y) * 0.5f * mul
-					);
-
-					/*
-					float bodyRotation = 1.0f;
-					bodyRotation = Mathf.Abs(Mathf.Cos(rot.eulerAngles.y * 1.6f));
-					*/
-				}
-
-				{
-					rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
-					rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
-					Vector3 vRigA = Vector3.left;
-					Vector3 vRigB = rElbow - rShoulder;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					rUpperArm = rot;
-
-					Vector3 vRigC = rHand - rElbow;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					rLowerArm = rot;
-
-					if (rHand.w < Settings.HandTrackingThreshold) {
-						rLowerArm = rUpperArm;
-						rHand = (Vector3) rElbow + vRigB;
-					}
-				}
-
-				{
-					lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
-					lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
-					Vector3 vRigA = Vector3.right;
-					Vector3 vRigB = lElbow - lShoulder;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					lUpperArm = rot;
-
-					Vector3 vRigC = lHand - lElbow;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					lLowerArm = rot;
-
-					if (lHand.w < Settings.HandTrackingThreshold) {
-						lLowerArm = lUpperArm;
-						lHand = (Vector3) lElbow + vRigB;
-					}
-				}
-
-				// Legs
-				{
-					Vector4 rKnee = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_KNEE);
-					Vector4 rAnkle = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ANKLE);
-					Vector3 vRigA = Vector3.up;
-					Vector3 vRigB = rKnee - rHip;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					rUpperLeg = rot;
-
-					Vector3 vRigC = rAnkle - rKnee;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					rLowerLeg = rot;
-					
-					hasRightLeg = rHip.w > 0.5 && rKnee.w > 0.5;
-				}
-
-				{
-					Vector4 lKnee = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_KNEE);
-					Vector4 lAnkle = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ANKLE);
-					Vector3 vRigA = Vector3.up;
-					Vector3 vRigB = lKnee - lHip;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					lUpperLeg = rot;
-
-					Vector3 vRigC = lAnkle - lKnee;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					lLowerLeg = rot;
-
-					hasLeftLeg = lHip.w > 0.5 && lKnee.w > 0.5;
-				}
-			}
+			Groups.PoseRotation pose = PoseResolver.SolvePose(eventArgs);
 
 			float time = TimeNow;
-			Pose.Chest.Set(chestRotation, time);
+			Pose.Chest.Set(pose.chestRotation, time);
 			// Pose.Hips.Set(hipsRotation, time);
-			Pose.HipsPosition.Set(hipsPosition, time);
+			Pose.HipsPosition.Set(pose.hipsPosition, time);
 			
 			if (!Settings.UseFullIK) {
-				Pose.RightUpperArm.Set(rUpperArm, time);
-				Pose.RightLowerArm.Set(rLowerArm, time);
-				Pose.LeftUpperArm.Set(lUpperArm, time);
-				Pose.LeftLowerArm.Set(lLowerArm, time);
+				Pose.RightUpperArm.Set(pose.rUpperArm, time);
+				Pose.RightLowerArm.Set(pose.rLowerArm, time);
+				Pose.LeftUpperArm.Set(pose.lUpperArm, time);
+				Pose.LeftLowerArm.Set(pose.lLowerArm, time);
 			}
 
 			if (Settings.UseLegRotation) {
-				if (hasRightLeg) {
-					Pose.RightUpperLeg.Set(rUpperLeg, time);
-					Pose.RightLowerLeg.Set(rLowerLeg, time);
+				if (pose.hasRightLeg) {
+					Pose.RightUpperLeg.Set(pose.rUpperLeg, time);
+					Pose.RightLowerLeg.Set(pose.rLowerLeg, time);
 				}
 
-				if (hasLeftLeg) {
-					Pose.LeftUpperLeg.Set(lUpperLeg, time);
-					Pose.LeftLowerLeg.Set(lLowerLeg, time);
+				if (pose.hasLeftLeg) {
+					Pose.LeftUpperLeg.Set(pose.lUpperLeg, time);
+					Pose.LeftLowerLeg.Set(pose.lLowerLeg, time);
 				}
 			}
 			
-			Pose.RightShoulder.Set(lShoulder, time);
-			Pose.RightElbow.Set(lElbow, time);
-			Pose.RightHand.Set(lHand, time);
-			Pose.LeftShoulder.Set(rShoulder, time);
-			Pose.LeftElbow.Set(rElbow, time);
-			Pose.LeftHand.Set(rHand, time);
+			Pose.RightShoulder.Set(pose.lShoulder, time);
+			Pose.RightElbow.Set(pose.lElbow, time);
+			Pose.RightHand.Set(pose.lHand, time);
+			Pose.LeftShoulder.Set(pose.rShoulder, time);
+			Pose.LeftElbow.Set(pose.rElbow, time);
+			Pose.LeftHand.Set(pose.rHand, time);
 		}
 
 		public virtual void ModelUpdate() {
@@ -457,7 +336,7 @@ namespace HardCoded.VRigUnity {
 			float time = TimeNow;
 
 			// Apply the model transform
-			vrmModel.transform.position = guiScript.GetModelTransform();
+			vrmModel.transform.position = guiScript.ModelTransform;
 
 			if (isPaused) {
 				DefaultVRMAnimator();

@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Linq;
-using System;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public struct RotStruct {

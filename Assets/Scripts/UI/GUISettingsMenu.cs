@@ -44,7 +44,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			settings.SetModelTransform(x, y, z);
+			settings.ModelTransform = new(x, y, z);
 		}
 
 		public void SetBackgroundColor(Color color) {
