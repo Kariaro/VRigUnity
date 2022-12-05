@@ -1,0 +1,19 @@
+{
+    "name": "OscCore.Editor",
+    "references": [
+        "OscCore.Runtime",
+        "BlobHandles.Runtime",
+        "NtpTimestamp"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": []
+}
