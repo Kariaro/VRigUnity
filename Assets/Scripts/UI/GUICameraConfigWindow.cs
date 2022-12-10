@@ -120,7 +120,6 @@ namespace HardCoded.VRigUnity {
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
 				Settings.CameraResolution = options[_resolutionInput.value];
-				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}
@@ -135,7 +134,6 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
 				Settings.CameraFlipped = _isHorizontallyFlippedInput.isOn;
-				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}

@@ -72,7 +72,7 @@ namespace HardCoded.VRigUnity {
 
 			AddDivider("Experimental Settings");
 			CreateSetting("(E) Bone Window", builder => {
-				return builder.AddButton("Open", (_) => { boneSettingsWindow.gameObject.SetActive(true); }, FieldData.None);
+				return builder.AddButton("Open", (_) => { boneSettingsWindow.ShowWindow(); }, FieldData.None);
 			});
 			CreateSetting("(E) Leg rotation", builder => {
 				return builder.AddToggle((_, value) => { Settings.UseLegRotation = value; }, Settings.UseLegRotation, FieldData.None);

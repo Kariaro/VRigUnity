@@ -37,7 +37,7 @@ namespace HardCoded.VRigUnity {
 			isCameraShowing = enable;
 			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
 			text.text = enable ? "Stop Camera" : "Start Camera";
-
+			
 			if (enable) {
 				SolutionUtils.GetSolution().Play();
 			} else {

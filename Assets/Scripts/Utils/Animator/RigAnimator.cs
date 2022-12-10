@@ -21,8 +21,8 @@ namespace HardCoded.VRigUnity {
 		public void SetupRigging() {
 			anim = GetComponent<Animator>();
 
-			// Only if we are in editor we should add a bone renderer
 #if UNITY_EDITOR
+			// Only if we are in editor we should add a bone renderer
 			BoneRenderer boneRenderer = gameObject.AddComponent<BoneRenderer>();
 			{
 				var renderers = transform.GetComponentsInChildren<SkinnedMeshRenderer>();

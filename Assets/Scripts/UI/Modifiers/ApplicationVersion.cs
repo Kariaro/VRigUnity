@@ -6,7 +6,7 @@ using System.IO;
 namespace HardCoded.VRigUnity {
 
 #if UNITY_EDITOR
-	[ExecuteInEditMode]
+	[ExecuteAlways]
 #endif
 	public class ApplicationVersion : MonoBehaviour {
 		public TMP_Text text;

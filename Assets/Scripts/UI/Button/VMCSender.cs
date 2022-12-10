@@ -42,7 +42,7 @@ namespace HardCoded.VRigUnity {
 		void Update() {
 			// Check if the vrmModel exists
 			if (vrmModel == null) {
-				vrmModel = SolutionUtils.GetSolution().GetVRMModel();
+				vrmModel = SolutionUtils.GetSolution().VrmModel;
 				vrmAnimator = vrmModel.GetComponent<Animator>();
 				vrmBlendShapeProxy = vrmModel.GetComponent<VRMBlendShapeProxy>();
 				return;

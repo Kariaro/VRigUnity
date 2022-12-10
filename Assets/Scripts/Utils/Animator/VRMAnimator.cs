@@ -21,10 +21,7 @@ namespace HardCoded.VRigUnity {
 		void PerformRigging() {
 			HolisticTrackingSolution sol = SolutionUtils.GetSolution();
 			float time = sol.TimeNow;
-			// TODO: Use spherical interpolation
 			// TODO: Fix hands when full body moves
-
-			// TODO: Left Target and Right Target
 
 			{
 				Transform shoulder = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
@@ -97,7 +94,7 @@ namespace HardCoded.VRigUnity {
 				anim.runtimeAnimatorController = null;
 				anim.WriteDefaultValues();
 			}
-
+			
 			SolutionUtils.GetSolution().ModelUpdate();
 
 			// Apply VMC Receiver

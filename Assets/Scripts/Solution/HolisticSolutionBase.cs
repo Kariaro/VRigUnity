@@ -1,10 +1,10 @@
 using Mediapipe.Unity;
-using System.Collections;
+using static HardCoded.VRigUnity.HolisticTrackingGraph;
 
 namespace HardCoded.VRigUnity {
 	public abstract class HolisticSolutionBase : ImageSourceSolution<HolisticTrackingGraph> {
 		// Always 'Full'
-		public HolisticTrackingGraph.ModelComplexity ModelComplexity {
+		public ModelComplexity ModelComplexity {
 			get => graphRunner.modelComplexity;
 			set => graphRunner.modelComplexity = value;
 		}

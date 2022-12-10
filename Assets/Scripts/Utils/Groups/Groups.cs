@@ -115,5 +115,31 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 		}
+
+		public class PoseRotation {
+			public Quaternion chestRotation;
+			public Quaternion hipsRotation;
+			public Quaternion rUpperArm;
+			public Quaternion rLowerArm;
+			public Quaternion lUpperArm;
+			public Quaternion lLowerArm;
+			public Vector3 hipsPosition;
+
+			public Quaternion rUpperLeg;
+			public Quaternion rLowerLeg;
+			public Quaternion lUpperLeg;
+			public Quaternion lLowerLeg;
+
+			// Experimental IK
+			public Vector4 rShoulder;
+			public Vector4 rElbow;
+			public Vector4 rHand;
+			public Vector4 lShoulder;
+			public Vector4 lElbow;
+			public Vector4 lHand;
+
+			public bool hasLeftLeg;
+			public bool hasRightLeg;
+		}
 	}
 }
