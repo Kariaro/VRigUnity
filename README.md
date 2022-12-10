@@ -2,6 +2,8 @@
 A virtual character AI animator.
 This app takes a `VRM` model and uses your webcam to move the virtual character.
 
+![Example](.github/assets/videos/show0.gif)
+
 ## Info
 This app has been tested on:
 + *Windows 10*
