@@ -12,6 +12,9 @@ namespace HardCoded.VRigUnity {
 				field.Init();
 				Logger.Info(_TAG, $"{field.Name()} '{field.RawValue()}'");
 			}
+
+			// Reset bone mask because it's experimental
+			BoneMask = BoneSettings.Default;
 		}
 
 		// Camera Settings
@@ -42,8 +45,8 @@ namespace HardCoded.VRigUnity {
 
 		// Bone Settings
 		public static Int _BoneMask = new("bone.mask", BoneSettings.Default);
-		public static Bool _UseWristRotation = new("bone.use.wristik", false);
-		public static Bool _UseLegRotation = new("boke.use.legs", false);
+		public static Bool _UseLegRotation = new("bone.use.legs", false);
+		public static Bool _UseFullIK = new("bone.use.ik", false);
 		public static Float _HandTrackingThreshold = new("tracking.threshold.hand", 0f);
 		public static Float _TrackingInterpolation = new("tracking.interpolation", 0.1f);
 
@@ -52,14 +55,14 @@ namespace HardCoded.VRigUnity {
 			set => _BoneMask.Set(value);
 		}
 
-		public static bool UseWristRotation {
-			get => _UseWristRotation.Get();
-			set => _UseWristRotation.Set(value);
-		}
-
 		public static bool UseLegRotation {
 			get => _UseLegRotation.Get();
 			set => _UseLegRotation.Set(value);
+		}
+		
+		public static bool UseFullIK {
+			get => _UseFullIK.Get();
+			set => _UseFullIK.Set(value);
 		}
 
 		public static float HandTrackingThreshold {
@@ -80,6 +83,7 @@ namespace HardCoded.VRigUnity {
 		public static Bool _AlwaysShowUI = new("gui.alwaysShowUI", false);
 		public static Int _GuiScale = new("gui.scale", 1, value => GuiScaleListener?.Invoke(value));
 		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
+		public static Int _AntiAliasing = new("view.antialiasing", 0);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -114,6 +118,11 @@ namespace HardCoded.VRigUnity {
 		public static FlagScript.Flag Flag {
 			get => _Flag.Get();
 			set => _Flag.Set(value);
+		}
+
+		public static int AntiAliasing {
+			get => _AntiAliasing.Get();
+			set => _AntiAliasing.Set(value);
 		}
 
 		public delegate void IntDelegate (int value);

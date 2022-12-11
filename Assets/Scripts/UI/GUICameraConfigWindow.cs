@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class GUICameraConfigWindow : MonoBehaviour {
+	public class GUICameraConfigWindow : GUIWindow {
 		private const string SourcePath                = "Contents/Source/Dropdown";
 		private const string ResolutionPath            = "Contents/Resolution/Dropdown";
 		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
@@ -120,7 +120,6 @@ namespace HardCoded.VRigUnity {
 			_resolutionInput.onValueChanged.AddListener(delegate {
 				imageSource.SelectResolution(_resolutionInput.value);
 				Settings.CameraResolution = options[_resolutionInput.value];
-				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}
@@ -135,7 +134,6 @@ namespace HardCoded.VRigUnity {
 			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
 				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
 				Settings.CameraFlipped = _isHorizontallyFlippedInput.isOn;
-				settings.UpdateShowCamera();
 				if (!_solution.IsPaused()) {
 					_solution.Play();
 				}

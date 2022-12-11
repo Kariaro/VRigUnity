@@ -28,6 +28,9 @@ namespace HardCoded.VRigUnity {
 
 			// Init settings
 			Settings.Init();
+
+			// Init quality settings
+			QualitySettings.antiAliasing = SettingsUtil.GetQualityValue(Settings.AntiAliasing);
 		}
 
 		private IEnumerator Init() {

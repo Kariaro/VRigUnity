@@ -1,6 +1,4 @@
-﻿using Mediapipe.Unity;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class SolutionUtils {

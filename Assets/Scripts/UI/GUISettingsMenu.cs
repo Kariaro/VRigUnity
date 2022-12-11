@@ -4,13 +4,11 @@ using UnityEngine;
 using static HardCoded.VRigUnity.FileDialogUtils;
 
 namespace HardCoded.VRigUnity {
-	public class GUISettingsMenu : MonoBehaviour {
+	public class GUISettingsMenu : GUIWindow {
 		[SerializeField] GUIScript settings;
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
-		[SerializeField] GameObject cameraConfigWindow;
-		[SerializeField] GameObject backgroundConfigWindow;
 
 		public void SelectModel() {
 			var extensions = new [] {
@@ -46,7 +44,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			settings.SetModelTransform(x, y, z);
+			settings.ModelTransform = new(x, y, z);
 		}
 
 		public void SetBackgroundColor(Color color) {
@@ -59,14 +57,6 @@ namespace HardCoded.VRigUnity {
 
 		public void SetShowCamera(bool show) {
 			settings.SetShowCamera(show);
-		}
-
-		public void OpenCameraSettings() {
-			cameraConfigWindow.SetActive(true);
-		}
-
-		public void OpenBackgroundSettings() {
-			backgroundConfigWindow.SetActive(true);
 		}
 
 		public void OpenGithub() {

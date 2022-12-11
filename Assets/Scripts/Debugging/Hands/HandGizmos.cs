@@ -51,7 +51,7 @@ namespace HardCoded.VRigUnity {
 		void Update() {
 			if (vrmModel == null) {
 				// If the model was not found update the model
-				vrmModel = SolutionUtils.GetSolution().GetVRMModel();
+				vrmModel = SolutionUtils.GetSolution().VrmModel;
 			}
 
 			{

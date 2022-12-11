@@ -7,13 +7,13 @@ using VRM;
 
 namespace HardCoded.VRigUnity {
 	public class GUIScript : MonoBehaviour {
-		[SerializeField] GUISettingsMenu settingsMenu;
-		[SerializeField] OrbitalCamera orbitalCamera;
-		[SerializeField] Vector3 modelTransform = Vector3.zero;
-		[SerializeField] CustomizableCanvas customizableCanvas;
-		[SerializeField] CanvasScaler canvasScaler;
+		[Header("Settings")]
+		[SerializeField] private GUISettingsMenu settingsMenu;
+		[SerializeField] private OrbitalCamera orbitalCamera;
+		[SerializeField] private CustomizableCanvas customizableCanvas;
+		[SerializeField] private CanvasScaler canvasScaler;
 
-		private bool showWebCamImage;
+		public Vector3 ModelTransform { get; set; }
 
 		void Start() {
 			// Configure scene with settings
@@ -21,10 +21,9 @@ namespace HardCoded.VRigUnity {
 			LoadCustomImage(Settings.ImageFile);
 			SetShowBackgroundImage(Settings.ShowCustomBackground);
 			
-			canvasScaler.scaleFactor = 1 + (Settings.GuiScale - 1) / 9.0f;
+			canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
 			Settings.GuiScaleListener += (value) => {
-				// Scale the UI
-				canvasScaler.scaleFactor = 1 + (value - 1) / 9.0f;
+				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
 			};
 		}
 
@@ -74,16 +73,6 @@ namespace HardCoded.VRigUnity {
 			customizableCanvas.SetBackgroundImage(tex);
 		}
 
-		public Vector3 GetModelTransform() {
-			return modelTransform;
-		}
-
-		public void SetModelTransform(float x, float y, float z) {
-			modelTransform.x = x;
-			modelTransform.y = y;
-			modelTransform.z = z;
-		}
-
 		public void SetBackgroundColor(Color color) {
 			customizableCanvas.SetBackgroundColor(color);
 		}
@@ -93,7 +82,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void SetShowCamera(bool show) {
-			showWebCamImage = show;
 			customizableCanvas.ShowWebcam(show);
 		}
 
@@ -104,10 +92,6 @@ namespace HardCoded.VRigUnity {
 
 		public void SetShowBackgroundColor(bool show) {
 			Settings.ShowCustomBackgroundColor = show;
-		}
-
-		public void UpdateShowCamera() {
-			SetShowCamera(showWebCamImage);
 		}
 
 		public void OpenDiscord() {

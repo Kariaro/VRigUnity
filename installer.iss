@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "VRigUnity"
-#define MyAppVersion "0.1.5-1"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "HardCoded"
 #define MyAppURL "https://github.com/Kariaro/VRigUnity"
 #define MyAppExeName "VRigUnity.exe"

@@ -83,3 +83,4 @@ TempFolder/
 
 # Temp
 .curl/
+.version
