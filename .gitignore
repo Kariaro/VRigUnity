@@ -73,6 +73,8 @@ crashlytics-build.properties
 
 
 # Custom
+/[Aa]ssets/InitTestScene*.unity.meta
+/[Aa]ssets/InitTestScene*.unity
 
 # Remove mediapipe resources
 /Packages/com.github.homuler.mediapipe/Runtime/Resources/

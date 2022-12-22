@@ -43,6 +43,11 @@ jobs:
           versioning: None
           targetPlatform: ${{ matrix.targetPlatform }}
 
+      - uses: game-ci/unity-test-runner@v2
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          testMode: PlayMode
+
       - uses: actions/upload-artifact@v2
         with:
           name: build-${{ matrix.targetPlatform }}
