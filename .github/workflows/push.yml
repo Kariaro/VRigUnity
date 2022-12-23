@@ -1,17 +1,11 @@
-name: Build VRigUnity
+name: Push Checks
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        type: string
-        default: v0.10.1-macos11
+  pull_request: {}
 jobs:
   builds:
     name: Builds
     uses: ./.github/workflows/build.yml
-    with:
-      tag: ${{ inputs.tag }}
     secrets:
       unityLicense: ${{ secrets.UNITY_LICENSE }}
       githubToken: ${{ secrets.GITHUB_TOKEN }}

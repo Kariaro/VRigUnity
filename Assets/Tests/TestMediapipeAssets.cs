@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using System.Linq;
-using System.Threading;
 
 public class TestMediapipeAssets {
 	private Type holisticTrackingGraphType;
@@ -29,7 +27,6 @@ public class TestMediapipeAssets {
 
 	[TearDown]
 	public void Teardown() {
-		Debug.Log("After Test Graph Loading");
 	}
 	
 	[UnityTest]
