@@ -1,8 +1,8 @@
 # VRigUnity
-A virtual character AI animator.
-This app takes a `VRM` model and uses your webcam to move the virtual character.
+Un animador de personajes virtuales.
+Esta aplicación toma un modelo `VRM` y utiliza tu webcam para mover el personaje virtual.
 
-![Example](.github/assets/videos/show0.gif)
+![Ejemplo](.github/assets/videos/show0.gif)
 
 ### The same but in other languages:
 > Click in language
@@ -11,17 +11,17 @@ This app takes a `VRM` model and uses your webcam to move the virtual character.
 | --- | --- | --- |
 
 ## Info
-This app has been tested on:
+Esta aplicación se ha probado en:
 + *Windows 10*
 + *Ubuntu 18.04*
 + *Mac 11.x & 12.x*
 
-Features:
-* Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
-* Allows custom background images
-* Allows custom VRM models
-* VMC sender
-* Virtual camera support *(Only Windows)*
+Características:
+* Controles de panorámica y rotación (Shift *Pan*) (Ctrl *Rotate*)
+* Permite imágenes de fondo personalizadas
+* Permite modelos VRM personalizados
+* Remitente VMC
+* Soporte de cámara virtual *(Sólo Windows)*
 
 ## Dependencies
 + [MediaPipeUnityPlugin v0.10.1](https://github.com/homuler/MediaPipeUnityPlugin)
@@ -32,4 +32,4 @@ Features:
 + [EasyVirtualMotionCaptureForUnity v3_9c](https://github.com/gpsnmeajp/EasyVirtualMotionCaptureForUnity)
 
 ## Building
-See [BUILD.md](./BUILD.md)
+Ver [BUILD.md](./BUILD_ES.md)
