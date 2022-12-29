@@ -1,6 +1,6 @@
 # VRigUnity
-A virtual character AI animator.
-This app takes a `VRM` model and uses your webcam to move the virtual character.
+バーチャルキャラクターのAIアニメーターです。
+このアプリは`VRM`モデルを取り込み、あなたのウェブカメラを使ってバーチャルキャラクターを動かします。
 
 ![Example](.github/assets/videos/show0.gif)
 
@@ -10,20 +10,20 @@ This app takes a `VRM` model and uses your webcam to move the virtual character.
 | [🇺🇸 English](./README.md) | [🇪🇸 Español](./README_ES.md) | [🇯🇵 日本語](./README_JP.md) |
 | --- | --- | --- |
 
-## Info
-This app has been tested on:
+## 情報
+このアプリは、以下の環境で動作確認をしています。
 + *Windows 10*
 + *Ubuntu 18.04*
 + *Mac 11.x & 12.x*
 
-## Features:
-* Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
-* Allows custom background images
-* Allows custom VRM models
-* VMC sender
-* Virtual camera support *(Only Windows)*
+## 特徴
+* パンと回転のコントロール (Shift *Pan*) (Ctrl *Rotate*)
+* 背景画像のカスタマイズが可能
+* カスタムVRMモデルの作成
+* VMC送信機
+* 仮想カメラ対応 (Windowsのみ)
 
-## Dependencies
+## 依存性
 + [MediaPipeUnityPlugin v0.10.1](https://github.com/homuler/MediaPipeUnityPlugin)
 + [UniVRM v0.107.0](https://github.com/vrm-c/UniVRM)
 + [StandaloneFileBrowser v1.2](https://github.com/gkngkc/UnityStandaloneFileBrowser)
@@ -32,4 +32,4 @@ This app has been tested on:
 + [EasyVirtualMotionCaptureForUnity v3_9c](https://github.com/gpsnmeajp/EasyVirtualMotionCaptureForUnity)
 
 ## Building
-See [BUILD.md](./BUILD.md)
+見る [BUILD.md](./BUILD_JP.md)

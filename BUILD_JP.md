@@ -7,10 +7,11 @@
 | --- | --- | --- |
 
 
-## Setup
-To run the repository locally you need to first download the libraries
+## セットアップ
+
+リポジトリをローカルで実行するには、まずライブラリをダウンロードする必要があります。
 ```
 sh download_libs.sh
 ```
 
-After that the local build should work
+その後、ローカルビルドが動作するはずです

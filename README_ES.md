@@ -7,7 +7,7 @@ Esta aplicación toma un modelo `VRM` y utiliza tu webcam para mover el personaj
 ### The same but in other languages:
 > Click in language
 
-| [English](./README.md) | [Español](./README_ES.md) | [日本語](./README_JP.md) |
+| [🇺🇸 English](./README.md) | [🇪🇸 Español](./README_ES.md) | [🇯🇵 日本語](./README_JP.md) |
 | --- | --- | --- |
 
 ## Info
@@ -16,7 +16,7 @@ Esta aplicación se ha probado en:
 + *Ubuntu 18.04*
 + *Mac 11.x & 12.x*
 
-Características:
+## Características:
 * Controles de panorámica y rotación (Shift *Pan*) (Ctrl *Rotate*)
 * Permite imágenes de fondo personalizadas
 * Permite modelos VRM personalizados
