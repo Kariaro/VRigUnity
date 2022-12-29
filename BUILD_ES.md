@@ -3,7 +3,7 @@
 ### The same but in other languages:
 > Click in language
 
-| [🇺🇸 English](./README.md) | [🇪🇸 Español](./README_ES.md) | [🇯🇵 日本語](./README_JP.md) |
+| [🇺🇸 English](./BUILD.md) | [🇪🇸 Español](./BUILD_ES.md) | [🇯🇵 日本語](./BUILD_JP.md) |
 | --- | --- | --- |
 
 
