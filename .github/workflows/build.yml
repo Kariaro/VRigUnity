@@ -1,0 +1,67 @@
+name: Build VRigUnity
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        default: v0.10.1-macos11
+    secrets:
+      unityLicense:
+        required: true
+      githubToken:
+        required: true
+jobs:
+  build-project:
+    name: Build for ${{ matrix.data.systemName }}
+    runs-on: ${{ matrix.data.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        data:
+          - { targetPlatform: "StandaloneWindows64", systemName: "Windows", os: "ubuntu-latest" }
+          - { targetPlatform: "StandaloneLinux64", systemName: "Linux", os: "ubuntu-latest" }
+          - { targetPlatform: "StandaloneOSX", systemName: "OSX", os: "ubuntu-latest" }
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download libs
+        run: bash download_libs.sh "${{ inputs.tag }}"
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ matrix.data.targetPlatform }}
+          restore-keys:
+            Library-
+
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v2
+        if: ${{ matrix.data.targetPlatform == 'StandaloneLinux64' }}
+        env:
+          UNITY_LICENSE: ${{ secrets.unityLicense }}
+        with:
+          githubToken: ${{ secrets.githubToken }}
+          checkName: ${{ matrix.data.systemName }} results
+          testMode: PlayMode
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.data.targetPlatform == 'StandaloneLinux64' }}
+        with:
+          name: Results ${{ matrix.data.systemName }}
+          path: artifacts
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.unityLicense }}
+        with:
+          buildName: VRigUnity
+          versioning: None
+          targetPlatform: ${{ matrix.data.targetPlatform }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: VRigUnity-${{ matrix.data.systemName }}
+          path: build/${{ matrix.data.targetPlatform }}

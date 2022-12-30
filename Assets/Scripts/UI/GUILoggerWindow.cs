@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Threading;
 
 namespace HardCoded.VRigUnity {
 	public class GUILoggerWindow : GUIWindow {
@@ -17,6 +18,8 @@ namespace HardCoded.VRigUnity {
 				return _loggerWindow;
 			}
 		}
+
+		private Thread unityThread = Thread.CurrentThread;
 
 		[Header("Template")]
 		public GameObject emptyLog;
@@ -68,6 +71,12 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void AddMessage(Logger.LogLevel level, string tag, object obj) {
+			if (Thread.CurrentThread != unityThread) {
+				// We can only add threads on the mainThread
+				// TODO: Add this to a deque?
+				return;
+			}
+
 			string color = level switch {
 				Logger.LogLevel.Fatal or Logger.LogLevel.Error => "red",
 				Logger.LogLevel.Warn => "yellow",

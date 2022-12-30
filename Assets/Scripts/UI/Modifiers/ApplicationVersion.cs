@@ -50,12 +50,17 @@ namespace HardCoded.VRigUnity {
 					CreateNoWindow = true
 				}
 			};
-			process.Start();
+			
+			if (!process.Start() || !process.WaitForExit(1000) || process.ExitCode != 0) {
+				Debug.LogWarning("Could not get current tag from 'git' command");
+				return;
+			}
 
 			string describedTag = process.StandardOutput.ReadToEnd().Trim();
 			if (describedTag.Contains('-')) {
 				describedTag = describedTag[..describedTag.LastIndexOf('-')];
 			}
+
 			string[] parts = describedTag[1..].Split(".");
 			string targetVersion = $"v{int.Parse(parts[0])}.{int.Parse(parts[1]) + 1}.0";
 
