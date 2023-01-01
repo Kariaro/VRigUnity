@@ -1,0 +1,41 @@
+name: "🐞 Bug Report"
+description: File a bug report
+title: "[Bug]: "
+labels: [ "bug" ]
+body:
+  - type: dropdown
+    id: os
+    attributes:
+      label: "OS"
+      description: Please enter the os you are using
+      multiple: false
+      options:
+        - Windows
+        - Linux
+        - Mac
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: "App Version"
+      description: Please enter the version of the app
+      placeholder: ex. v0.2.0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: Please describe what the bug is
+      placeholder: Short and explicit description of your incident...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs"
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks
+      render: bash
+    validations:
+      required: false
