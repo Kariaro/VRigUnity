@@ -42,7 +42,9 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Update() {
-			Application.targetFrameRate = fps;
+			if (Application.targetFrameRate != fps) {
+				Application.targetFrameRate = fps;
+			}
 		}
 
 		[Range(0, 1)]

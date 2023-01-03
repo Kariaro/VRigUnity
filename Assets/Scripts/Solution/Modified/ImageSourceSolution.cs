@@ -22,16 +22,6 @@ namespace HardCoded.VRigUnity {
 			_coroutine = StartCoroutine(Run());
 		}
 
-		public override void Pause() {
-			base.Pause();
-			ImageSource.Pause();
-		}
-
-		public override void Resume() {
-			base.Resume();
-			var _ = StartCoroutine(ImageSource.Resume());
-		}
-
 		public override void Stop() {
 			base.Stop();
 			StopCoroutine(_coroutine);

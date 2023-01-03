@@ -5,23 +5,13 @@ using static HardCoded.VRigUnity.FileDialogUtils;
 using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
-	public class GUIAdvancedSettingsWindow : GUIWindow {
+	public class GUIAdvancedSettingsWindow : GUISettingsBase {
 		public static bool ShowCamera { set; get; }
-
-		// Parent
-		public GUIScript guiScript;
-
-		[Header("Template")]
-		public GameObject emptySetting;
-		public Transform contentTransform;
-		
-		[Header("Settings")]
-		public List<SettingsField> settings = new();
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
 		
-		void Start() {
+		protected override void InitializeSettings() {
 			AddDivider("VMC Settings");
 			CreateSetting("VMC Sender", builder => {
 				return builder
@@ -86,25 +76,6 @@ namespace HardCoded.VRigUnity {
 			CreateSetting($"(E) Interpolation ({Settings._TrackingInterpolation.Default():0.00})", builder => {
 				return builder.AddFloatTickSlider((_, value) => { Settings.TrackingInterpolation = value; }, 0.05f, 1f, 19, Settings.TrackingInterpolation, FieldData.None);
 			});
-		}
-
-		private void AddDivider(string name) {
-			GameObject empty = Instantiate(emptySetting);
-			empty.transform.localScale = Vector3.one;
-			empty.transform.SetParent(contentTransform, false);
-			empty.SetActive(true);
-			empty.GetComponent<SettingsFieldTemplate>().BuildDivider(name, 24);
-		}
-
-		private SettingsField CreateSetting(string name, Func<SettingsFieldTemplate, SettingsFieldTemplate> builder) {
-			GameObject empty = Instantiate(emptySetting);
-			empty.transform.localScale = Vector3.one;
-			empty.transform.SetParent(contentTransform, false);
-			empty.SetActive(true);
-
-			SettingsField field = builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(name);
-			settings.Add(field);
-			return field;
 		}
 	}
 }

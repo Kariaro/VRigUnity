@@ -17,6 +17,9 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private GameObject dropdownTemplate;
 		[SerializeField] private GameObject sliderTemplate;
 
+		// Used to generate the modifiable elements
+		private readonly List<object> fieldObjects = new();
+
 		public SettingsFieldTemplate AddToggle(Action<Toggle, bool> action, bool value, FieldData data) {
 			GameObject field = CreateInstance(toggleTemplate);
 			field.name = "ToggleField";
@@ -27,6 +30,7 @@ namespace HardCoded.VRigUnity {
 			Toggle toggle = field.GetComponent<Toggle>();
 			toggle.isOn = value;
 			toggle.onValueChanged.AddListener(delegate { action.Invoke(toggle, toggle.isOn); });
+			fieldObjects.Add(toggle);
 			return this;
 		}
 
@@ -40,6 +44,7 @@ namespace HardCoded.VRigUnity {
 			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
 			inputField.text = value;
 			inputField.onValueChanged.AddListener(delegate { action.Invoke(inputField, inputField.text); });
+			fieldObjects.Add(inputField);
 			return this;
 		}
 
@@ -62,6 +67,7 @@ namespace HardCoded.VRigUnity {
 				string value = SettingsUtil.NormalizeIpAddress(inputField.text, defaultValue);
 				action.Invoke(inputField, value);
 			});
+			fieldObjects.Add(inputField);
 			return this;
 		}
 
@@ -97,6 +103,7 @@ namespace HardCoded.VRigUnity {
 
 				action.Invoke(inputField, result);
 			});
+			fieldObjects.Add(inputField);
 			return this;
 		}
 
@@ -129,6 +136,7 @@ namespace HardCoded.VRigUnity {
 					action.Invoke(dropdown, (T) result);
 				}
 			});
+			fieldObjects.Add(dropdown);
 			return this;
 		}
 
@@ -145,6 +153,7 @@ namespace HardCoded.VRigUnity {
 			dropdown.onValueChanged.AddListener(delegate {
 				action.Invoke(dropdown, dropdown.value);
 			});
+			fieldObjects.Add(dropdown);
 			return this;
 		}
 
@@ -160,6 +169,7 @@ namespace HardCoded.VRigUnity {
 
 			Button button = field.GetComponent<Button>();
 			button.onClick.AddListener(delegate { action.Invoke(button); });
+			fieldObjects.Add(button);
 			return this;
 		}
 
@@ -172,6 +182,7 @@ namespace HardCoded.VRigUnity {
 			sliderField.maxValue = max;
 			sliderField.value = value;
 			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, sliderField.value); });
+			fieldObjects.Add(sliderField);
 			
 			field.SetActive(true);
 			ApplyLayout(field, data.Width);
@@ -194,6 +205,7 @@ namespace HardCoded.VRigUnity {
 				sliderField.SetValueWithoutNotify(normalized);
 				action.Invoke(sliderField, normalized);
 			});
+			fieldObjects.Add(sliderField);
 			
 			field.SetActive(true);
 			ApplyLayout(field, data.Width);
@@ -210,6 +222,7 @@ namespace HardCoded.VRigUnity {
 			sliderField.value = value;
 			sliderField.wholeNumbers = true;
 			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, (int) sliderField.value); });
+			fieldObjects.Add(sliderField);
 			
 			field.SetActive(true);
 			ApplyLayout(field, data.Width);
@@ -237,7 +250,7 @@ namespace HardCoded.VRigUnity {
 			gameObject.name = "Divider(" + name + ")";
 			fieldName.text = name;
 			fieldName.margin = new(-20, 0, 0, 0);
-			fieldName.fontStyle = TMPro.FontStyles.Bold;
+			fieldName.fontStyle = FontStyles.Bold;
 			LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
 			layoutElement.minHeight = height;
 			DestroyThis();
@@ -248,6 +261,8 @@ namespace HardCoded.VRigUnity {
 			fieldName.text = name;
 
 			SettingsField field = gameObject.AddComponent<SettingsField>();
+			field.AddFieldObjects(fieldObjects);
+
 			DestroyThis();
 			return field;
 		}
@@ -269,6 +284,11 @@ namespace HardCoded.VRigUnity {
 
 			public float Width { get; }
 			public string Description { get; }
+
+			public FieldData(float width) {
+				Width = width;
+				Description = "";
+			}
 
 			public FieldData(float width, string description) {
 				Width = width;
