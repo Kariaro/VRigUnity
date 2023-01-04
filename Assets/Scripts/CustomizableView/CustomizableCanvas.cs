@@ -71,14 +71,14 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.isHorizontallyFlipped ^ imageSource.isFrontFacing;
-			annotationController.rotationAngle = imageSource.rotation.Reverse();
+			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing;
+			annotationController.rotationAngle = imageSource.Rotation.Reverse();
 		}
 
 		public void SetupScreen(ImageSource imageSource) {
 			// NOTE: Without this line the screen does not update its size and no annotations are drawn
-			annotationArea.sizeDelta = new Vector2(imageSource.textureWidth, imageSource.textureHeight);
-			annotationArea.localEulerAngles = imageSource.rotation.Reverse().GetEulerAngles();
+			annotationArea.sizeDelta = new Vector2(imageSource.TextureWidth, imageSource.TextureHeight);
+			annotationArea.localEulerAngles = imageSource.Rotation.Reverse().GetEulerAngles();
 		}
 
 		public void OnPoseLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {

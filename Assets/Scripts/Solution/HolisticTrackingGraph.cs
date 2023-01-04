@@ -165,10 +165,10 @@ namespace HardCoded.VRigUnity {
 
 			SetImageTransformationOptions(sidePacket, imageSource);
 			// The orientation of the output image must match that of the input image.
-			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(imageSource.rotation);
-			var outputRotation = imageSource.rotation;
-			var outputHorizontallyFlipped = !isInverted && imageSource.isHorizontallyFlipped ^ true;
-			var outputVerticallyFlipped = (imageSource.isVerticallyFlipped) ^ (isInverted && imageSource.isHorizontallyFlipped);
+			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(imageSource.Rotation);
+			var outputRotation = imageSource.Rotation;
+			var outputHorizontallyFlipped = !isInverted && imageSource.IsHorizontallyFlipped ^ true;
+			var outputVerticallyFlipped = (imageSource.IsVerticallyFlipped) ^ (isInverted && imageSource.IsHorizontallyFlipped);
 
 			if ((outputHorizontallyFlipped && outputVerticallyFlipped) || outputRotation == RotationAngle.Rotation180) {
 				outputRotation = outputRotation.Add(RotationAngle.Rotation180);

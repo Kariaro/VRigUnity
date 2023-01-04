@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
@@ -38,15 +39,15 @@ namespace HardCoded.VRigUnity {
 			});
 			customResolutionField = CreateSetting("Custom Res", builder => {
 				return builder
-					.AddToggle((_, value) => UpdateCustomResolution(true), false, new(24))
-					.AddNumberInput((_, value) => UpdateCustomResolutionTest(), 1, 1920, 176, 176, FieldData.None)
-					.AddNumberInput((_, value) => UpdateCustomResolutionTest(), 1, 1080, 144, 144, FieldData.None)
-					.AddNumberInput((_, value) => UpdateCustomResolutionTest(), 1, 30, 30, 30, FieldData.None);
+					.AddToggle((_, value) => { Settings.CameraCustomResolution = value; UpdateCustomResolution(true); }, Settings.CameraCustomResolution, new(24))
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(value, 0, 0), 1, 1920, 176, 640, FieldData.None)
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, value, 0), 1, 1080, 144, 360, FieldData.None)
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, 0, value), 1, 30, 30, 30, FieldData.None);
 			});
 			CreateSetting("Is Horizontally Flipped", builder => {
 				return builder.AddToggle((_, value) => {
 					Settings.CameraFlipped = value;
-					imageSource.isHorizontallyFlipped = value;
+					imageSource.IsHorizontallyFlipped = value;
 					if (!_solution.IsPaused()) {
 						_solution.Play();
 					}
@@ -80,11 +81,8 @@ namespace HardCoded.VRigUnity {
 
 		private void UpdateSources() {
 			var imageSource = SolutionUtils.GetImageSource();
-			var sourceNames = imageSource.sourceCandidateNames;
-			var sourceId = sourceNames.ToList().FindIndex(source => source == Settings.CameraName);
-			if (sourceId >= 0 && sourceId < sourceNames.Length) {
-				imageSource.SelectSource(sourceId);
-			}
+			var sourceNames = imageSource.SourceCandidateNames;
+			int sourceId = imageSource.SelectSourceFromName(Settings.CameraName);
 
 			var options = new List<string>(sourceNames);
 			sourceField[0].Dropdown.ClearOptions();
@@ -94,27 +92,23 @@ namespace HardCoded.VRigUnity {
 
 		private void UpdateResolutions() {
 			var imageSource = SolutionUtils.GetImageSource();
-			var resolutions = imageSource.availableResolutions;
-			var resolutionId = resolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
-			if (resolutionId >= 0) {
-				imageSource.SelectResolution(resolutionId);
-			}
+			var resolutions = imageSource.AvailableResolutions;
+			int resolutionId = imageSource.SelectResolutionFromString(Settings.CameraResolution);
 
 			var options = resolutions.ToList().Select(option => option.ToString()).ToList();
 			resolutionField[0].Dropdown.ClearOptions();
 			resolutionField[0].Dropdown.AddOptions(options);
-			resolutionField[0].Dropdown.SetValueWithoutNotify(resolutionId >= 0 ? resolutionId : 0);
+			if (resolutionId >= 0) {
+				resolutionField[0].Dropdown.SetValueWithoutNotify(resolutionId);
+			} else {
+				resolutionField[0].Dropdown.value = 6;
+			}
 		}
 
 		private void UpdateCustomResolution(bool custom = false) {
-			var res = SettingsUtil.GetResolution(Settings.CameraResolution);
 			var widthField = customResolutionField[1].InputField;
 			var heightField = customResolutionField[2].InputField;
 			var fpsField = customResolutionField[3].InputField;
-
-			widthField.SetTextWithoutNotify(res.width.ToString());
-			heightField.SetTextWithoutNotify(res.height.ToString());
-			fpsField.SetTextWithoutNotify(res.frameRate.ToString());
 
 			bool active = customResolutionField[0].Toggle.isOn;
 			widthField.interactable = active;
@@ -122,30 +116,43 @@ namespace HardCoded.VRigUnity {
 			fpsField.interactable = active;
 			resolutionField[0].Dropdown.interactable = !active;
 
-			if (active) {
-				string test = $"{widthField.text}x{heightField.text} ({fpsField.text}Hz)";
-
-				// The resolution field should contain the custom resolution
-				resolutionField[0].Dropdown.ClearOptions();
-				resolutionField[0].Dropdown.AddOptions(new List<string> { test });
-				resolutionField[0].Dropdown.SetValueWithoutNotify(0);
-			} else if (custom) {
+			if (!active && custom) {
 				UpdateResolutions();
+			}
+
+			var res = SettingsUtil.GetResolution(Settings.CameraResolution);
+			widthField.SetTextWithoutNotify(res.width.ToString());
+			heightField.SetTextWithoutNotify(res.height.ToString());
+			fpsField.SetTextWithoutNotify(((int) res.frameRate).ToString());
+
+			if (active) {
+				// Values of zero means uninitialized
+				UpdateCustomResolutionTest(0, 0, 0);
 			}
 		}
 
-		private void UpdateCustomResolutionTest() {
-			string test = $"{customResolutionField[1].InputField.text}x{customResolutionField[2].InputField.text} ({customResolutionField[3].InputField.text}Hz)";
+		private void UpdateCustomResolutionTest(int width, int height, int frameRate) {
+			var widthField = customResolutionField[1].InputField;
+			var heightField = customResolutionField[2].InputField;
+			var fpsField = customResolutionField[3].InputField;
+			if (width == 0) int.TryParse(widthField.text, out width);
+			if (height == 0) int.TryParse(heightField.text, out height);
+			if (frameRate == 0) int.TryParse(fpsField.text, out frameRate);
+			
+			string resolutionText = $"{width}x{height} ({frameRate}Hz)";
 
 			// The resolution field should contain the custom resolution
 			resolutionField[0].Dropdown.ClearOptions();
-			resolutionField[0].Dropdown.AddOptions(new List<string> { test });
+			resolutionField[0].Dropdown.AddOptions(new List<string> { resolutionText });
 			resolutionField[0].Dropdown.SetValueWithoutNotify(0);
+
+			// Update the camera resolution
+			Settings.CameraResolution = resolutionText;
 		}
 
 		private void UpdateFlipped() {
 			var imageSource = SolutionUtils.GetImageSource();
-			imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
+			imageSource.IsHorizontallyFlipped = Settings.CameraFlipped;
 		}
 	}
 }

@@ -198,10 +198,10 @@ namespace HardCoded.VRigUnity {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
 
 			// TODO: Check if this code can be removed?
-			Rotation = imageSource.rotation.Reverse();
+			Rotation = imageSource.Rotation.Reverse();
 			var inputRotation = Rotation;
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(Rotation);
-			var shouldBeMirrored = imageSource.isHorizontallyFlipped ^ expectedToBeMirrored;
+			var shouldBeMirrored = imageSource.IsHorizontallyFlipped ^ expectedToBeMirrored;
 			var inputHorizontallyFlipped = isInverted ^ shouldBeMirrored;
 			var inputVerticallyFlipped = !isInverted;
 

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
@@ -43,19 +44,20 @@ namespace HardCoded.VRigUnity {
 			return 1 + (value - 1) / 9.0f;
 		}
 
-		public static ResolutionStruct GetResolution(string text, int width = 640, int height = 480, int frameRate = 30) {
-			string[] parts = text.Split("[x \\(\\)]+");
-			
+		public static ResolutionStruct GetResolution(string text, int width = 640, int height = 360, int frameRate = 30) {
+			string[] parts = Regex.Split(text, "[^0-9]+");
+
 			if (parts.Length >= 2) {
 				int.TryParse(parts[0], out width);
 				int.TryParse(parts[1], out height);
 			}
 
-			if (parts.Length == 3) {
+			if (parts.Length >= 3) {
 				int.TryParse(parts[2], out frameRate);
 			}
 
-			return new(width, height, frameRate);
+			ResolutionStruct r = new(width, height, frameRate);
+			return r;
 		}
 	}
 }

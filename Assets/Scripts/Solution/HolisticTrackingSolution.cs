@@ -16,7 +16,7 @@ namespace HardCoded.VRigUnity {
 
 		[Header("UI")]
 		[SerializeField] protected GUIScript guiScript;
-		[SerializeField] public CustomizableCanvas canvas;
+		public CustomizableCanvas canvas;
 
 		// Pose values
 		public readonly PoseValues Pose = new();
@@ -109,11 +109,6 @@ namespace HardCoded.VRigUnity {
 				// TODO: Remove memory allocation and cache
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(preset), 0);
 			}
-		}
-
-		private Vector4 ConvertPoint(LandmarkList list, int idx) {
-			Landmark mark = list.Landmark[idx];
-			return new(-mark.X, mark.Y, mark.Z, mark.Visibility);
 		}
 
 		private Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {

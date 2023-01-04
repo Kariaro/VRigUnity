@@ -89,19 +89,23 @@ namespace HardCoded.VRigUnity {
 				// If invalid update the text
 				if (result != value || (inputField.text != "" + result)|| !valid) {
 					inputField.text = "" + (valid ? result : defaultValue);
+					inputField.textComponent.rectTransform.localPosition = Vector3.zero;
+					inputField.GetComponentInChildren<TMP_SelectionCaret>().rectTransform.localPosition = Vector3.zero;
 				}
+
+				inputField.caretPosition = 0;
+				inputField.stringPosition = 0;
 			});
 			inputField.onValueChanged.AddListener(delegate {
 				int value = min;
 				int.TryParse(inputField.text, out value);
-				int result = Math.Clamp(value, min, max);
-
+				
 				// If invalid update the text
-				if (result != value && inputField.text.Length != 0) {
-					inputField.text = "" + result;
+				if (inputField.text.Length != 0) {
+					inputField.text = "" + value;
 				}
 
-				action.Invoke(inputField, result);
+				action.Invoke(inputField, Mathf.Clamp(value, min, max));
 			});
 			fieldObjects.Add(inputField);
 			return this;

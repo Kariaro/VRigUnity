@@ -21,6 +21,7 @@ namespace HardCoded.VRigUnity {
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);
 		public static Text _CameraResolution = new("camera.resolution", "");
+		public static Bool _CameraCustomResolution = new("camera.resolution.custom", false);
 		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
@@ -36,6 +37,11 @@ namespace HardCoded.VRigUnity {
 		public static string CameraResolution {
 			get => _CameraResolution.Get();
 			set => _CameraResolution.Set(value);
+		}
+
+		public static bool CameraCustomResolution {
+			get => _CameraCustomResolution.Get();
+			set => _CameraCustomResolution.Set(value);
 		}
 
 		public static bool VirtualCamera {
