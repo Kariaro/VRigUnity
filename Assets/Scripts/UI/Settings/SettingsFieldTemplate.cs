@@ -97,7 +97,7 @@ namespace HardCoded.VRigUnity {
 				int result = Math.Clamp(value, min, max);
 
 				// If invalid update the text
-				if (result != value) {
+				if (result != value && inputField.text.Length != 0) {
 					inputField.text = "" + result;
 				}
 
@@ -262,6 +262,21 @@ namespace HardCoded.VRigUnity {
 
 			SettingsField field = gameObject.AddComponent<SettingsField>();
 			field.AddFieldObjects(fieldObjects);
+
+			// Add tab navigation
+			List<Selectable> selectables = new();
+			foreach (object item in fieldObjects) {
+				if (item is Selectable selectable) {
+					selectables.Add(selectable);
+				}
+			}
+
+			// Only if there are more than two elements add the navigation
+			if (selectables.Count > 1) {
+				TabNavigation navigation = gameObject.AddComponent<TabNavigation>();
+				navigation.elements = selectables;
+				navigation.wrapAround = true;
+			}
 
 			DestroyThis();
 			return field;

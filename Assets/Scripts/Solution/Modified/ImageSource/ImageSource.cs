@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using HardCoded.VRigUnity;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -11,35 +12,6 @@ using UnityEngine.Experimental.Rendering;
 
 namespace Mediapipe.Unity {
 	public abstract class ImageSource : MonoBehaviour {
-		[Serializable]
-		public struct ResolutionStruct {
-			public int width;
-			public int height;
-			public double frameRate;
-
-			public ResolutionStruct(int width, int height, double frameRate) {
-				this.width = width;
-				this.height = height;
-				this.frameRate = frameRate;
-			}
-
-			public ResolutionStruct(Resolution resolution) {
-				width = resolution.width;
-				height = resolution.height;
-				frameRate = resolution.refreshRate;
-			}
-
-			public Resolution ToResolution() {
-				return new Resolution() { width = width, height = height, refreshRate = (int)frameRate };
-			}
-
-			public override string ToString() {
-				var aspectRatio = $"{width}x{height}";
-				var frameRateStr = frameRate.ToString("#.##");
-				return frameRate > 0 ? $"{aspectRatio} ({frameRateStr}Hz)" : aspectRatio;
-			}
-		}
-
 		public ResolutionStruct resolution { get; protected set; }
 
 		/// <remarks>

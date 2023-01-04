@@ -1,7 +1,5 @@
 using Mediapipe.Unity;
-using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {

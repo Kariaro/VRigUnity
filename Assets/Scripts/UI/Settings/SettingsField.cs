@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class SettingsField : MonoBehaviour {
-		// Internal fields
 		private FieldObject[] fields;
 
 		public struct FieldObject {

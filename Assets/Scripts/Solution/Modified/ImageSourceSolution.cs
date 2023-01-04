@@ -40,12 +40,12 @@ namespace HardCoded.VRigUnity {
 
 			{
 				var sourceId = imageSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
-				if (sourceId >= 0 && sourceId < imageSource.sourceCandidateNames.Length) {
+				if (sourceId >= 0) {
 					imageSource.SelectSource(sourceId);
 				}
 
 				var resolutionId = imageSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
-				if (resolutionId >= 0 && resolutionId < imageSource.availableResolutions.Length) {
+				if (resolutionId >= 0) {
 					imageSource.SelectResolution(resolutionId);
 				}
 

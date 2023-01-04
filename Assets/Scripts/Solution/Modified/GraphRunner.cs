@@ -8,8 +8,6 @@ using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
-// Default RunningMode is 'Async';
-// TODO: Simplify file
 namespace HardCoded.VRigUnity {
 	public abstract class GraphRunner : MonoBehaviour {
 		public enum ConfigType {
