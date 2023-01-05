@@ -64,6 +64,12 @@ namespace HardCoded.VRigUnity {
 
 			DefaultVRMAnimator();
 
+			if (!Settings.ShowModel) {
+				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
+					transform.gameObject.layer = LayerMask.NameToLayer("HiddenModel");
+				}
+			}
+
 			return true;
 		}
 
@@ -321,6 +327,15 @@ namespace HardCoded.VRigUnity {
 			Pose.LeftShoulder.Set(pose.rShoulder, time);
 			Pose.LeftElbow.Set(pose.rElbow, time);
 			Pose.LeftHand.Set(pose.rHand, time);
+		}
+
+		void Update() {
+			if (Settings.ShowModel != (vrmModel.layer == 0)) {
+				int nextLayer = Settings.ShowModel ? 0 : LayerMask.NameToLayer("HiddenModel");
+				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
+					transform.gameObject.layer = nextLayer;
+				}
+			}
 		}
 
 		public virtual void ModelUpdate() {

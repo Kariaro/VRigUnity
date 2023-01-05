@@ -36,6 +36,9 @@ namespace HardCoded.VRigUnity {
 			CreateSetting("Show Camera", builder => {
 				return builder.AddToggle((_, value) => guiScript.SetShowCamera(value), false, FieldData.None);
 			});
+			CreateSetting("Show Model", builder => {
+				return builder.AddToggle((_, value) => Settings.ShowModel = value, Settings.ShowModel, FieldData.None);
+			});
 			CreateSetting("Custom Background", builder => {
 				return builder
 					.AddToggle((_, value) => guiScript.SetShowBackgroundImage(value), Settings.ShowCustomBackground, FieldData.None)
