@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.IO;
 using UniGLTF;
 using UnityEngine;
