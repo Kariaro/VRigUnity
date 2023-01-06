@@ -49,6 +49,14 @@ namespace HardCoded.VRigUnity {
 			set => _VirtualCamera.Set(value);
 		}
 
+		// Tracking Settings
+		public static Text _TrackingBox = new("tracking.box", "0,0,0,0");
+
+		public static string TrackingBox {
+			get => _TrackingBox.Get();
+			set => _TrackingBox.Set(value);
+		}
+
 		// Bone Settings
 		public static Int _BoneMask = new("bone.mask", BoneSettings.Default);
 		public static Bool _UseLegRotation = new("bone.use.legs", false);

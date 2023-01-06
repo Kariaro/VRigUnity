@@ -19,6 +19,7 @@ namespace HardCoded.VRigUnity {
 		// Canvas used for UI
 		[SerializeField] private DisplayCanvas streamCanvas;
 		[SerializeField] private DisplayCanvas unityCanvas;
+		[SerializeField] private RectTransform trackingCanvas; // Used for the tracking box
 
 		[Header("Annotations")]
 		[SerializeField] private GameObject annotationObject;

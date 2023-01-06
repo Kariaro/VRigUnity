@@ -1,9 +1,3 @@
-// Copyright (c) 2021 homuler
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
@@ -17,14 +11,20 @@ namespace HardCoded.VRigUnity {
 		}
 
 		[SerializeField] private FitMode _fitMode;
+		private RectTransform rectTransform;
+		private RectTransform parentTransform;
 
-		private void LateUpdate() {
-			var rectTransform = GetComponent<RectTransform>();
+		void Start() {
+			rectTransform = GetComponent<RectTransform>();
+			parentTransform = transform.parent.GetComponent<RectTransform>();
+		}
+
+		void LateUpdate() {
 			if (rectTransform.rect.width == 0 || rectTransform.rect.height == 0) {
 				return;
 			}
 
-			var parentRect = transform.parent.GetComponent<RectTransform>().rect;
+			var parentRect = parentTransform.rect;
 			var (width, height) = GetBoundingBoxSize(rectTransform);
 
 			var ratio = parentRect.width / width;
