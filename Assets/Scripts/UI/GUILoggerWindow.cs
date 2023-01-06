@@ -79,8 +79,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void UpdateMesages() {
-			// Thread safe queue
-			// Technically this could have the wrong date
+			// Technically this could put messages in the wrong order
 			while (messageQueue.TryDequeue(out Message message)) {
 				InternalAddMessage(message);
 			}
@@ -91,7 +90,7 @@ namespace HardCoded.VRigUnity {
 			Message message = new() { level = level, message = FormatMessage(level, tag, obj) };
 
 			if (Thread.CurrentThread != unityThread) {
-				// We can only messages in the unity thread
+				// We can only add messages in the unity thread
 				messageQueue.Enqueue(message);
 			} else {
 				InternalAddMessage(message);

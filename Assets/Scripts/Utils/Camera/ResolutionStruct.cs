@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace HardCoded.VRigUnity{
+namespace HardCoded.VRigUnity {
 	[Serializable]
 	public struct ResolutionStruct {
 		public int width;
