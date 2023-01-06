@@ -36,12 +36,12 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public override int textureWidth => !isPrepared ? 0 : webCamTexture.width;
-		public override int textureHeight => !isPrepared ? 0 : webCamTexture.height;
+		public override int TextureWidth => !IsPrepared ? 0 : webCamTexture.width;
+		public override int TextureHeight => !IsPrepared ? 0 : webCamTexture.height;
 
-		public override bool isVerticallyFlipped => isPrepared && webCamTexture.videoVerticallyMirrored;
-		public override bool isFrontFacing => isPrepared && (webCamDevice is WebCamDevice valueOfWebCamDevice) && valueOfWebCamDevice.isFrontFacing;
-		public override RotationAngle rotation => !isPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle;
+		public override bool IsVerticallyFlipped => IsPrepared && webCamTexture.videoVerticallyMirrored;
+		public override bool IsFrontFacing => IsPrepared && (webCamDevice is WebCamDevice valueOfWebCamDevice) && valueOfWebCamDevice.isFrontFacing;
+		public override RotationAngle Rotation => !IsPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle;
 
 		private WebCamDevice? _webCamDevice;
 		private WebCamDevice? webCamDevice {
@@ -57,10 +57,10 @@ namespace HardCoded.VRigUnity {
 					return;
 				}
 				_webCamDevice = value;
-				resolution = GetDefaultResolution();
+				Resolution = GetDefaultResolution();
 			}
 		}
-		public override string sourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
+		public override string SourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
 
 		private WebCamDevice[] _availableSources;
 		private WebCamDevice[] availableSources {
@@ -74,11 +74,11 @@ namespace HardCoded.VRigUnity {
 			set => _availableSources = value;
 		}
 
-		public override string[] sourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
+		public override string[] SourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
 
-		public override ResolutionStruct[] availableResolutions => webCamDevice == null ? null : _defaultAvailableResolutions;
-		public override bool isPrepared => webCamTexture != null;
-		public override bool isPlaying => webCamTexture != null && webCamTexture.isPlaying;
+		public override ResolutionStruct[] AvailableResolutions => webCamDevice == null ? null : _defaultAvailableResolutions;
+		public override bool IsPrepared => webCamTexture != null;
+		public override bool IsPlaying => webCamTexture != null && webCamTexture.isPlaying;
 		private bool _isInitialized;
 
 		private IEnumerator Start() {
@@ -122,7 +122,6 @@ namespace HardCoded.VRigUnity {
 			webCamDevice = availableSources[sourceId];
 		}
 
-
 		public override IEnumerator Play() {
 			yield return new WaitUntil(() => _isInitialized);
 			if (!_IsPermitted) {
@@ -132,24 +131,6 @@ namespace HardCoded.VRigUnity {
 			InitializeWebCamTexture();
 			webCamTexture.Play();
 			yield return WaitForWebCamTexture();
-		}
-
-		public override IEnumerator Resume() {
-			if (!isPrepared) {
-				throw new InvalidOperationException("WebCamTexture is not prepared yet");
-			}
-
-			if (!webCamTexture.isPlaying) {
-				webCamTexture.Play();
-			}
-
-			yield return WaitForWebCamTexture();
-		}
-
-		public override void Pause() {
-			if (isPlaying) {
-				webCamTexture.Pause();
-			}
 		}
 
 		public override void Stop() {
@@ -165,18 +146,18 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private ResolutionStruct GetDefaultResolution() {
-			var resolutions = availableResolutions;
+			var resolutions = AvailableResolutions;
 			if (resolutions == null || resolutions.Length == 0) {
 				return new ResolutionStruct();
 			}
 
-			return _defaultAvailableResolutions[5];
+			return _defaultAvailableResolutions[6];
 		}
 
 		private void InitializeWebCamTexture() {
 			Stop();
 			if (webCamDevice is WebCamDevice valueOfWebCamDevice) {
-				webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, resolution.width, resolution.height, (int)resolution.frameRate);
+				webCamTexture = new WebCamTexture(valueOfWebCamDevice.name, Resolution.width, Resolution.height, (int)Resolution.frameRate);
 				return;
 			}
 
@@ -192,6 +173,27 @@ namespace HardCoded.VRigUnity {
 			if (webCamTexture.width <= 16) {
 				throw new TimeoutException("Failed to start WebCam");
 			}
+		}
+
+		// Custom
+		public int SelectSourceFromName(string name) {
+			int index = SourceCandidateNames.ToList().FindIndex(source => source == name);
+			if (index >= 0) {
+				SelectSource(index);
+			}
+
+			return index;
+		}
+
+		public int SelectResolutionFromString(string text, bool allowCustom = true) {
+			int index = AvailableResolutions.ToList().FindIndex(option => option.ToString() == text);
+			if (index >= 0) {
+				SelectResolution(index);
+			} else if (allowCustom) {
+				Resolution = SettingsUtil.GetResolution(text);
+			}
+
+			return index;
 		}
 	}
 }

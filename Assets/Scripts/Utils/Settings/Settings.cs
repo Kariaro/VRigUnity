@@ -21,6 +21,7 @@ namespace HardCoded.VRigUnity {
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);
 		public static Text _CameraResolution = new("camera.resolution", "");
+		public static Bool _CameraCustomResolution = new("camera.resolution.custom", false);
 		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
@@ -36,6 +37,11 @@ namespace HardCoded.VRigUnity {
 		public static string CameraResolution {
 			get => _CameraResolution.Get();
 			set => _CameraResolution.Set(value);
+		}
+
+		public static bool CameraCustomResolution {
+			get => _CameraCustomResolution.Get();
+			set => _CameraCustomResolution.Set(value);
 		}
 
 		public static bool VirtualCamera {
@@ -84,6 +90,7 @@ namespace HardCoded.VRigUnity {
 		public static Int _GuiScale = new("gui.scale", 1, value => GuiScaleListener?.Invoke(value));
 		public static SafeEnumOf<FlagScript.Flag> _Flag = new("gui.flag", FlagScript.Flag.None);
 		public static Int _AntiAliasing = new("view.antialiasing", 0);
+		public static Bool _ShowModel = new("view.showmodel", true);
 
 		public static string ModelFile {
 			get => _ModelFile.Get();
@@ -123,6 +130,11 @@ namespace HardCoded.VRigUnity {
 		public static int AntiAliasing {
 			get => _AntiAliasing.Get();
 			set => _AntiAliasing.Set(value);
+		}
+
+		public static bool ShowModel {
+			get => _ShowModel.Get();
+			set => _ShowModel.Set(value);
 		}
 
 		public delegate void IntDelegate (int value);

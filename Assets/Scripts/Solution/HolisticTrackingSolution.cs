@@ -16,7 +16,7 @@ namespace HardCoded.VRigUnity {
 
 		[Header("UI")]
 		[SerializeField] protected GUIScript guiScript;
-		[SerializeField] public CustomizableCanvas canvas;
+		public CustomizableCanvas canvas;
 
 		// Pose values
 		public readonly PoseValues Pose = new();
@@ -64,6 +64,12 @@ namespace HardCoded.VRigUnity {
 
 			DefaultVRMAnimator();
 
+			if (!Settings.ShowModel) {
+				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
+					transform.gameObject.layer = LayerMask.NameToLayer("HiddenModel");
+				}
+			}
+
 			return true;
 		}
 
@@ -109,11 +115,6 @@ namespace HardCoded.VRigUnity {
 				// TODO: Remove memory allocation and cache
 				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(preset), 0);
 			}
-		}
-
-		private Vector4 ConvertPoint(LandmarkList list, int idx) {
-			Landmark mark = list.Landmark[idx];
-			return new(-mark.X, mark.Y, mark.Z, mark.Visibility);
 		}
 
 		private Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
@@ -326,6 +327,15 @@ namespace HardCoded.VRigUnity {
 			Pose.LeftShoulder.Set(pose.rShoulder, time);
 			Pose.LeftElbow.Set(pose.rElbow, time);
 			Pose.LeftHand.Set(pose.rHand, time);
+		}
+
+		void Update() {
+			if (Settings.ShowModel != (vrmModel.layer == 0)) {
+				int nextLayer = Settings.ShowModel ? 0 : LayerMask.NameToLayer("HiddenModel");
+				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
+					transform.gameObject.layer = nextLayer;
+				}
+			}
 		}
 
 		public virtual void ModelUpdate() {

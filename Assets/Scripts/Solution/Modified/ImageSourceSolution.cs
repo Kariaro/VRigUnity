@@ -22,16 +22,6 @@ namespace HardCoded.VRigUnity {
 			_coroutine = StartCoroutine(Run());
 		}
 
-		public override void Pause() {
-			base.Pause();
-			ImageSource.Pause();
-		}
-
-		public override void Resume() {
-			base.Resume();
-			var _ = StartCoroutine(ImageSource.Resume());
-		}
-
 		public override void Stop() {
 			base.Stop();
 			StopCoroutine(_coroutine);
@@ -48,25 +38,15 @@ namespace HardCoded.VRigUnity {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
 			var imageSource = ImageSource;
 
-			{
-				var sourceId = imageSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
-				if (sourceId >= 0 && sourceId < imageSource.sourceCandidateNames.Length) {
-					imageSource.SelectSource(sourceId);
-				}
-
-				var resolutionId = imageSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
-				if (resolutionId >= 0 && resolutionId < imageSource.availableResolutions.Length) {
-					imageSource.SelectResolution(resolutionId);
-				}
-
-				imageSource.isHorizontallyFlipped = Settings.CameraFlipped;
-			}
-
+			// Update image source
+			imageSource.SelectSourceFromName(Settings.CameraName);
+			imageSource.SelectResolutionFromString(Settings.CameraResolution);
+			imageSource.IsHorizontallyFlipped = Settings.CameraFlipped;
 
 			Exception wrapped = null;
 			yield return CorutineUtils.HandleExceptions(imageSource.Play(), error => wrapped = error);
 			
-			if (wrapped != null || !imageSource.isPrepared) {
+			if (wrapped != null || !imageSource.IsPrepared) {
 				Logger.Error(TAG, "Failed to start ImageSource, exiting...");
 				_errorListener?.Invoke($"Failed to start ImageSource '{Settings.CameraName}', exiting...");
 				yield break;
@@ -74,7 +54,7 @@ namespace HardCoded.VRigUnity {
 
 			// Use RGBA32 as the input format.
 			// TODO: When using GpuBuffer, MediaPipe assumes that the input format is BGRA, so the following code must be fixed.
-			textureFramePool.ResizeTexture(imageSource.textureWidth, imageSource.textureHeight, TextureFormat.RGBA32);
+			textureFramePool.ResizeTexture(imageSource.TextureWidth, imageSource.TextureHeight, TextureFormat.RGBA32);
 			SetupScreen(imageSource);
 
 			yield return graphInitRequest;

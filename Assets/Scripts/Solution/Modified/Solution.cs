@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.Collections;
 using UnityEngine;
 
@@ -21,18 +20,10 @@ namespace HardCoded.VRigUnity {
 			isPaused = false;
 		}
 
-		public virtual void Pause() {
-			isPaused = true;
-		}
-
-		public virtual void Resume() {
-			isPaused = false;
-		}
-
 		public virtual void Stop() {
 			isPaused = true;
 		}
-
+		
 		public bool IsPaused() {
 			return isPaused;
 		}

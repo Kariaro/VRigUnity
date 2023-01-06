@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using Assets.Tests.Utils;
 using System.Linq;
 
 public class TestMediapipeAssets {
@@ -14,7 +15,7 @@ public class TestMediapipeAssets {
 
 	[SetUp]
 	public void Setup() {
-		SceneManager.LoadScene("Workspace", LoadSceneMode.Single);
+		SceneUtils.Load();
 
 		var domain = AppDomain.CurrentDomain.GetAssemblies()
 			.Where(item => item.GetName().Name == "Assembly-CSharp")
@@ -29,8 +30,10 @@ public class TestMediapipeAssets {
 	public void Teardown() {
 	}
 	
-	[UnityTest]
+	[UnityTest, Order(1)]
 	public IEnumerator TestGraphLoading() {
+		yield return null;
+
 		object holisticTrackingGraph = UnityEngine.Object.FindObjectOfType(holisticTrackingGraphType);
 
 		// Try to initialize the graph
@@ -68,5 +71,15 @@ public class TestMediapipeAssets {
 		Assert.IsFalse(hasCalculatorGraphError, "CalculatorGraph should not have any errors");
 		
 		yield return null;
+		
+		Debug.Log("Stop Graph");
+		holisticTrackingGraphType.GetMethod("Stop").Invoke(holisticTrackingGraph, new object[] {});
+
+		yield return null;
+	}
+
+	[UnityTest, Order(2)]
+	public IEnumerator TestGraphLoadingRepeat() {
+		yield return TestGraphLoading();
 	}
 }
