@@ -5,32 +5,37 @@ using UnityEngine.UI;
 namespace HardCoded.VRigUnity {
 	public class ResizableBox : MonoBehaviour {
 		// Unity fields
+		[Header("Settings")]
 		[SerializeField] float borderThickness = 50;
 		[SerializeField] float borderInset = 10;
 		[SerializeField] float borderSeparation = 10;
 		[SerializeField] float minWidth = 50;
 		[SerializeField] float minHeight = 50;
+
+		[Header("Display")]
 		[SerializeField] RectTransform targetRect;
+		[SerializeField] Sprite cornerImage;
+		[SerializeField] float cornerPixelsPerUnit = 1;
+
+		[Header("Shadow")]
+		[SerializeField] Color cornerShadowColor = new(0, 0, 0, 0.5f);
+		[SerializeField] Vector2 cornerShadowOffset = new(1, 1);
 		
 		// Internal
 		private readonly GameObject[] objects = new GameObject[9];
 		private Canvas canvas;
 
-		private int SelectedIndex { get; set; }
-		private int HoveredIndex { get; set; }
+		private Vector2 ScreenSize => new(Screen.width, Screen.height);
+		private int SelectedIndex { get; set; } = -1;
+		private int HoveredIndex { get; set; } = -1;
 		private RectTransform rect;
 
-		public Vector2 Size = new(0.5f, 0.5f);
-		public Vector2 Offset = Vector2.zero;
-		public Vector2 LocalSize = Vector2.one;
-
-		public void UpdateScale(Vector2 size) {
-			LocalSize = size;
-			// transform.localScale = new(size.x, size.y, 1);
-		}
+		public Vector2 Offset { get; private set; } = Vector2.zero;
+		public Vector2 Size { get; private set; } = new(0.5f, 0.5f);
+		public Vector2 LocalSize { get; set; } = Vector2.one;
 
 		public Vector2 FromScreenToLocal(Vector2 point) {
-			Vector2 screen = new Vector2(Screen.width, Screen.height) * LocalSize;
+			Vector2 screen = ScreenSize * LocalSize;
 			return point / screen;
 		}
 
@@ -81,28 +86,30 @@ namespace HardCoded.VRigUnity {
 
 				Vector2 delta = box.FromScreenToLocal(eventData.delta);
 				if (x == 1 && y == 1) {
+					Vector2 size = box.Size;
+					Vector2 pos;
 					if (isShift) {
 						if (virtualPos.sqrMagnitude == 0) {
 							virtualPos = box.Offset;
 						}
+
 						virtualPos += delta;
 						
 						Vector2 pnt = box.FromScreenToLocal(new(30, 30));
-						Vector2 pos = new(
+						pos = new(
 							(Mathf.Abs(virtualPos.x) < pnt.x) ? 0 : virtualPos.x,
 							(Mathf.Abs(virtualPos.y) < pnt.y) ? 0 : virtualPos.y
 						);
-						box.Offset = pos;
 					} else if (virtualPos.sqrMagnitude != 0) {
-						box.Offset = virtualPos + delta;
+						pos = virtualPos + delta;
 						virtualPos = Vector2.zero;
 					} else {
-						Vector2 next = box.Offset + delta;
-						Vector2 size = box.Size;
-						next.x = Mathf.Clamp(next.x, (size.x - 1) / 2.0f, (1 - size.x) / 2.0f);
-						next.y = Mathf.Clamp(next.y, (size.y - 1) / 2.0f, (1 - size.y) / 2.0f);
-						box.Offset = next;
+						pos = box.Offset + delta;
 					}
+
+					pos.x = Mathf.Clamp(pos.x, (size.x - 1) / 2.0f, (1 - size.x) / 2.0f);
+					pos.y = Mathf.Clamp(pos.y, (size.y - 1) / 2.0f, (1 - size.y) / 2.0f);
+					box.Offset = pos;
 				} else {
 					Vector2 posDelta = box.FromScreenToLocal(eventData.delta);
 					
@@ -137,9 +144,9 @@ namespace HardCoded.VRigUnity {
 					if (size.y + delta.y < minSize.y) {
 						delta.y = minSize.y - size.y;
 					}
-
+					
+					Vector2 offset = box.Offset;
 					if (!isShift) {
-						Vector2 offset = box.Offset;
 						if (x == 2) {
 							if (offset.x + size.x / 2.0f + delta.x > 0.5f) {
 								delta.x += 0.5f - offset.x - size.x / 2.0f - delta.x;
@@ -159,6 +166,20 @@ namespace HardCoded.VRigUnity {
 								delta.y -= (-0.5f - offset.y + size.y / 2.0f + delta.y);
 							}
 						}
+					} else {
+						if (offset.x - size.x / 2.0f - delta.x < -0.5f) {
+							delta.x -= -0.5f - (offset.x - size.x / 2.0f - delta.x);
+						}
+						if (offset.x + size.x / 2.0f + delta.x > 0.5f) {
+							delta.x += 0.5f - (offset.x + size.x / 2.0f + delta.x);
+						}
+						
+						if (offset.y - size.y / 2.0f - delta.y < -0.5f) {
+							delta.y -= -0.5f - (offset.y - size.y / 2.0f - delta.y);
+						}
+						if (offset.y + size.y / 2.0f + delta.y > 0.5f) {
+							delta.y += 0.5f - (offset.y + size.y / 2.0f + delta.y);
+						}
 					}
 
 					box.Size += delta;
@@ -168,6 +189,17 @@ namespace HardCoded.VRigUnity {
 						box.Offset += delta / 2.0f;
 					}
 				}
+				
+				// Make sure all values are between 0 and 1
+				Vector2 newSize = box.Size;
+				newSize.x = Mathf.Clamp01(newSize.x);
+				newSize.y = Mathf.Clamp01(newSize.y);
+				box.Size = newSize;
+
+				Vector2 newOffset = box.Offset;
+				newOffset.x = Mathf.Clamp(newOffset.x, (newSize.x - 1) / 2.0f, (1 - newSize.x) / 2.0f);
+				newOffset.y = Mathf.Clamp(newOffset.y, (newSize.y - 1) / 2.0f, (1 - newSize.y) / 2.0f);
+				box.Offset = newOffset;
 			}
 
 			public void OnEndDrag(PointerEventData eventData) {
@@ -177,7 +209,7 @@ namespace HardCoded.VRigUnity {
 
 			void Update() {
 				Color col = IsColored ? Color.gray : color;
-				col.a = 0.25f;
+				col.a = 0.15f;
 				image.color = col;
 			}
 		}
@@ -189,18 +221,30 @@ namespace HardCoded.VRigUnity {
 
 			// Add all components
 			for (int i = 0; i < 9; i++) {
-				GameObject obj = new(GetIndexName(i), typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+				int x = i % 3;
+				int y = i / 3;
+				
+				GameObject obj = new(GetIndexName(i), typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Shadow));
 				objects[i] = obj;
 
 				RectTransform rect = obj.GetComponent<RectTransform>();
 				rect.SetParent(transform, true);
+				rect.localScale = Vector3.one;
 				
-				int x = i % 3;
-				int y = i / 3;
+				Image image = obj.GetComponent<Image>();
 				if (x != y && (x == 1 || y == 1)) {
-					Image image = obj.GetComponent<Image>();
-					image.color = new(0.8396226f, 0.8396226f, 0.8396226f, 0.05f);
+					image.color = new(0.8396226f, 0.8396226f, 0.8396226f);
+				} else if (x == 1 && y == 1){
+					image.color = new(0.6f, 0.6f, 0.6f);
 				}
+
+				image.sprite = cornerImage;
+				image.type = Image.Type.Sliced;
+				image.pixelsPerUnitMultiplier = cornerPixelsPerUnit;
+				
+				Shadow shadow = obj.GetComponent<Shadow>();
+				shadow.effectColor = cornerShadowColor;
+				shadow.effectDistance = cornerShadowOffset;
 
 				// Add the hover box test component
 				HoverBox box = obj.AddComponent<HoverBox>();
@@ -225,14 +269,18 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void UpdateRect() {
-			Vector2 screen = new Vector2(Screen.width, Screen.height) * LocalSize;
-			rect.sizeDelta = screen * Size;
-			rect.anchoredPosition = screen * Offset;
+			Vector2 screen = ScreenSize * LocalSize;
+			rect.sizeDelta = screen * Size / canvas.scaleFactor;
+			rect.anchoredPosition = screen * Offset / canvas.scaleFactor;
 		}
 
 		void UpdateParts() {
 			for (int i = 0; i < 9; i++) {
 				RectTransform rect = objects[i].GetComponent<RectTransform>();
+				
+				Image image = objects[i].GetComponent<Image>();
+				image.sprite = cornerImage;
+				image.pixelsPerUnitMultiplier = cornerPixelsPerUnit;
 
 				int x = i % 3;
 				int y = i / 3;

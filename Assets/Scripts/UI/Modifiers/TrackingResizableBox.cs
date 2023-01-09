@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class TrackingResizableBox : MonoBehaviour {
@@ -6,6 +7,14 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] ResizableBox box;
 		[SerializeField] RectTransform cameraBox;
 		
+		void Start() {
+			CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
+			canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
+			Settings.GuiScaleListener += (value) => {
+				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
+			};
+		}
+
 		void Update() {
 			var image = SettingsUtil.GetResolution(Settings.CameraResolution);
 			float w = (Screen.width / (float) Screen.height);
@@ -20,8 +29,7 @@ namespace HardCoded.VRigUnity {
 				cameraBox.anchorMax = new(0.5f + d, 1);
 			}
 
-			Vector2 size = cameraBox.anchorMax - cameraBox.anchorMin;
-			box.UpdateScale(size);
+			box.LocalSize = cameraBox.anchorMax - cameraBox.anchorMin;
 		}
 	}
 }
