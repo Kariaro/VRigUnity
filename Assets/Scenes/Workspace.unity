@@ -232,7 +232,6 @@ MonoBehaviour:
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
   _timeoutMicrosec: 100000
   modelComplexity: 1
-  refineFaceLandmarks: 1
   smoothLandmarks: 1
 --- !u!114 &275874976
 MonoBehaviour:
@@ -256,6 +255,8 @@ MonoBehaviour:
   animator: {fileID: 1321532674}
   guiScript: {fileID: 2129783507}
   canvas: {fileID: 1393820231}
+  TrackRightHand: 1
+  TrackLeftHand: 1
 --- !u!114 &275874977
 MonoBehaviour:
   m_ObjectHideFlags: 0

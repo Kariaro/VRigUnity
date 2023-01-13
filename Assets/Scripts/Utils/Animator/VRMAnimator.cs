@@ -19,7 +19,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void PerformRigging() {
-			HolisticTrackingSolution sol = SolutionUtils.GetSolution();
+			HolisticSolution sol = SolutionUtils.GetSolution();
 			float time = sol.TimeNow;
 			// TODO: Fix hands when full body moves
 

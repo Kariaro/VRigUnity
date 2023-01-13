@@ -5,7 +5,7 @@ using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class HolisticTrackingSolution : HolisticSolutionBase {
+	public class HolisticSolution : Solution {
 		[Header("Rig")]
 		[SerializeField] protected GameObject defaultVrmPrefab;
 		[SerializeField] protected GameObject vrmModel;
@@ -92,6 +92,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void OnStartRun() {
+			// (a, b) => { try { 
+			// (a, b); } catch (Exception e) {} };
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
@@ -374,7 +376,7 @@ namespace HardCoded.VRigUnity {
 			// Apply the model transform
 			vrmModel.transform.position = guiScript.ModelTransform;
 
-			if (isPaused) {
+			if (IsPaused) {
 				DefaultVRMAnimator();
 				return;
 			}

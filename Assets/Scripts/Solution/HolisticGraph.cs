@@ -9,7 +9,7 @@ using Mediapipe.Unity;
 using Mediapipe;
 
 namespace HardCoded.VRigUnity {
-	public class HolisticTrackingGraph : GraphRunner {
+	public class HolisticGraph : GraphRunner {
 		public enum ModelComplexity {
 			Lite = 0,
 			Full = 1,
@@ -17,7 +17,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public ModelComplexity modelComplexity = ModelComplexity.Full;
-		public bool refineFaceLandmarks = true;
 		public bool smoothLandmarks = true;
 
 		private float _minDetectionConfidence = 0.5f;
@@ -93,11 +92,10 @@ namespace HardCoded.VRigUnity {
 			AddTextureFrameToInputStream(_InputStreamName, textureFrame);
 		}
 
-		// TODO: For add a dropdown box for the asset modelComplexity
 		protected override IList<WaitForResult> RequestDependentAssets() {
 			return new List<WaitForResult> {
 				WaitForAsset("face_detection_short_range.bytes"),
-				WaitForAsset(refineFaceLandmarks ? "face_landmark_with_attention.bytes" : "face_landmark.bytes"),
+				WaitForAsset("face_landmark_with_attention.bytes"),
 				WaitForAsset("iris_landmark.bytes"),
 				WaitForAsset("hand_landmark_full.bytes"),
 				WaitForAsset("hand_recrop.bytes"),
@@ -118,11 +116,11 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override Status ConfigureCalculatorGraph(CalculatorGraphConfig config) {
-			_poseLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _PoseLandmarksStreamName, true, TimeoutMicrosec);
-			_faceLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _FaceLandmarksStreamName, true, TimeoutMicrosec);
-			_leftHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _LeftHandLandmarksStreamName, true, TimeoutMicrosec);
-			_rightHandLandmarksStream = new OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList>(CalculatorGraph, _RightHandLandmarksStreamName, true, TimeoutMicrosec);
-			_poseWorldLandmarksStream = new OutputStream<LandmarkListPacket, LandmarkList>(CalculatorGraph, _PoseWorldLandmarksStreamName, true, TimeoutMicrosec);
+			_poseLandmarksStream = new(CalculatorGraph, _PoseLandmarksStreamName, true, TimeoutMicrosec);
+			_faceLandmarksStream = new(CalculatorGraph, _FaceLandmarksStreamName, true, TimeoutMicrosec);
+			_leftHandLandmarksStream = new(CalculatorGraph, _LeftHandLandmarksStreamName, true, TimeoutMicrosec);
+			_rightHandLandmarksStream = new(CalculatorGraph, _RightHandLandmarksStreamName, true, TimeoutMicrosec);
+			_poseWorldLandmarksStream = new(CalculatorGraph, _PoseWorldLandmarksStreamName, true, TimeoutMicrosec);
 
 			using (var validatedGraphConfig = new ValidatedGraphConfig()) {
 				var status = validatedGraphConfig.Initialize(config);
@@ -135,10 +133,10 @@ namespace HardCoded.VRigUnity {
 				var cannonicalizedConfig = validatedGraphConfig.Config(extensionRegistry);
 
 				var poseDetectionCalculatorPattern = new Regex("__posedetection[a-z]+__TensorsToDetectionsCalculator$");
-				var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where((node) => poseDetectionCalculatorPattern.Match(node.Name).Success).ToList();
+				var tensorsToDetectionsCalculators = cannonicalizedConfig.Node.Where(node => poseDetectionCalculatorPattern.Match(node.Name).Success).ToList();
 
 				var poseTrackingCalculatorPattern = new Regex("tensorstoposelandmarksandsegmentation__ThresholdingCalculator$");
-				var thresholdingCalculators = cannonicalizedConfig.Node.Where((node) => poseTrackingCalculatorPattern.Match(node.Name).Success).ToList();
+				var thresholdingCalculators = cannonicalizedConfig.Node.Where(node => poseTrackingCalculatorPattern.Match(node.Name).Success).ToList();
 
 				foreach (var calculator in tensorsToDetectionsCalculators) {
 					if (calculator.Options.HasExtension(TensorsToDetectionsCalculatorOptions.Extensions.Ext)) {
@@ -182,11 +180,10 @@ namespace HardCoded.VRigUnity {
 
 			Logger.Debug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
 
-			sidePacket.Emplace("refine_face_landmarks", new BoolPacket(refineFaceLandmarks));
+			sidePacket.Emplace("refine_face_landmarks", new BoolPacket(true));
 			sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
 			sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
 
-			Logger.Info(TAG, $"Refine Face Landmarks = {refineFaceLandmarks}");
 			Logger.Info(TAG, $"Model Complexity = {modelComplexity}");
 			Logger.Info(TAG, $"Smooth Landmarks = {smoothLandmarks}");
 

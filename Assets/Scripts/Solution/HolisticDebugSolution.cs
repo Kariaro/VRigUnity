@@ -2,10 +2,9 @@ using Mediapipe;
 using Mediapipe.Unity;
 using System;
 using UnityEngine;
-using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class HolisticTrackingSolutionWithDebug : HolisticTrackingSolution {
+	public class HolisticDebugSolution : HolisticSolution {
 		[Header("Debug")]
 		[SerializeField] private HandGroup handGroup;
 		[SerializeField] private int fps = 60;

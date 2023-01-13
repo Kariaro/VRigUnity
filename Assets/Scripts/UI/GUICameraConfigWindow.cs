@@ -6,7 +6,7 @@ using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
 	public class GUICameraConfigWindow : GUISettingsBase {
-		private Solution _solution;
+		private HolisticSolution _solution;
 		private SettingsField sourceField;
 		private SettingsField resolutionField;
 		private SettingsField customResolutionField;
@@ -21,7 +21,7 @@ namespace HardCoded.VRigUnity {
 					.AddDropdown((elm, value) => {
 						Settings.CameraName = elm.options[value].text;
 						imageSource.SelectSource(value);
-						if (!_solution.IsPaused()) {
+						if (!_solution.IsPaused) {
 							_solution.Play();
 						}
 					}, new(), 0, FieldData.None);
@@ -32,7 +32,7 @@ namespace HardCoded.VRigUnity {
 						Settings.CameraResolution = elm.options[value].text;
 						imageSource.SelectResolution(value);
 						UpdateCustomResolution();
-						if (!_solution.IsPaused()) {
+						if (!_solution.IsPaused) {
 							_solution.Play();
 						}
 					}, new(), 0, FieldData.None);
@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 				return builder.AddToggle((_, value) => {
 					Settings.CameraFlipped = value;
 					imageSource.IsHorizontallyFlipped = value;
-					if (!_solution.IsPaused()) {
+					if (!_solution.IsPaused) {
 						_solution.Play();
 					}
 				}, Settings.CameraFlipped, FieldData.None);

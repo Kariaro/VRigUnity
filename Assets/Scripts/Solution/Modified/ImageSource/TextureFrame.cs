@@ -10,19 +10,14 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Experimental.Rendering;
 
 namespace Mediapipe.Unity {
-#pragma warning disable IDE0065
-	using Color = UnityEngine.Color;
-#pragma warning restore IDE0065
-
 	public class TextureFrame {
 		public class ReleaseEvent : UnityEvent<TextureFrame> { }
 
 		private const string _TAG = nameof(TextureFrame);
 
-		private static readonly GlobalInstanceTable<Guid, TextureFrame> _InstanceTable = new GlobalInstanceTable<Guid, TextureFrame>(100);
+		private static readonly GlobalInstanceTable<Guid, TextureFrame> _InstanceTable = new(100);
 		/// <summary>
 		///   A dictionary to look up which native texture belongs to which <see cref="TextureFrame" />.
 		/// </summary>
@@ -30,15 +25,11 @@ namespace Mediapipe.Unity {
 		///   Not all the <see cref="TextureFrame" /> instances are registered.
 		///   Texture names are queried only when necessary, and the corresponding data will be saved then.
 		/// </remarks>
-		private static readonly Dictionary<uint, Guid> _NameTable = new Dictionary<uint, Guid>();
+		private static readonly Dictionary<uint, Guid> _NameTable = new();
 
 		private readonly Texture2D _texture;
 		private IntPtr _nativeTexturePtr = IntPtr.Zero;
 		private GlSyncPoint _glSyncToken;
-
-		// Buffers that will be used to copy texture data on CPU.
-		// They won't be initialized until it's necessary.
-		private Texture2D _textureBuffer;
 
 		private Color32[] _pixelsBuffer; // for WebCamTexture
 		private Color32[] pixelsBuffer {
@@ -65,18 +56,11 @@ namespace Mediapipe.Unity {
 				return _format;
 			}
 		}
-
-		public bool isReadable => _texture.isReadable;
-
-		// TODO: determine at runtime
-		public GpuBufferFormat gpuBufferformat => GpuBufferFormat.kBGRA32;
-
+		
 		/// <summary>
 		///   The event that will be invoked when the TextureFrame is released.
 		/// </summary>
-#pragma warning disable IDE1006	// UnityEvent is PascalCase
 		public readonly ReleaseEvent OnRelease;
-#pragma warning restore IDE1006
 
 		private TextureFrame(Texture2D texture) {
 			_texture = texture;
@@ -95,55 +79,6 @@ namespace Mediapipe.Unity {
 			Graphics.CopyTexture(_texture, dst);
 		}
 
-		public void CopyTextureFrom(Texture src) {
-			Graphics.CopyTexture(src, _texture);
-		}
-
-		public bool ConvertTexture(Texture dst) {
-			return Graphics.ConvertTexture(_texture, dst);
-		}
-
-		public bool ConvertTextureFrom(Texture src) {
-			return Graphics.ConvertTexture(src, _texture);
-		}
-
-		/// <summary>
-		///   Copy texture data from <paramref name="src" />.
-		///   If <paramref name="src" /> format is different from <see cref="format" />, it converts the format.
-		/// </summary>
-		/// <remarks>
-		///   After calling it, pixel data won't be read from CPU safely.
-		/// </remarks>
-		public bool ReadTextureFromOnGPU(Texture src) {
-			if (GetTextureFormat(src) != format) {
-				return Graphics.ConvertTexture(src, _texture);
-			}
-			Graphics.CopyTexture(src, _texture);
-			return true;
-		}
-
-		/// <summary>
-		///   Copy texture data from <paramref name="src" />.
-		/// </summary>
-		/// <remarks>
-		///   This operation is slow.
-		///   If CPU won't access the pixel data, use <see cref="ReadTextureFromOnGPU" /> instead.
-		/// </remarks>
-		public void ReadTextureFromOnCPU(Texture src) {
-			var textureBuffer = LoadToTextureBuffer(src);
-			SetPixels32(textureBuffer.GetPixels32());
-		}
-
-		/// <summary>
-		///   Copy texture data from <paramref name="src" />.
-		/// </summary>
-		/// <remarks>
-		///   In most cases, it should be better to use <paramref name="src" /> directly.
-		/// </remarks>
-		public void ReadTextureFromOnCPU(Texture2D src) {
-			SetPixels32(src.GetPixels32());
-		}
-
 		/// <summary>
 		///   Copy texture data from <paramref name="src" />.
 		/// </summary>
@@ -159,14 +94,6 @@ namespace Mediapipe.Unity {
 			SetPixels32(src.GetPixels32(pixelsBuffer));
 		}
 
-		public Color GetPixel(int x, int y) {
-			return _texture.GetPixel(x, y);
-		}
-
-		public Color32[] GetPixels32() {
-			return _texture.GetPixels32();
-		}
-
 		public void SetPixels32(Color32[] pixels) {
 			_texture.SetPixels32(pixels);
 			_texture.Apply();
@@ -177,8 +104,8 @@ namespace Mediapipe.Unity {
 			}
 		}
 
-		public NativeArray<T> GetRawTextureData<T>() where T : struct {
-			return _texture.GetRawTextureData<T>();
+		public NativeArray<byte> GetRawTextureByteData() {
+			return _texture.GetRawTextureData<byte>();
 		}
 
 		/// <returns>The texture's native pointer</returns>
@@ -206,7 +133,7 @@ namespace Mediapipe.Unity {
 		}
 
 		public ImageFrame BuildImageFrame() {
-			return new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureData<byte>());
+			return new ImageFrame(imageFormat, width, height, 4 * width, GetRawTextureByteData());
 		}
 
 		public GpuBuffer BuildGpuBuffer(GlContext glContext) {
@@ -284,10 +211,6 @@ namespace Mediapipe.Unity {
 			return true;
 		}
 
-		private static TextureFormat GetTextureFormat(Texture texture) {
-			return GraphicsFormatUtility.GetTextureFormat(texture.graphicsFormat);
-		}
-
 		/// <summary>
 		///   Remove the texture name from <see cref="_NameTable" /> and empty <see cref="_nativeTexturePtr" />.
 		///   This method needs to be called when an operation is performed that may change the internal texture.
@@ -303,28 +226,6 @@ namespace Mediapipe.Unity {
 			}
 			_nativeTexturePtr = IntPtr.Zero;
 			return true;
-		}
-
-		private Texture2D LoadToTextureBuffer(Texture texture) {
-			var textureFormat = GetTextureFormat(texture);
-
-			if (_textureBuffer == null || _textureBuffer.format != textureFormat) {
-				_textureBuffer = new Texture2D(width, height, textureFormat, false);
-			}
-
-			var tmpRenderTexture = RenderTexture.GetTemporary(texture.width, texture.height, 32);
-			var currentRenderTexture = RenderTexture.active;
-			RenderTexture.active = tmpRenderTexture;
-
-			Graphics.Blit(texture, tmpRenderTexture);
-
-			var rect = new UnityEngine.Rect(0, 0, Mathf.Min(tmpRenderTexture.width, _textureBuffer.width), Mathf.Min(tmpRenderTexture.height, _textureBuffer.height));
-			_textureBuffer.ReadPixels(rect, 0, 0);
-			_textureBuffer.Apply();
-			RenderTexture.active = currentRenderTexture;
-			RenderTexture.ReleaseTemporary(tmpRenderTexture);
-
-			return _textureBuffer;
 		}
 	}
 }
