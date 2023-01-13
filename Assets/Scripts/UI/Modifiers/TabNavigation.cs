@@ -25,7 +25,7 @@ namespace HardCoded.VRigUnity {
 					newIdx = (newIdx + elements.Count) % elements.Count;
 				}
 
-				newIdx = (newIdx < 0 ? 0 : (newIdx >= elements.Count ? elements.Count - 1 : newIdx));
+				newIdx = Mathf.Clamp(newIdx, 0, elements.Count - 1);
 				EventSystem.current.SetSelectedGameObject(elements[newIdx].gameObject);
 			}
 		}

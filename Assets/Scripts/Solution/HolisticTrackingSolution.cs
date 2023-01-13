@@ -31,6 +31,11 @@ namespace HardCoded.VRigUnity {
 		public FaceData.RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
 		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
 		
+		private TrackingResizableBox trackingBox;
+
+		public bool TrackRightHand = true;
+		public bool TrackLeftHand = true;
+
 		// API Getters
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		public GameObject VrmModel => vrmModel;
@@ -38,6 +43,7 @@ namespace HardCoded.VRigUnity {
 
 		void Awake() {
 			SetVRMModel(vrmModel);
+			trackingBox = FindObjectOfType<TrackingResizableBox>();
 		}
 
 		public void ResetVRMModel() {
@@ -288,6 +294,26 @@ namespace HardCoded.VRigUnity {
 
 		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
 			canvas.OnPoseLandmarksOutput(eventArgs);
+
+			bool trackL = true;
+			bool trackR = true;
+
+			// Use these fields to get the value
+			if (eventArgs.value != null) {
+				var a = eventArgs.value.Landmark[MediaPipe.Pose.LEFT_WRIST];
+				var b = eventArgs.value.Landmark[MediaPipe.Pose.RIGHT_WRIST];
+
+				Vector3 aa = new(1 - a.X, 1 - a.Y);
+				Vector3 bb = new(1 - b.X, 1 - b.Y);
+
+				trackR = trackingBox.IsInside(aa);
+				trackL = trackingBox.IsInside(bb);
+				// Debug.Log(trackingBox.Min + ", " + trackingBox.Max + ", " + aa + ", " + bb);
+				// Debug.Log(trackingBox.IsInside(aa) + ", " + trackingBox.IsInside(bb));
+			}
+			
+			TrackLeftHand = trackL;
+			TrackRightHand = trackR;
 		}
 
 		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {

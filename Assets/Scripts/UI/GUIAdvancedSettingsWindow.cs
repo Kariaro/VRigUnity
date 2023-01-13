@@ -10,6 +10,7 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
+		public GameObject trackingBox;
 		
 		protected override void InitializeSettings() {
 			AddDivider("VMC Settings");
@@ -22,7 +23,13 @@ namespace HardCoded.VRigUnity {
 				return builder.AddNumberInput((_, value) => Settings.VMCReceiverPort = value, 0, 65535, 3333, Settings.VMCReceiverPort, FieldData.None);	
 			});
 
-			
+			AddDivider("Tracking Settings");
+			CreateSetting("Hand Area", builder => {
+				return builder
+					.AddToggle((_, value) => {}, false, FieldData.None)
+					.AddButton("Select Area", (_) => { trackingBox.SetActive(true); transform.parent.gameObject.SetActive(false); }, FieldData.None);
+			});
+
 			AddDivider("UI Settings");
 			CreateSetting("Always show UI", builder => {
 				return builder.AddToggle((_, value) => Settings.AlwaysShowUI = value, Settings.AlwaysShowUI, FieldData.None);

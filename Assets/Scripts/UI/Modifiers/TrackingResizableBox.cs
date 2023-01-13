@@ -6,6 +6,10 @@ namespace HardCoded.VRigUnity {
 		// Unity fields
 		[SerializeField] ResizableBox box;
 		[SerializeField] RectTransform cameraBox;
+
+		// API Getters
+		public Vector2 Min => box.Offset - box.Size / 2.0f;
+		public Vector2 Max => box.Offset + box.Size / 2.0f;
 		
 		void Start() {
 			CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
@@ -13,6 +17,10 @@ namespace HardCoded.VRigUnity {
 			Settings.GuiScaleListener += (value) => {
 				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
 			};
+
+			Vector4 rect = SettingsUtil.GetResizableBox(Settings.TrackingBox);
+			box.Offset = new(rect.x, rect.y);
+			box.Size = new(rect.z, rect.w);
 		}
 
 		void Update() {
@@ -30,6 +38,28 @@ namespace HardCoded.VRigUnity {
 			}
 
 			box.LocalSize = cameraBox.anchorMax - cameraBox.anchorMin;
+
+			string next = SettingsUtil.GetResizableBox(box.Offset, box.Size);
+			if (next != Settings.TrackingBox) {
+				Settings.TrackingBox = next;
+			}
+		}
+
+		public bool IsInside(Vector2 point) {
+			return IsInside(point.x, point.y);
+		}
+
+		public bool IsInside(float x, float y) {
+			// The rect is offset by (0.5, 0.5)
+			x -= 0.5f;
+			y -= 0.5f;
+
+			Vector2 size = box.Size;
+			Vector2 offset = box.Offset - size / 2.0f;
+			return x >= offset.x
+				&& x <= offset.x + size.x
+				&& y >= offset.y
+				&& y <= offset.y + size.y;
 		}
 	}
 }

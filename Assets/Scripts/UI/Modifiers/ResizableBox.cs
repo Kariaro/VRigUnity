@@ -30,8 +30,8 @@ namespace HardCoded.VRigUnity {
 		private int HoveredIndex { get; set; } = -1;
 		private RectTransform rect;
 
-		public Vector2 Offset { get; private set; } = Vector2.zero;
-		public Vector2 Size { get; private set; } = new(0.5f, 0.5f);
+		public Vector2 Offset { get; set; } = Vector2.zero;
+		public Vector2 Size { get; set; } = new(0.5f, 0.5f);
 		public Vector2 LocalSize { get; set; } = Vector2.one;
 
 		public Vector2 FromScreenToLocal(Vector2 point) {

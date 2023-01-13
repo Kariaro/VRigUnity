@@ -50,7 +50,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		// Tracking Settings
-		public static Text _TrackingBox = new("tracking.box", "0,0,0,0");
+		public static Text _TrackingBox = new("tracking.box", "0,0,5000,5000");
 
 		public static string TrackingBox {
 			get => _TrackingBox.Get();
