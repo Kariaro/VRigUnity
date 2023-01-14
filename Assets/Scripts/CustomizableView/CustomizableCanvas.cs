@@ -19,7 +19,6 @@ namespace HardCoded.VRigUnity {
 		// Canvas used for UI
 		[SerializeField] private DisplayCanvas streamCanvas;
 		[SerializeField] private DisplayCanvas unityCanvas;
-		[SerializeField] private RectTransform trackingCanvas; // Used for the tracking box
 
 		[Header("Annotations")]
 		[SerializeField] private GameObject annotationObject;
@@ -60,7 +59,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Update() {
-			if (Settings.VirtualCamera != streamCamera.enabled) {
+			if (streamCamera.enabled != Settings.VirtualCamera) {
 				streamCamera.enabled = Settings.VirtualCamera;
 			}
 		}
@@ -72,7 +71,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing;
+			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
 			annotationController.rotationAngle = imageSource.Rotation.Reverse();
 		}
 

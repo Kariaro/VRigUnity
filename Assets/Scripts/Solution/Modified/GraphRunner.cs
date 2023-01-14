@@ -195,7 +195,7 @@ namespace HardCoded.VRigUnity {
 			Rotation = imageSource.Rotation.Reverse();
 			var inputRotation = Rotation;
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(Rotation);
-			var shouldBeMirrored = imageSource.IsHorizontallyFlipped ^ expectedToBeMirrored;
+			var shouldBeMirrored = imageSource.IsHorizontallyFlipped ^ expectedToBeMirrored ^ true;
 			var inputHorizontallyFlipped = isInverted ^ shouldBeMirrored;
 			var inputVerticallyFlipped = !isInverted;
 

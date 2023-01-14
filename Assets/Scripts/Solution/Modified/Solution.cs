@@ -13,7 +13,7 @@ namespace HardCoded.VRigUnity {
 		private WebCamSource imageSource;
 		private Bootstrap bootstrap;
 
-		public bool IsPaused { get; private set; }
+		public bool IsPaused { get; private set; } = true;
 
 		protected IEnumerator Start() {
 			imageSource = GetComponent<WebCamSource>();

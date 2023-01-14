@@ -77,9 +77,9 @@ namespace HardCoded.VRigUnity {
 				leftHandHint = hint.transform;
 
 				TwoBoneIKConstraint constraint = hand.AddComponent<TwoBoneIKConstraint>();
-				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
-				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.RightLowerArm);
-				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.RightHand);
+				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.LeftUpperArm);
+				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.LeftLowerArm);
+				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.LeftHand);
 				constraint.data.target = leftHandTarget;
 				constraint.data.hint = leftHandHint;
 				constraint.data.targetPositionWeight = 1f;
@@ -99,9 +99,9 @@ namespace HardCoded.VRigUnity {
 				rightHandHint = hint.transform;
 
 				TwoBoneIKConstraint constraint = hand.AddComponent<TwoBoneIKConstraint>();
-				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.LeftUpperArm);
-				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.LeftLowerArm);
-				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.LeftHand);
+				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
+				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.RightLowerArm);
+				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.RightHand);
 				constraint.data.target = rightHandTarget;
 				constraint.data.hint = rightHandHint;
 				constraint.data.targetPositionWeight = 1f;
@@ -123,9 +123,9 @@ namespace HardCoded.VRigUnity {
 				leftLegHint = hint.transform;
 
 				TwoBoneIKConstraint constraint = leg.AddComponent<TwoBoneIKConstraint>();
-				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.RightUpperLeg);
-				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.RightLowerLeg);
-				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.RightFoot);
+				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.LeftUpperLeg);
+				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.LeftLowerLeg);
+				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.LeftFoot);
 				constraint.data.target = leftLegTarget;
 				constraint.data.hint = leftLegHint;
 				constraint.data.targetPositionWeight = 1f;
@@ -145,9 +145,9 @@ namespace HardCoded.VRigUnity {
 				rightLegHint = hint.transform;
 
 				TwoBoneIKConstraint constraint = leg.AddComponent<TwoBoneIKConstraint>();
-				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.LeftUpperLeg);
-				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.LeftLowerLeg);
-				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.LeftFoot);
+				constraint.data.root = anim.GetBoneTransform(HumanBodyBones.RightUpperLeg);
+				constraint.data.mid = anim.GetBoneTransform(HumanBodyBones.RightLowerLeg);
+				constraint.data.tip = anim.GetBoneTransform(HumanBodyBones.RightFoot);
 				constraint.data.target = rightLegTarget;
 				constraint.data.hint = rightLegHint;
 				constraint.data.targetPositionWeight = 1f;

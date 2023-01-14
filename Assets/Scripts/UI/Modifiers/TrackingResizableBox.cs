@@ -12,12 +12,6 @@ namespace HardCoded.VRigUnity {
 		public Vector2 Max => box.Offset + box.Size / 2.0f;
 		
 		void Start() {
-			CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
-			canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
-			Settings.GuiScaleListener += (value) => {
-				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
-			};
-
 			Vector4 rect = SettingsUtil.GetResizableBox(Settings.TrackingBox);
 			box.Offset = new(rect.x, rect.y);
 			box.Size = new(rect.z, rect.w);

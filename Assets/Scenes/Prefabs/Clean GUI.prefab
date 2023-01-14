@@ -501,7 +501,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f3eb74c076cd44e8d6dab5330e73f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiScript: {fileID: 3791656189188987704}
   inputFieldModelX: {fileID: 7355372528224016814}
   inputFieldModelY: {fileID: 4782842424159748761}
   inputFieldModelZ: {fileID: 3783314021039165780}
@@ -961,7 +960,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c90088079a483341b501a940df65325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiScript: {fileID: 3791656189188987704}
   emptyLog: {fileID: 8342433682647172381}
   contentTransform: {fileID: 8797826588051356329}
   loggerButton: {fileID: 6396431001014777894}
@@ -1222,7 +1220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38aa28b114173004da21531ec43fecf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiScript: {fileID: 3791656189188987704}
   toggles:
   - {fileID: 7127471788080788842}
   - {fileID: 7230648932858529243}
@@ -4189,7 +4186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eccdf1d22e4aa4849844bcd0ef09ed73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiScript: {fileID: 3791656189188987704}
   templateObject: {fileID: 1886741932406600691}
 --- !u!114 &3755638537565432451
 MonoBehaviour:
@@ -6635,7 +6631,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092f6c54dc5a825429bac6b6b423152f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiScript: {fileID: 3791656189188987704}
   templateObject: {fileID: 3791656189624453651}
   boneSettingsWindow: {fileID: 5567890934280065685}
   trackingBox: {fileID: 8367192442925676696}
@@ -12067,7 +12062,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 526.2222, y: 296}
+  m_SizeDelta: {x: 526, y: 296}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &584582221680371115
 CanvasRenderer:
@@ -13748,10 +13743,10 @@ RectTransform:
   m_Father: {fileID: 1260046179927222023}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5033171176237626520
 MonoBehaviour:
