@@ -34,7 +34,7 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Visuals On" : "Visuals Off";
 
 			HolisticSolution solution = SolutionUtils.GetSolution();
-			solution.canvas.ShowAnnotations(enable);
+			solution.Canvas.ShowAnnotations(enable);
 		}
 	}
 }

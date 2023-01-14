@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public abstract class GUISettingsBase : GUIWindow {
 		private Transform contentTransform;
 
-		[Header("Default")]
-		public GUIScript guiScript;
+		[Header("Settings Base")]
 		public GameObject templateObject;
 
 		protected virtual void Start() {

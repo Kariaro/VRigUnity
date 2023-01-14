@@ -60,7 +60,7 @@ namespace HardCoded.VRigUnity {
 				}
 
 				if (!sol.TrackRightHand) {
-					rigger.leftHandTarget.rotation = Quaternion.identity;
+					rigger.leftHandTarget.rotation = BoneSettings.GetDefaultRotation(HumanBodyBones.RightUpperArm);
 				}
 			}
 
@@ -101,7 +101,7 @@ namespace HardCoded.VRigUnity {
 				}
 
 				if (!sol.TrackLeftHand) {
-					rigger.rightHandTarget.rotation = Quaternion.identity;
+					rigger.rightHandTarget.rotation = BoneSettings.GetDefaultRotation(HumanBodyBones.LeftUpperArm);
 				}
 			}
 		}

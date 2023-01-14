@@ -15,8 +15,9 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected Animator animator;
 
 		[Header("UI")]
-		[SerializeField] protected GUIScript guiScript;
-		public CustomizableCanvas canvas;
+		public GUIScript guiScript;
+		public CustomizableCanvas Canvas => guiScript.customizableCanvas;
+		public TrackingResizableBox TrackingBox => guiScript.trackingBox;
 
 		// Pose values
 		public readonly PoseValues Pose = new();
@@ -30,8 +31,6 @@ namespace HardCoded.VRigUnity {
 
 		public FaceData.RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
 		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
-		
-		private TrackingResizableBox trackingBox;
 
 		public bool TrackRightHand = true;
 		public bool TrackLeftHand = true;
@@ -43,7 +42,6 @@ namespace HardCoded.VRigUnity {
 
 		void Awake() {
 			SetVRMModel(vrmModel);
-			trackingBox = FindObjectOfType<TrackingResizableBox>();
 		}
 
 		public void ResetVRMModel() {
@@ -51,8 +49,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public bool SetVRMModel(GameObject gameObject) {
-			VRMBlendShapeProxy blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();
-			Animator animator = gameObject.GetComponent<Animator>();
+			var blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();
+			var animator = gameObject.GetComponent<Animator>();
 
 			if (animator == null || blendShapeProxy == null) {
 				return false;
@@ -100,7 +98,7 @@ namespace HardCoded.VRigUnity {
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
 
-			canvas.SetupAnnotations();
+			Canvas.SetupAnnotations();
 		}
 
 		public void DefaultVRMAnimator() {
@@ -131,15 +129,15 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void SetupScreen(ImageSource imageSource) {
-			canvas.SetupScreen(imageSource);
+			Canvas.SetupScreen(imageSource);
 		}
 
 		protected override void RenderCurrentFrame(TextureFrame textureFrame) {
-			canvas.ReadSync(textureFrame);
+			Canvas.ReadSync(textureFrame);
 		}
 
 		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			canvas.OnFaceLandmarksOutput(eventArgs);
+			Canvas.OnFaceLandmarksOutput(eventArgs);
 			if (eventArgs.value == null) {
 				return;
 			}
@@ -213,8 +211,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			canvas.OnLeftHandLandmarksOutput(eventArgs);
-			if (eventArgs.value == null) {
+			Canvas.OnLeftHandLandmarksOutput(eventArgs);
+			if (eventArgs.value == null || !TrackRightHand) {
 				return;
 			}
 
@@ -229,8 +227,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			canvas.OnRightHandLandmarksOutput(eventArgs);
-			if (eventArgs.value == null) {
+			Canvas.OnRightHandLandmarksOutput(eventArgs);
+			if (eventArgs.value == null || !TrackLeftHand) {
 				return;
 			}
 			
@@ -295,23 +293,20 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			canvas.OnPoseLandmarksOutput(eventArgs);
+			Canvas.OnPoseLandmarksOutput(eventArgs);
 
 			bool trackL = true;
 			bool trackR = true;
 
 			// Use these fields to get the value
-			if (eventArgs.value != null) {
+			if (eventArgs.value != null && Settings.UseTrackingBox) {
 				var a = eventArgs.value.Landmark[MediaPipe.Pose.LEFT_WRIST];
 				var b = eventArgs.value.Landmark[MediaPipe.Pose.RIGHT_WRIST];
 
 				Vector3 aa = new(1 - a.X, 1 - a.Y);
 				Vector3 bb = new(1 - b.X, 1 - b.Y);
-
-				trackR = trackingBox.IsInside(aa);
-				trackL = trackingBox.IsInside(bb);
-				// Debug.Log(trackingBox.Min + ", " + trackingBox.Max + ", " + aa + ", " + bb);
-				// Debug.Log(trackingBox.IsInside(aa) + ", " + trackingBox.IsInside(bb));
+				trackR = TrackingBox.IsInside(aa);
+				trackL = TrackingBox.IsInside(bb);
 			}
 			
 			TrackLeftHand = trackL;
@@ -331,10 +326,15 @@ namespace HardCoded.VRigUnity {
 			Pose.HipsPosition.Set(pose.hipsPosition, time);
 			
 			if (!Settings.UseFullIK) {
-				Pose.RightUpperArm.Set(pose.rUpperArm, time);
-				Pose.RightLowerArm.Set(pose.rLowerArm, time);
-				Pose.LeftUpperArm.Set(pose.lUpperArm, time);
-				Pose.LeftLowerArm.Set(pose.lLowerArm, time);
+				if (TrackRightHand) {
+					Pose.RightUpperArm.Set(pose.rUpperArm, time);
+					Pose.RightLowerArm.Set(pose.rLowerArm, time);
+				}
+
+				if (TrackLeftHand) {
+					Pose.LeftUpperArm.Set(pose.lUpperArm, time);
+					Pose.LeftLowerArm.Set(pose.lLowerArm, time);
+				}
 			}
 
 			if (Settings.UseLegRotation) {

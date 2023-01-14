@@ -9,7 +9,7 @@ using Assets.Tests.Utils;
 using System.Linq;
 
 public class TestMediapipeAssets {
-	private Type holisticTrackingGraphType;
+	private Type holisticGraphType;
 	private Type emptySourceType;
 	private Type waitForResultType;
 
@@ -21,7 +21,7 @@ public class TestMediapipeAssets {
 			.Where(item => item.GetName().Name == "Assembly-CSharp")
 			.First();
 			
-		holisticTrackingGraphType = domain.GetType("HardCoded.VRigUnity.HolisticTrackingGraph");
+		holisticGraphType = domain.GetType("HardCoded.VRigUnity.HolisticGraph");
 		emptySourceType = domain.GetType("HardCoded.VRigUnity.EmptySource");
 		waitForResultType = domain.GetType("Mediapipe.Unity.WaitForResult");
 	}
@@ -34,11 +34,11 @@ public class TestMediapipeAssets {
 	public IEnumerator TestGraphLoading() {
 		yield return null;
 
-		object holisticTrackingGraph = UnityEngine.Object.FindObjectOfType(holisticTrackingGraphType);
+		object holisticTrackingGraph = UnityEngine.Object.FindObjectOfType(holisticGraphType);
 
 		// Try to initialize the graph
 		Debug.Log("Running WaitForInitAsync");
-		IEnumerator waitForResult = holisticTrackingGraphType.GetMethod("WaitForInitAsync").Invoke(holisticTrackingGraph, new object[] {}) as IEnumerator;
+		IEnumerator waitForResult = holisticGraphType.GetMethod("WaitForInitAsync").Invoke(holisticTrackingGraph, new object[] {}) as IEnumerator;
 		yield return waitForResult;
 
 		// Validate that it does not give errors
@@ -54,12 +54,12 @@ public class TestMediapipeAssets {
 		Debug.Log("Running StartRun");
 		GameObject testObject = new("TestObject");
 		object emptySource = testObject.AddComponent(emptySourceType);
-		holisticTrackingGraphType.GetMethod("StartRun").Invoke(holisticTrackingGraph, new object[] { emptySource });
+		holisticGraphType.GetMethod("StartRun").Invoke(holisticTrackingGraph, new object[] { emptySource });
 		
 		// Wait a single frame
 		yield return null;
 
-		object calculatorGraph = holisticTrackingGraphType
+		object calculatorGraph = holisticGraphType
 			.GetProperty("CalculatorGraph", BindingFlags.NonPublic | BindingFlags.Instance)
 			.GetValue(holisticTrackingGraph);
 		
@@ -73,7 +73,7 @@ public class TestMediapipeAssets {
 		yield return null;
 		
 		Debug.Log("Stop Graph");
-		holisticTrackingGraphType.GetMethod("Stop").Invoke(holisticTrackingGraph, new object[] {});
+		holisticGraphType.GetMethod("Stop").Invoke(holisticTrackingGraph, new object[] {});
 
 		yield return null;
 	}

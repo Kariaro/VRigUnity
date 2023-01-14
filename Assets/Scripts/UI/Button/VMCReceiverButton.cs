@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 namespace HardCoded.VRigUnity {
 	public class VMCReceiverButton : BaseButton {

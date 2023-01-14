@@ -21,6 +21,12 @@ namespace HardCoded.VRigUnity {
 			Vector4 rect = SettingsUtil.GetResizableBox(Settings.TrackingBox);
 			box.Offset = new(rect.x, rect.y);
 			box.Size = new(rect.z, rect.w);
+			box.Callback = (offset, size) => {
+				string next = SettingsUtil.GetResizableBox(offset, size);
+				if (next != Settings.TrackingBox) {
+					Settings.TrackingBox = next;
+				}
+			};
 		}
 
 		void Update() {
@@ -38,11 +44,6 @@ namespace HardCoded.VRigUnity {
 			}
 
 			box.LocalSize = cameraBox.anchorMax - cameraBox.anchorMin;
-
-			string next = SettingsUtil.GetResizableBox(box.Offset, box.Size);
-			if (next != Settings.TrackingBox) {
-				Settings.TrackingBox = next;
-			}
 		}
 
 		public bool IsInside(Vector2 point) {

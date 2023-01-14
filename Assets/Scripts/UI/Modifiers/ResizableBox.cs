@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -33,6 +34,7 @@ namespace HardCoded.VRigUnity {
 		public Vector2 Offset { get; set; } = Vector2.zero;
 		public Vector2 Size { get; set; } = new(0.5f, 0.5f);
 		public Vector2 LocalSize { get; set; } = Vector2.one;
+		public Action<Vector2, Vector2> Callback { private get; set; }
 
 		public Vector2 FromScreenToLocal(Vector2 point) {
 			Vector2 screen = ScreenSize * LocalSize;
@@ -116,16 +118,14 @@ namespace HardCoded.VRigUnity {
 					if (x == 0) {
 						delta.x = -delta.x;
 					}
-					
-					if (y == 2) {
-						delta.y = -delta.y;
-					}
-
 					if (x == 1) {
 						delta.x = 0;
 						posDelta.x = 0;
 					}
-
+					
+					if (y == 2) {
+						delta.y = -delta.y;
+					}
 					if (y == 1) {
 						delta.y = 0;
 						posDelta.y = 0;
@@ -146,40 +146,24 @@ namespace HardCoded.VRigUnity {
 					}
 					
 					Vector2 offset = box.Offset;
+					float ax = 0.5f - size.x / 2.0f;
+					float ay = 0.5f - size.y / 2.0f;
 					if (!isShift) {
 						if (x == 2) {
-							if (offset.x + size.x / 2.0f + delta.x > 0.5f) {
-								delta.x += 0.5f - offset.x - size.x / 2.0f - delta.x;
-							}
-						} else if (x == 0) {
-							if (offset.x - size.x / 2.0f - delta.x < -0.5f) {
-								delta.x -= (-0.5f - offset.x + size.x / 2.0f + delta.x);
-							}
+							delta.x = Mathf.Min(delta.x, ax - offset.x);
+						} else if (x == 0) {	
+							delta.x = Mathf.Min(delta.x, ax + offset.x);
 						}
 
 						if (y == 0) {
-							if (offset.y + size.y / 2.0f + delta.y > 0.5f) {
-								delta.y += 0.5f - offset.y - size.y / 2.0f - delta.y;
-							}
+							delta.y = Mathf.Min(delta.y, ay - offset.y);
 						} else if (y == 2) {
-							if (offset.y - size.y / 2.0f - delta.y < -0.5f) {
-								delta.y -= (-0.5f - offset.y + size.y / 2.0f + delta.y);
-							}
+							delta.y = Mathf.Min(delta.y, ay + offset.y);
 						}
 					} else {
-						if (offset.x - size.x / 2.0f - delta.x < -0.5f) {
-							delta.x -= -0.5f - (offset.x - size.x / 2.0f - delta.x);
-						}
-						if (offset.x + size.x / 2.0f + delta.x > 0.5f) {
-							delta.x += 0.5f - (offset.x + size.x / 2.0f + delta.x);
-						}
-						
-						if (offset.y - size.y / 2.0f - delta.y < -0.5f) {
-							delta.y -= -0.5f - (offset.y - size.y / 2.0f - delta.y);
-						}
-						if (offset.y + size.y / 2.0f + delta.y > 0.5f) {
-							delta.y += 0.5f - (offset.y + size.y / 2.0f + delta.y);
-						}
+						// When shifting the size expands on both sides. 2x
+						delta.x = Mathf.Min(delta.x, (ax + offset.x) * 2, (ax - offset.x) * 2);
+						delta.y = Mathf.Min(delta.y, (ay + offset.y) * 2, (ay - offset.y) * 2);
 					}
 
 					box.Size += delta;
@@ -270,8 +254,9 @@ namespace HardCoded.VRigUnity {
 
 		void UpdateRect() {
 			Vector2 screen = ScreenSize * LocalSize;
-			rect.sizeDelta = screen * Size / canvas.scaleFactor;
-			rect.anchoredPosition = screen * Offset / canvas.scaleFactor;
+			float scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
+			rect.sizeDelta = screen * Size / scaleFactor;
+			rect.anchoredPosition = screen * Offset / scaleFactor;
 		}
 
 		void UpdateParts() {
@@ -323,9 +308,10 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		void Update() {
+		void LateUpdate() {
 			UpdateRect();
 			UpdateParts();
+			Callback?.Invoke(Offset, Size);
 		}
 	}
 }
