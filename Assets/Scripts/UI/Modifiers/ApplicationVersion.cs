@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace HardCoded.VRigUnity {
 
@@ -18,8 +19,23 @@ namespace HardCoded.VRigUnity {
 			}
 #else
 			text.text = Application.version;
+			UpdateTitle();
 #endif
 		}
+
+#if UNITY_STANDALONE_WIN
+		[DllImport("user32.dll", EntryPoint = "SetWindowText")]
+		static extern bool SetWindowText(IntPtr hwnd, string lpString);
+
+		// Add the version information to the window title
+		void UpdateTitle() {
+			IntPtr windowHandle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+			SetWindowText(windowHandle, Application.productName + " " + Application.version);
+		}
+#else
+		void UpdateTitle() {
+		}
+#endif
 
 #if UNITY_EDITOR
 		[NonSerialized]

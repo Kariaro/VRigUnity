@@ -1095,7 +1095,6 @@ MonoBehaviour:
   unityCamera: {fileID: 3840394562969064526}
   streamCanvas: {fileID: 6447137188617013788}
   unityCanvas: {fileID: 6447137188268379335}
-  trackingCanvas: {fileID: 0}
   annotationObject: {fileID: 2582724718563156007}
   annotationArea: {fileID: 8947281361049633109}
   holisticAnnotationController: {fileID: 4825105203388216586}
