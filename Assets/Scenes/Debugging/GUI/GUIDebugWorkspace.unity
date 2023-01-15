@@ -259,6 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphRunner: {fileID: 275874975}
   textureFramePool: {fileID: 275874970}
+  defaultVrmModel: {fileID: 1321532676}
   defaultVrmPrefab: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
   vrmModel: {fileID: 1321532676}
   vrmController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
@@ -518,22 +519,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
---- !u!95 &1321532674 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 3181082426570656820, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  m_PrefabInstance: {fileID: 1321532673}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1321532675 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4111744551054172291, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  m_PrefabInstance: {fileID: 1321532673}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1321532676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b678c1df50cfb547990db24a32856da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1321532676 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
@@ -581,7 +566,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineLength: 0.015
   alpha: 0.34
-  vrmModel: {fileID: 1321532676}
   rightHand: 1
   leftHand: 1
 --- !u!4 &1903942792

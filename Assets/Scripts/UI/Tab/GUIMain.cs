@@ -52,7 +52,7 @@ namespace HardCoded.VRigUnity {
 
 		public void ResetModel() {
 			Settings.ModelFile = "";
-			SolutionUtils.GetSolution().ResetVRMModel();
+			SolutionUtils.GetSolution().Model.ResetVRMModel();
 		}
 
 		public void LoadVrmModel(string path) {
@@ -75,7 +75,7 @@ namespace HardCoded.VRigUnity {
 				loaded.ShowMeshes();
 				
 				Settings.ModelFile = path;
-				SolutionUtils.GetSolution().SetVRMModel(loaded.gameObject);
+				SolutionUtils.GetSolution().Model.SetVRMModel(loaded.gameObject);
 			}
 		}
 

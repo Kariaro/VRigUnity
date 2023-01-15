@@ -44,34 +44,31 @@ namespace HardCoded.VRigUnity {
 
 		[SerializeField] [Range(0.0001f, 0.03f)] private float lineLength = 0.015f;
 		[SerializeField] [Range(0, 1)] private float alpha = 0.25f;
-		[SerializeField] private GameObject vrmModel;
 		[SerializeField] private bool rightHand = true;
 		[SerializeField] private bool leftHand = true;
+		private HolisticModel vrmModel;
+
+		void Start() {
+			vrmModel = SolutionUtils.GetSolution().Model;
+		}
 
 		void Update() {
-			if (vrmModel == null) {
-				// If the model was not found update the model
-				vrmModel = SolutionUtils.GetSolution().VrmModel;
+			// Make sure the model is semi transparent
+			SkinnedMeshRenderer[] array = vrmModel.VrmModel.GetComponentsInChildren<SkinnedMeshRenderer>();
+			foreach (SkinnedMeshRenderer rend in array) {
+				rend.material.SetOverrideTag("RenderType", "Transparent");
+				rend.material.DisableKeyword("_ALPHATEST_ON");
+				rend.material.EnableKeyword("_ALPHABLEND_ON");
+				rend.material.SetFloat("_AlphaToMask", 0);
+				rend.material.SetFloat("_BlendMode", 2);
+				rend.material.SetFloat("_DstBlend", 10);
+				rend.material.SetFloat("_SrcBlend", 5);
+				rend.material.SetFloat("_ZWrite", 0);
+				rend.material.SetColor("_Color", new Color(1, 1, 1, alpha));
+				rend.material.renderQueue = 3000;
 			}
 
-			{
-				// Make sure the model is semi transparent
-				SkinnedMeshRenderer[] array = vrmModel.GetComponentsInChildren<SkinnedMeshRenderer>();
-				foreach (SkinnedMeshRenderer rend in array) {
-					rend.material.SetOverrideTag("RenderType", "Transparent");
-					rend.material.DisableKeyword("_ALPHATEST_ON");
-					rend.material.EnableKeyword("_ALPHABLEND_ON");
-					rend.material.SetFloat("_AlphaToMask", 0);
-					rend.material.SetFloat("_BlendMode", 2);
-					rend.material.SetFloat("_DstBlend", 10);
-					rend.material.SetFloat("_SrcBlend", 5);
-					rend.material.SetFloat("_ZWrite", 0);
-					rend.material.SetColor("_Color", new Color(1, 1, 1, alpha));
-					rend.material.renderQueue = 3000;
-				}
-			}
-			Animator animator = vrmModel.GetComponent<Animator>();
-
+			Animator animator = vrmModel.Animator;
 			if (rightHand) DrawHandGizmo(animator, RIGHT_HAND);
 			if (leftHand) DrawHandGizmo(animator, LEFT_HAND);
 		}

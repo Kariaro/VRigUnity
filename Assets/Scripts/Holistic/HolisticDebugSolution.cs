@@ -9,7 +9,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private HandGroup handGroup;
 		[SerializeField] private int fps = 60;
 
-		private Groups.HandPoints handPoints = new();
+		private readonly Groups.HandPoints handPoints = new();
 		private bool hasHandData;
 
 		protected override void OnStartRun() {
@@ -54,7 +54,7 @@ namespace HardCoded.VRigUnity {
 
 		public override void ModelUpdate() {
 			if (handGroup != null && handPoints != null) {
-				handGroup.Apply(handPoints, animator.GetBoneTransform(HumanBodyBones.LeftHand).transform.position, 0.5f);
+				handGroup.Apply(handPoints, model.ModelBones[HumanBodyBones.LeftHand].transform.position, 0.5f);
 			}
 
 			// Debug

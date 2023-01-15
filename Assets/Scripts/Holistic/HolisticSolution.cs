@@ -7,12 +7,10 @@ using VRM;
 namespace HardCoded.VRigUnity {
 	public class HolisticSolution : Solution {
 		[Header("Rig")]
-		[SerializeField] protected GameObject defaultVrmPrefab;
-		[SerializeField] protected GameObject vrmModel;
-		[SerializeField] protected RuntimeAnimatorController vrmController;
-		[SerializeField] protected VRMAnimator vrmAnimator;
-		[SerializeField] protected VRMBlendShapeProxy blendShapeProxy;
-		[SerializeField] protected Animator animator;
+		[SerializeField] private GameObject defaultVrmModel;
+		[SerializeField] private GameObject defaultVrmPrefab;
+		[SerializeField] private RuntimeAnimatorController defaultController;
+		protected HolisticModel model;
 
 		[Header("UI")]
 		public GUIMain guiMain;
@@ -37,56 +35,12 @@ namespace HardCoded.VRigUnity {
 
 		// API Getters
 		private readonly long StartTicks = DateTime.Now.Ticks;
-		public GameObject VrmModel => vrmModel;
 		public float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
+		public HolisticModel Model => model;
 
 		void Awake() {
-			SetVRMModel(vrmModel);
-		}
-
-		public void ResetVRMModel() {
-			SetVRMModel(Instantiate(defaultVrmPrefab));
-		}
-
-		public bool SetVRMModel(GameObject gameObject) {
-			var blendShapeProxy = gameObject.GetComponent<VRMBlendShapeProxy>();
-			var animator = gameObject.GetComponent<Animator>();
-
-			if (animator == null || blendShapeProxy == null) {
-				return false;
-			}
-
-			if (vrmModel != null && vrmModel != gameObject) {
-				Destroy(vrmModel);
-			}
-			
-			this.vrmAnimator = gameObject.AddComponent<VRMAnimator>();
-			this.vrmAnimator.controller = vrmController;
-			this.vrmModel = gameObject;
-			this.blendShapeProxy = blendShapeProxy;
-			this.animator = animator;
-
-			DefaultVRMAnimator();
-
-			if (!Settings.ShowModel) {
-				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
-					transform.gameObject.layer = LayerMask.NameToLayer("HiddenModel");
-				}
-			}
-
-			return true;
-		}
-
-		// Called when a bone is selected or deselected
-		public void OnBoneUpdate(int index, bool set) {
-			// Our program should now track the bone
-			// Make sure all parts are cleared
-			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
-				Transform trans = animator.GetBoneTransform(bone);
-				if (trans != null) {
-					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
-				}
-			}
+			model = new(defaultVrmModel, defaultVrmPrefab, defaultController);
+			model.IsVisible = Settings.ShowModel;
 		}
 
 		protected override void OnStartRun() {
@@ -97,30 +51,7 @@ namespace HardCoded.VRigUnity {
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
 			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
 			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-
 			Canvas.SetupAnnotations();
-		}
-
-		public void DefaultVRMAnimator() {
-			foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
-				if (bone == HumanBodyBones.LastBone) {
-					break;
-				}
-
-				Transform trans = animator.GetBoneTransform(bone);
-				if (trans != null) {
-					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
-				}
-			}
-		}
-
-		public void ResetVRMAnimator() {
-			// TODO: What does rebind do?
-			animator.Rebind();
-			foreach (BlendShapePreset preset in Enum.GetValues(typeof(BlendShapePreset))) {
-				// TODO: Remove memory allocation and cache
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(preset), 0);
-			}
 		}
 
 		private Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
@@ -188,7 +119,7 @@ namespace HardCoded.VRigUnity {
 				neckRotation = Quaternion.LookRotation(forwardDir, faceUpDir);
 			}
 
-			Pose.Neck.Set(neckRotation, TimeNow);
+			Pose.Neck.Add(neckRotation, TimeNow);
 			this.mouthOpen = mouthOpen;
 			this.rEyeOpen.Add(rEyeOpen);
 			this.lEyeOpen.Add(lEyeOpen);
@@ -207,8 +138,9 @@ namespace HardCoded.VRigUnity {
 			for (int i = 0; i < count; i++) {
 				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
 			}
-
-			OnLeftHandLandmarks(handPoints);
+			
+			Groups.HandRotation handGroup = HandResolver.SolveLeftHand(handPoints);
+			LeftHand.Update(handGroup, TimeNow);
 		}
 
 		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
@@ -223,51 +155,8 @@ namespace HardCoded.VRigUnity {
 				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
 			}
 
-			OnRightHandLandmarks(handPoints);
-		}
-
-		private void OnLeftHandLandmarks(Groups.HandPoints hand) {
-			Groups.HandRotation handGroup = HandResolver.SolveLeftHand(hand);
-
-			float time = TimeNow;
-			LeftHand.Wrist.Set(handGroup.Wrist, time);
-			LeftHand.IndexPip.Set(handGroup.IndexFingerMCP, time);
-			LeftHand.IndexDip.Set(handGroup.IndexFingerPIP, time);
-			LeftHand.IndexTip.Set(handGroup.IndexFingerDIP, time);
-			LeftHand.MiddlePip.Set(handGroup.MiddleFingerMCP, time);
-			LeftHand.MiddleDip.Set(handGroup.MiddleFingerPIP, time);
-			LeftHand.MiddleTip.Set(handGroup.MiddleFingerDIP, time);
-			LeftHand.RingPip.Set(handGroup.RingFingerMCP, time);
-			LeftHand.RingDip.Set(handGroup.RingFingerPIP, time);
-			LeftHand.RingTip.Set(handGroup.RingFingerDIP, time);
-			LeftHand.PinkyPip.Set(handGroup.PinkyMCP, time);
-			LeftHand.PinkyDip.Set(handGroup.PinkyPIP, time);
-			LeftHand.PinkyTip.Set(handGroup.PinkyDIP, time);
-			LeftHand.ThumbPip.Set(handGroup.ThumbCMC, time);
-			LeftHand.ThumbDip.Set(handGroup.ThumbMCP, time);
-			LeftHand.ThumbTip.Set(handGroup.ThumbIP, time);
-		}
-		
-		private void OnRightHandLandmarks(Groups.HandPoints hand) {
-			Groups.HandRotation handGroup = HandResolver.SolveRightHand(hand);
-			
-			float time = TimeNow;
-			RightHand.Wrist.Set(handGroup.Wrist, time);
-			RightHand.IndexPip.Set(handGroup.IndexFingerMCP, time);
-			RightHand.IndexDip.Set(handGroup.IndexFingerPIP, time);
-			RightHand.IndexTip.Set(handGroup.IndexFingerDIP, time);
-			RightHand.MiddlePip.Set(handGroup.MiddleFingerMCP, time);
-			RightHand.MiddleDip.Set(handGroup.MiddleFingerPIP, time);
-			RightHand.MiddleTip.Set(handGroup.MiddleFingerDIP, time);
-			RightHand.RingPip.Set(handGroup.RingFingerMCP, time);
-			RightHand.RingDip.Set(handGroup.RingFingerPIP, time);
-			RightHand.RingTip.Set(handGroup.RingFingerDIP, time);
-			RightHand.PinkyPip.Set(handGroup.PinkyMCP, time);
-			RightHand.PinkyDip.Set(handGroup.PinkyPIP, time);
-			RightHand.PinkyTip.Set(handGroup.PinkyDIP, time);
-			RightHand.ThumbPip.Set(handGroup.ThumbCMC, time);
-			RightHand.ThumbDip.Set(handGroup.ThumbMCP, time);
-			RightHand.ThumbTip.Set(handGroup.ThumbIP, time);
+			Groups.HandRotation handGroup = HandResolver.SolveRightHand(handPoints);
+			RightHand.Update(handGroup, TimeNow);
 		}
 
 		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
@@ -296,76 +185,75 @@ namespace HardCoded.VRigUnity {
 			Groups.PoseRotation pose = PoseResolver.SolvePose(eventArgs);
 
 			float time = TimeNow;
-			Pose.Chest.Set(pose.chestRotation, time);
+			Pose.Chest.Add(pose.chestRotation, time);
 			// Pose.Hips.Set(hipsRotation, time);
-			Pose.HipsPosition.Set(pose.hipsPosition, time);
+			Pose.HipsPosition.Add(pose.hipsPosition, time);
 			
 			if (!Settings.UseFullIK) {
 				if (TrackRightHand) {
-					Pose.RightUpperArm.Set(pose.rUpperArm, time);
-					Pose.RightLowerArm.Set(pose.rLowerArm, time);
+					Pose.RightUpperArm.Add(pose.rUpperArm, time);
+					Pose.RightLowerArm.Add(pose.rLowerArm, time);
 				}
 
 				if (TrackLeftHand) {
-					Pose.LeftUpperArm.Set(pose.lUpperArm, time);
-					Pose.LeftLowerArm.Set(pose.lLowerArm, time);
+					Pose.LeftUpperArm.Add(pose.lUpperArm, time);
+					Pose.LeftLowerArm.Add(pose.lLowerArm, time);
 				}
 			}
 
 			if (Settings.UseLegRotation) {
 				if (pose.hasRightLeg) {
-					Pose.RightUpperLeg.Set(pose.rUpperLeg, time);
-					Pose.RightLowerLeg.Set(pose.rLowerLeg, time);
+					Pose.RightUpperLeg.Add(pose.rUpperLeg, time);
+					Pose.RightLowerLeg.Add(pose.rLowerLeg, time);
 				}
 
 				if (pose.hasLeftLeg) {
-					Pose.LeftUpperLeg.Set(pose.lUpperLeg, time);
-					Pose.LeftLowerLeg.Set(pose.lLowerLeg, time);
+					Pose.LeftUpperLeg.Add(pose.lUpperLeg, time);
+					Pose.LeftLowerLeg.Add(pose.lLowerLeg, time);
 				}
 			}
 			
-			Pose.RightShoulder.Set(pose.rShoulder, time);
-			Pose.RightElbow.Set(pose.rElbow, time);
-			Pose.RightHand.Set(pose.rHand, time);
-			Pose.LeftShoulder.Set(pose.lShoulder, time);
-			Pose.LeftElbow.Set(pose.lElbow, time);
-			Pose.LeftHand.Set(pose.lHand, time);
+			Pose.RightShoulder.Add(pose.rShoulder, time);
+			Pose.RightElbow.Add(pose.rElbow, time);
+			Pose.RightHand.Add(pose.rHand, time);
+			Pose.LeftShoulder.Add(pose.lShoulder, time);
+			Pose.LeftElbow.Add(pose.lElbow, time);
+			Pose.LeftHand.Add(pose.lHand, time);
 		}
 
 		public virtual void Update() {
-			if (Settings.ShowModel != (vrmModel.layer == 0)) {
-				int nextLayer = Settings.ShowModel ? 0 : LayerMask.NameToLayer("HiddenModel");
-				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
-					transform.gameObject.layer = nextLayer;
-				}
+			if (Settings.ShowModel != model.IsVisible) {
+				model.IsVisible = Settings.ShowModel;
 			}
 		}
 
 		public virtual void ModelUpdate() {
-			if (!vrmModel.activeInHierarchy) {
+			if (!model.VrmModel.activeInHierarchy) {
 				return;
 			}
 
 			float time = TimeNow;
 
 			// Apply the model transform
-			vrmModel.transform.position = guiMain.ModelTransform;
+			model.VrmModel.transform.position = guiMain.ModelTransform;
 
 			if (IsPaused) {
-				DefaultVRMAnimator();
+				model.DefaultVRMAnimator();
 				return;
 			}
 
+			Animator animator = model.Animator;
+			// TODO: Remove HumanBodyBones from the update functions
 			if (BoneSettings.Get(BoneSettings.NECK)) {
-				Pose.Neck.UpdateRotation2(animator, HumanBodyBones.Neck, time);
+				Pose.Neck.UpdateRotationWithoutIK(animator, HumanBodyBones.Neck, time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.CHEST)) {
-				Pose.Chest.UpdateRotation2(animator, HumanBodyBones.Chest, time);
+				Pose.Chest.UpdateRotationWithoutIK(animator, HumanBodyBones.Chest, time);
 			}
 
 			if (BoneSettings.Get(BoneSettings.HIPS)) {
-				Pose.Hips.UpdateRotation2(animator, HumanBodyBones.Hips, time);
+				Pose.Hips.UpdateRotationWithoutIK(animator, HumanBodyBones.Hips, time);
 			}
 			
 			if (!Settings.UseFullIK) { // Arms
@@ -444,33 +332,33 @@ namespace HardCoded.VRigUnity {
 
 			// Face
 			if (BoneSettings.Get(BoneSettings.FACE)) {
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), mouthOpen);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], mouthOpen);
 
-				float rEyeTest = blendShapeProxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R));
-				float lEyeTest = blendShapeProxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L));
+				float rEyeTest = model.BlendShapeProxy.GetValue(model.BlendShapes[BlendShapePreset.Blink_R]);
+				float lEyeTest = model.BlendShapeProxy.GetValue(model.BlendShapes[BlendShapePreset.Blink_L]);
 				float rEyeValue = (rEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
 				float lEyeValue = (lEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
 				rEyeValue = (rEyeValue + rEyeTest * 2) / 3.0f;
 				lEyeValue = (lEyeValue + lEyeTest * 2) / 3.0f;
 
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), rEyeValue);
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), lEyeValue);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_R], rEyeValue);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_L], lEyeValue);
 
 				// TODO: Update this code to make it more correct
-				animator.GetBoneTransform(HumanBodyBones.LeftEye).localRotation = Quaternion.Euler(
+				model.ModelBones[HumanBodyBones.LeftEye].localRotation = Quaternion.Euler(
 					(lEyeIris.Average().y - 0.14f) * -30,
 					lEyeIris.Average().x * -30,
 					0
 				);
-				animator.GetBoneTransform(HumanBodyBones.RightEye).localRotation = Quaternion.Euler(
+				model.ModelBones[HumanBodyBones.RightEye].localRotation = Quaternion.Euler(
 					(rEyeIris.Average().y - 0.14f) * -30,
 					rEyeIris.Average().x * -30,
 					0
 				);
 			} else {
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), 0);
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), 0);
-				blendShapeProxy.ImmediatelySetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), 0);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], 0);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_L], 0);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_R], 0);
 			}
 		}
 	}

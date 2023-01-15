@@ -1,15 +1,11 @@
 using UnityEngine;
 using uOSC;
-using System;
 using VRM;
 
 namespace HardCoded.VRigUnity {
 	[RequireComponent(typeof(uOscClient))]
 	public class VMCSender : MonoBehaviour {
-		public GameObject vrmModel;
-		public Animator vrmAnimator;
-		public VRMBlendShapeProxy vrmBlendShapeProxy;
-		private uOscClient uClient = null;
+		private uOscClient uClient;
 
 		public string GetAddress() {
 			return uClient.address;
@@ -40,45 +36,35 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Update() {
-			// Check if the vrmModel exists
-			if (vrmModel == null) {
-				vrmModel = SolutionUtils.GetSolution().VrmModel;
-				vrmAnimator = vrmModel.GetComponent<Animator>();
-				vrmBlendShapeProxy = vrmModel.GetComponent<VRMBlendShapeProxy>();
+			var holisticModel = SolutionUtils.GetSolution().Model;
+
+			// Check if we should be sending
+			if (!uClient.isRunning || !holisticModel.IsPrepared) {
 				return;
 			}
 
 			// Bones
-			if (vrmAnimator != null) {
-				var boneBundle = new Bundle(Timestamp.Now);
-				foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
-					if (bone != HumanBodyBones.LastBone) {
-						Transform tr = vrmAnimator.GetBoneTransform(bone);
-						if (tr != null) {
-							boneBundle.Add(new Message("/VMC/Ext/Bone/Pos",
-								bone.ToString(),
-								tr.localPosition.x, tr.localPosition.y, tr.localPosition.z,
-								tr.localRotation.x, tr.localRotation.y, tr.localRotation.z, tr.localRotation.w
-							));
-						}
-					}
-				}
-				uClient.Send(boneBundle);
+			var boneBundle = new Bundle(Timestamp.Now);
+			foreach (var pair in holisticModel.ModelBones) {
+				Transform tr = pair.Value;
+				boneBundle.Add(new Message("/VMC/Ext/Bone/Pos",
+					pair.Key.ToString(),
+					tr.localPosition.x, tr.localPosition.y, tr.localPosition.z,
+					tr.localRotation.x, tr.localRotation.y, tr.localRotation.z, tr.localRotation.w
+				));
 			}
+			uClient.Send(boneBundle);
 
 			// BlendShape
-            if (vrmBlendShapeProxy != null) {
-                var blendShapeBundle = new Bundle(Timestamp.Now);
-
-                foreach (var b in vrmBlendShapeProxy.GetValues()) {
-                    blendShapeBundle.Add(new Message("/VMC/Ext/Blend/Val",
-                        b.Key.ToString(),
-                        (float) b.Value
-                    ));
-                }
-                blendShapeBundle.Add(new Message("/VMC/Ext/Blend/Apply"));
-                uClient.Send(blendShapeBundle);
+            var blendShapeBundle = new Bundle(Timestamp.Now);
+            foreach (var b in holisticModel.BlendShapeProxy.GetValues()) {
+                blendShapeBundle.Add(new Message("/VMC/Ext/Blend/Val",
+                    b.Key.ToString(),
+                    (float) b.Value
+                ));
             }
+            blendShapeBundle.Add(new Message("/VMC/Ext/Blend/Apply"));
+            uClient.Send(blendShapeBundle);
 
             // Available
             uClient.Send("/VMC/Ext/OK", 1);

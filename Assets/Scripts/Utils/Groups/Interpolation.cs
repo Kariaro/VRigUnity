@@ -2,6 +2,96 @@
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
+	public struct DiscreteRotStruct {
+		public static DiscreteRotStruct identity => new(Quaternion.identity);
+		
+		// Internal
+		private Quaternion m_current;
+		private Quaternion m_target;
+		private float m_targetTime;
+		public Quaternion Current => m_current;
+
+		public DiscreteRotStruct(Quaternion current) {
+			m_current = current;
+			m_target = Quaternion.identity;
+			m_targetTime = 0;
+		}
+
+		/// <summary>
+		/// Add a quaternion rotation with a specified time
+		/// </summary>
+		/// <param name="value">The rotation</param>
+		/// <param name="time">The time</param>
+		public void Add(Quaternion value, float time) {
+			m_target = value;
+			m_targetTime = time;
+		}
+
+		public void Update(float time) {
+			// Implement spherical bezier spline interpolation?
+			if (m_targetTime < time - 1) {
+				// We have lost focus of the data point
+			}
+			
+			// 60 fps is the default speed so this should == 1
+			// If we have 120 fps this would be == 0.5
+			// If we have  30 fps this would be == 2.0
+			float td = Time.deltaTime * 60;
+			float iv = td * Settings.TrackingInterpolation;
+			m_current = Quaternion.Slerp(m_current, m_target, iv);
+		}
+
+		public void ApplyLocal(Transform transform) {
+			transform.localRotation = m_current;
+		}
+
+		public void ApplyGlobal(Transform transform) {
+			transform.rotation = m_current;
+		}
+	}
+
+	public struct DiscretePosStruct {
+		public static DiscretePosStruct identity => new(Vector3.zero);
+		
+		// Internal
+		private Vector3 m_current;
+		private Vector3 m_target;
+		private float m_targetTime;
+		public Vector3 Current => m_current;
+		
+		public DiscretePosStruct(Vector3 current) {
+			m_current = current;
+			m_target = Vector3.zero;
+			m_targetTime = 0;
+		}
+
+		/// <summary>
+		/// Add a position with a specified time
+		/// </summary>
+		/// <param name="value">The position</param>
+		/// <param name="time">The time</param>
+		public void Add(Vector3 value, float time) {
+			m_target = value;
+			m_targetTime = time;
+		}
+
+		/// <summary>
+		/// Update the internal rotation
+		/// </summary>
+		/// <param name="time">The time</param>
+		public void Update(float time) {
+			if (m_targetTime < time - 1) {
+				// We have lost focus of the data point
+			}
+
+			m_current = Vector3.Lerp(m_current, m_target, Settings.TrackingInterpolation);
+		}
+
+		public void Apply(Transform transform) {
+			transform.position = m_current;
+		}
+	}
+
 	public struct RotStruct {
 		public static RotStruct identity => new(Quaternion.identity, 0);
 
@@ -26,7 +116,7 @@ namespace HardCoded.VRigUnity {
 			lastBone = HumanBodyBones.LastBone;
 		}
 
-		public void Set(Quaternion value, float time) {
+		public void Add(Quaternion value, float time) {
 			lastTime = currTime;
 			currTime = time;
 			curr = value;
@@ -72,7 +162,9 @@ namespace HardCoded.VRigUnity {
 		public Quaternion GetRawUpdateRotation(Transform transform, float time) {
 			return GetUpdatedRotation(transform.rotation, curr, time);
 		}
-			
+		
+		// TODO: Remove 'HumanBodyBones' from this call
+		//       This should handled in a special way
 		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
@@ -89,7 +181,7 @@ namespace HardCoded.VRigUnity {
 			lastPosition = transform.position;
 		}
 
-		public void UpdateRotation2(Animator animator, HumanBodyBones bone, float time) {
+		public void UpdateRotationWithoutIK(Animator animator, HumanBodyBones bone, float time) {
 			Transform transform = GetTransform(animator, bone);
 			if (time - 1 > currTime) {
 				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
@@ -133,7 +225,7 @@ namespace HardCoded.VRigUnity {
 			lastBone = HumanBodyBones.LastBone;
 		}
 
-		public void Set(Vector3 value, float time) {
+		public void Add(Vector3 value, float time) {
 			lastTime = currTime;
 			currTime = time;
 			curr = value;
@@ -188,6 +280,82 @@ namespace HardCoded.VRigUnity {
 		public RotStruct ThumbPip = RotStruct.identity;
 		public RotStruct ThumbDip = RotStruct.identity;
 		public RotStruct ThumbTip = RotStruct.identity;
+
+		public void Update(Groups.HandRotation value, float time) {
+			Wrist.Add(value.Wrist, time);
+			IndexPip.Add(value.IndexFingerMCP, time);
+			IndexDip.Add(value.IndexFingerPIP, time);
+			IndexTip.Add(value.IndexFingerDIP, time);
+			MiddlePip.Add(value.MiddleFingerMCP, time);
+			MiddleDip.Add(value.MiddleFingerPIP, time);
+			MiddleTip.Add(value.MiddleFingerDIP, time);
+			RingPip.Add(value.RingFingerMCP, time);
+			RingDip.Add(value.RingFingerPIP, time);
+			RingTip.Add(value.RingFingerDIP, time);
+			PinkyPip.Add(value.PinkyMCP, time);
+			PinkyDip.Add(value.PinkyPIP, time);
+			PinkyTip.Add(value.PinkyDIP, time);
+			ThumbPip.Add(value.ThumbCMC, time);
+			ThumbDip.Add(value.ThumbMCP, time);
+			ThumbTip.Add(value.ThumbIP, time);
+		}
+	}
+
+	public class HandValuesTest {
+		public DiscreteRotStruct Wrist     = DiscreteRotStruct.identity;
+		public DiscreteRotStruct IndexPip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct IndexDip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct IndexTip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct MiddlePip = DiscreteRotStruct.identity;
+		public DiscreteRotStruct MiddleDip = DiscreteRotStruct.identity;
+		public DiscreteRotStruct MiddleTip = DiscreteRotStruct.identity;
+		public DiscreteRotStruct RingPip   = DiscreteRotStruct.identity;
+		public DiscreteRotStruct RingDip   = DiscreteRotStruct.identity;
+		public DiscreteRotStruct RingTip   = DiscreteRotStruct.identity;
+		public DiscreteRotStruct PinkyPip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct PinkyDip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct PinkyTip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct ThumbPip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct ThumbDip  = DiscreteRotStruct.identity;
+		public DiscreteRotStruct ThumbTip  = DiscreteRotStruct.identity;
+
+		public void Update(Groups.HandRotation value, float time) {
+			Wrist.Add(value.Wrist, time);
+			IndexPip.Add(value.IndexFingerMCP, time);
+			IndexDip.Add(value.IndexFingerPIP, time);
+			IndexTip.Add(value.IndexFingerDIP, time);
+			MiddlePip.Add(value.MiddleFingerMCP, time);
+			MiddleDip.Add(value.MiddleFingerPIP, time);
+			MiddleTip.Add(value.MiddleFingerDIP, time);
+			RingPip.Add(value.RingFingerMCP, time);
+			RingDip.Add(value.RingFingerPIP, time);
+			RingTip.Add(value.RingFingerDIP, time);
+			PinkyPip.Add(value.PinkyMCP, time);
+			PinkyDip.Add(value.PinkyPIP, time);
+			PinkyTip.Add(value.PinkyDIP, time);
+			ThumbPip.Add(value.ThumbCMC, time);
+			ThumbDip.Add(value.ThumbMCP, time);
+			ThumbTip.Add(value.ThumbIP, time);
+		}
+
+		public void Update(float time) {
+			Wrist    .Update(time);
+			IndexPip .Update(time);
+			IndexDip .Update(time);
+			IndexTip .Update(time);
+			MiddlePip.Update(time);
+			MiddleDip.Update(time);
+			MiddleTip.Update(time);
+			RingPip  .Update(time);
+			RingDip  .Update(time);
+			RingTip  .Update(time);
+			PinkyPip .Update(time);
+			PinkyDip .Update(time);
+			PinkyTip .Update(time);
+			ThumbPip .Update(time);
+			ThumbDip .Update(time);
+			ThumbTip .Update(time);
+		}
 	}
 
 	public class PoseValues {
