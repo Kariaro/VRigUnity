@@ -3,7 +3,7 @@ using UnityEngine;
 namespace HardCoded.VRigUnity {
 	public class GUIWindow : MonoBehaviour {
 		private GUIScript _guiScript;
-		public GUIScript GuiScript {
+		protected GUIScript GuiScript {
 			get {
 				if (_guiScript == null) {
 					_guiScript = GetComponentInParent<GUIScript>();

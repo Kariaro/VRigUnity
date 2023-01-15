@@ -56,6 +56,8 @@ namespace Mediapipe.Unity {
 				return _format;
 			}
 		}
+
+		public GpuBufferFormat gpuBufferformat => GpuBufferFormat.kBGRA32;
 		
 		/// <summary>
 		///   The event that will be invoked when the TextureFrame is released.

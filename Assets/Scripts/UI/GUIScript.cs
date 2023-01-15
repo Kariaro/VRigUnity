@@ -28,7 +28,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void UpdateCanvasScale(float scaleFactor) {
-			// Update position off UI windows
+			// Update position of UI windows
 			float positionMultiplier = canvasScalers[0].scaleFactor / scaleFactor;
 			Transform parent = settingsMenu.transform.parent;
 			foreach (Transform child in parent) {
