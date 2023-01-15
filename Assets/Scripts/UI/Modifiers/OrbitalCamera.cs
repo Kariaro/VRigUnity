@@ -97,9 +97,6 @@ namespace HardCoded.VRigUnity {
 					transform.position = transform.position + offset;
 					break;
 				}
-				default: {
-					break;
-				}
 			}
 		}
 	}

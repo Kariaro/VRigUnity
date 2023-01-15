@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using static HardCoded.VRigUnity.FileDialogUtils;
 using static HardCoded.VRigUnity.SettingsFieldTemplate;
@@ -10,6 +8,7 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Fields")]
 		public GUIBoneSettingsWindow boneSettingsWindow;
+		public GameObject trackingBox;
 		
 		protected override void InitializeSettings() {
 			AddDivider("VMC Settings");
@@ -22,7 +21,13 @@ namespace HardCoded.VRigUnity {
 				return builder.AddNumberInput((_, value) => Settings.VMCReceiverPort = value, 0, 65535, 3333, Settings.VMCReceiverPort, FieldData.None);	
 			});
 
-			
+			AddDivider("Tracking Settings");
+			CreateSetting("Hand Area", builder => {
+				return builder
+					.AddToggle((_, value) => Settings.UseTrackingBox = value, Settings.UseTrackingBox, FieldData.None)
+					.AddButton("Select Area", (_) => { trackingBox.SetActive(true); transform.parent.gameObject.SetActive(false); }, FieldData.None);
+			});
+
 			AddDivider("UI Settings");
 			CreateSetting("Always show UI", builder => {
 				return builder.AddToggle((_, value) => Settings.AlwaysShowUI = value, Settings.AlwaysShowUI, FieldData.None);
@@ -34,14 +39,14 @@ namespace HardCoded.VRigUnity {
 				}, new() { "Disabled", "x2", "x4", "x8" }, Settings.AntiAliasing, FieldData.None);	
 			});
 			CreateSetting("Show Camera", builder => {
-				return builder.AddToggle((_, value) => guiScript.SetShowCamera(value), false, FieldData.None);
+				return builder.AddToggle((_, value) => GuiScript.SetShowCamera(value), false, FieldData.None);
 			});
 			CreateSetting("Show Model", builder => {
 				return builder.AddToggle((_, value) => Settings.ShowModel = value, Settings.ShowModel, FieldData.None);
 			});
 			CreateSetting("Custom Background", builder => {
 				return builder
-					.AddToggle((_, value) => guiScript.SetShowBackgroundImage(value), Settings.ShowCustomBackground, FieldData.None)
+					.AddToggle((_, value) => GuiScript.SetShowBackgroundImage(value), Settings.ShowCustomBackground, FieldData.None)
 					.AddButton("Select Image", (_) => {
 						var extensions = new [] {
 							new CustomExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
@@ -51,7 +56,7 @@ namespace HardCoded.VRigUnity {
 						FileDialogUtils.OpenFilePanel(this, "Open Image", Settings.ImageFile, extensions, false, (paths) => {
 							if (paths.Length > 0) {
 								string filePath = paths[0];
-								guiScript.LoadCustomImage(filePath);
+								GuiScript.LoadCustomImage(filePath);
 							}
 						});
 					}, FieldData.None);

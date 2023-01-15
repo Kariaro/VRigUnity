@@ -59,7 +59,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Update() {
-			if (Settings.VirtualCamera != streamCamera.enabled) {
+			if (streamCamera.enabled != Settings.VirtualCamera) {
 				streamCamera.enabled = Settings.VirtualCamera;
 			}
 		}
@@ -71,7 +71,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing;
+			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
 			annotationController.rotationAngle = imageSource.Rotation.Reverse();
 		}
 

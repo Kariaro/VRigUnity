@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.25927603, g: 0.25927603, b: 0.25927603, a: 1}
+  m_IndirectSpecularColor: {r: 0.2595704, g: 0.2595704, b: 0.2595704, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -232,7 +232,6 @@ MonoBehaviour:
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
   _timeoutMicrosec: 100000
   modelComplexity: 1
-  refineFaceLandmarks: 1
   smoothLandmarks: 1
 --- !u!114 &275874976
 MonoBehaviour:
@@ -255,7 +254,8 @@ MonoBehaviour:
   blendShapeProxy: {fileID: 1321532675}
   animator: {fileID: 1321532674}
   guiScript: {fileID: 2129783507}
-  canvas: {fileID: 1393820231}
+  TrackRightHand: 1
+  TrackLeftHand: 1
 --- !u!114 &275874977
 MonoBehaviour:
   m_ObjectHideFlags: 0

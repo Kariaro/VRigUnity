@@ -59,5 +59,26 @@ namespace HardCoded.VRigUnity {
 			ResolutionStruct r = new(width, height, frameRate);
 			return r;
 		}
+
+		public static string GetResizableBox(Vector2 offset, Vector2 size) {
+			int x = (int)(offset.x * 10000);
+			int y = (int)(offset.y * 10000);
+			int z = (int)(size.x * 10000);
+			int w = (int)(size.y * 10000);
+			return $"{x},{y},{z},{w}";
+		}
+
+		public static Vector4 GetResizableBox(string text) {
+			string[] parts = text.Split(",");
+			if (parts.Length != 4) {
+				return new();
+			}
+
+			int.TryParse(parts[0], out int x);
+			int.TryParse(parts[1], out int y);
+			int.TryParse(parts[2], out int z);
+			int.TryParse(parts[3], out int w);
+			return new Vector4(x, y, z, w) / 10000.0f;
+		}
 	}
 }

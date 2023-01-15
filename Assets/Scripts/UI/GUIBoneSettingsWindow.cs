@@ -1,10 +1,7 @@
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUIBoneSettingsWindow : GUIWindow {
-		[SerializeField] private GUIScript settings;
-
 		public Toggle[] toggles;
 
 		public override void OnEnable() {

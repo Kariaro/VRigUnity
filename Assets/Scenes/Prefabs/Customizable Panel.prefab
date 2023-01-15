@@ -1095,6 +1095,7 @@ MonoBehaviour:
   unityCamera: {fileID: 3840394562969064526}
   streamCanvas: {fileID: 6447137188617013788}
   unityCanvas: {fileID: 6447137188268379335}
+  trackingCanvas: {fileID: 0}
   annotationObject: {fileID: 2582724718563156007}
   annotationArea: {fileID: 8947281361049633109}
   holisticAnnotationController: {fileID: 4825105203388216586}
@@ -2160,6 +2161,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3691926371192603471}
     m_Modifications:
+    - target: {fileID: 21367368615197373, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 1297232474496409030, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 1297232476517155413, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
     - target: {fileID: 1314261227135839417, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2208,6 +2221,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: HolisticLandmarks Annotation
       objectReference: {fileID: 0}
+    - target: {fileID: 4624453186030634952, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 6006344915029146444, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 7236361183614064492, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 7236361184821172621, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
+    - target: {fileID: 7911686807350250789, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf645f1af5f90246e87c443ab2154263, type: 3}
 --- !u!114 &1954440858303014570 stripped
@@ -2289,6 +2322,10 @@ PrefabInstance:
       propertyPath: _radius
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5913343085919651616, guid: 4418f6a92856c5b51b58a36e3be7ed5c, type: 3}
+      propertyPath: _annotationPrefab
+      value: 
+      objectReference: {fileID: 4924560881196058313, guid: c0074b7328ab64b4ba45b2909d36c21e, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4418f6a92856c5b51b58a36e3be7ed5c, type: 3}
 --- !u!4 &5814808201469054343 stripped

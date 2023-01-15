@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	// TODO: Optimize this class
