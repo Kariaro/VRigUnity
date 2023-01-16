@@ -8,6 +8,7 @@ namespace HardCoded.VRigUnity {
 		[Header("Debug")]
 		[SerializeField] private HandGroup handGroup;
 		[SerializeField] private int fps = 60;
+		[SerializeField] private bool renderUpdate;
 
 		private readonly Groups.HandPoints handPoints = new();
 		private bool hasHandData;
@@ -52,9 +53,22 @@ namespace HardCoded.VRigUnity {
 		public float angleTest = 0;
 		public int test;
 
-		public override void ModelUpdate() {
+		public override void UpdateModel() {
+			if (!renderUpdate) {	
+				base.UpdateModel();
+			}
+		}
+
+		public override void AnimateModel() {
 			if (handGroup != null && handPoints != null) {
 				handGroup.Apply(handPoints, model.ModelBones[HumanBodyBones.LeftHand].transform.position, 0.5f);
+			}
+
+			if (renderUpdate) {
+				float time = TimeNow;
+				RightHand.Update(time);
+				LeftHand.Update(time);
+				Pose.Update(time);
 			}
 
 			// Debug
@@ -62,7 +76,7 @@ namespace HardCoded.VRigUnity {
 				HandResolver.SolveRightHand(handPoints);
 			}
 
-			base.ModelUpdate();
+			base.AnimateModel();
 		}
 	}
 }

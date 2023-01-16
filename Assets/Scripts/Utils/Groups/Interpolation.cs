@@ -1,20 +1,33 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public struct DiscreteRotStruct {
-		public static DiscreteRotStruct identity => new(Quaternion.identity);
-		
 		// Internal
+		private readonly HumanBodyBones m_bone;
+		private readonly Quaternion m_lostFocus;
+
 		private Quaternion m_current;
 		private Quaternion m_target;
 		private float m_targetTime;
+		private bool m_hasFocus;
+
+		// Public
 		public Quaternion Current => m_current;
 
-		public DiscreteRotStruct(Quaternion current) {
-			m_current = current;
+		public DiscreteRotStruct(HumanBodyBones bone) {
+			m_bone = bone;
+			m_lostFocus = BoneSettings.GetDefaultRotation(bone);
+			m_current = Quaternion.identity;
 			m_target = Quaternion.identity;
+			m_hasFocus = false;
 			m_targetTime = 0;
+		}
+
+		public bool HasValue(float time) {
+			return time - 1 < m_targetTime;
 		}
 
 		/// <summary>
@@ -28,40 +41,57 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public void Update(float time) {
-			// Implement spherical bezier spline interpolation?
-			if (m_targetTime < time - 1) {
-				// We have lost focus of the data point
-			}
+			// Implement spherical B-spline interpolation?
 			
 			// 60 fps is the default speed so this should == 1
 			// If we have 120 fps this would be == 0.5
 			// If we have  30 fps this would be == 2.0
 			float td = Time.deltaTime * 60;
 			float iv = td * Settings.TrackingInterpolation;
-			m_current = Quaternion.Slerp(m_current, m_target, iv);
+
+			m_hasFocus = HasValue(time);
+			m_current = Quaternion.Slerp(m_current, m_hasFocus ? m_target : m_lostFocus, iv);
 		}
+
 
 		public void ApplyLocal(Transform transform) {
 			transform.localRotation = m_current;
 		}
 
-		public void ApplyGlobal(Transform transform) {
-			transform.rotation = m_current;
+		public void ApplyLocal(Dictionary<HumanBodyBones, Transform> dictionary) {
+			if (dictionary.TryGetValue(m_bone, out var transform)) {
+				ApplyLocal(transform);
+			}
+		}
+
+		public void ApplyGlobal(Transform transform, bool localWhenLostFocus = false) {
+			if (localWhenLostFocus && !m_hasFocus) {
+				transform.localRotation = m_current;
+			} else {
+				transform.rotation = m_current;
+			}
+		}
+
+		public void ApplyGlobal(Dictionary<HumanBodyBones, Transform> dictionary, bool localWhenLostFocus = false) {
+			if (dictionary.TryGetValue(m_bone, out var transform)) {
+				ApplyGlobal(transform, localWhenLostFocus);
+			}
 		}
 	}
 
 	public struct DiscretePosStruct {
-		public static DiscretePosStruct identity => new(Vector3.zero);
-		
 		// Internal
 		private Vector3 m_current;
 		private Vector3 m_target;
+		private Vector3 m_lostFocus;
 		private float m_targetTime;
+		public Vector3 Target => m_target;
 		public Vector3 Current => m_current;
 		
-		public DiscretePosStruct(Vector3 current) {
+		public DiscretePosStruct(Vector3 current, Vector3 lostFocus) {
 			m_current = current;
 			m_target = Vector3.zero;
+			m_lostFocus = lostFocus;
 			m_targetTime = 0;
 		}
 
@@ -80,11 +110,9 @@ namespace HardCoded.VRigUnity {
 		/// </summary>
 		/// <param name="time">The time</param>
 		public void Update(float time) {
-			if (m_targetTime < time - 1) {
-				// We have lost focus of the data point
-			}
-
-			m_current = Vector3.Lerp(m_current, m_target, Settings.TrackingInterpolation);
+			bool lostFocus = m_targetTime < time - 1;
+			var target = lostFocus ? m_lostFocus : m_target;
+			m_current = Vector3.Lerp(m_current, target, Settings.TrackingInterpolation);
 		}
 
 		public void Apply(Transform transform) {
@@ -92,232 +120,42 @@ namespace HardCoded.VRigUnity {
 		}
 	}
 
-	public struct RotStruct {
-		public static RotStruct identity => new(Quaternion.identity, 0);
-
-		private float lastTime;
-		private float currTime;
-		private Quaternion curr;
-
-		// Cache values
-		private Quaternion lastRotation;
-		private Transform lastTransform;
-		private Vector3 lastPosition;
-		private HumanBodyBones lastBone;
-
-		public RotStruct(Quaternion init, float time) {
-			currTime = time;
-			lastTime = time;
-			curr = init;
-
-			lastTransform = null;
-			lastPosition = Vector3.zero;
-			lastRotation = Quaternion.identity;
-			lastBone = HumanBodyBones.LastBone;
-		}
-
-		public void Add(Quaternion value, float time) {
-			lastTime = currTime;
-			currTime = time;
-			curr = value;
-		}
-
-		// Used for non main thread IK calculations
-		public Quaternion GetLastRotation() {
-			return lastRotation;
-		}
-
-		// Used for non main thread IK calculations
-		public Vector3 GetLastPosition() {
-			return lastPosition;
-		}
-
-		// Used to check if this value is set
-		public bool HasValue(float time) {
-			return time - 1 <= currTime;
-		}
-
-		private Quaternion GetUpdatedRotation(Quaternion current, Quaternion curr, float time) {
-			// 60 fps is the default speed so this should == 1
-			// If we have 120 fps this would be == 0.5
-			// If we have  30 fps this would be == 2.0
-			float td = Time.deltaTime * 60;
-			float iv = td * Settings.TrackingInterpolation;
-			return Quaternion.Slerp(current, curr, iv);
-		}
-
-		private Transform GetTransform(Animator animator, HumanBodyBones bone) {
-			if (lastTransform == null || lastBone != bone) {
-				lastBone = bone;
-				lastTransform = animator.GetBoneTransform(bone);
-			}
-
-			return lastTransform;
-		}
-
-		public Transform GetTransform() {
-			return lastTransform;
-		}
-
-		public Quaternion GetRawUpdateRotation(Transform transform, float time) {
-			return GetUpdatedRotation(transform.rotation, curr, time);
-		}
-		
-		// TODO: Remove 'HumanBodyBones' from this call
-		//       This should handled in a special way
-		public void UpdateRotation(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = GetTransform(animator, bone);
-			if (time - 1 > currTime) {
-				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
-				if (!Settings.UseFullIK) {
-					transform.localRotation = lastRotation;
-				}
-			} else {
-				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
-				if (!Settings.UseFullIK) {
-					transform.rotation = lastRotation;
-				}
-			}
-			lastPosition = transform.position;
-		}
-
-		public void UpdateRotationWithoutIK(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = GetTransform(animator, bone);
-			if (time - 1 > currTime) {
-				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
-				transform.localRotation = lastRotation;
-			} else {
-				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
-				transform.rotation = lastRotation;
-			}
-			lastPosition = transform.position;
-		}
-
-		public void UpdateLocalRotation(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = GetTransform(animator, bone);
-			if (time - 1 > currTime) {
-				lastRotation = GetUpdatedRotation(lastRotation, BoneSettings.GetDefaultRotation(bone), time);
-			} else {
-				lastRotation = GetUpdatedRotation(lastRotation, curr, time);
-			}
-			transform.localRotation = lastRotation;
-			lastPosition = transform.position;
-		}
-	}
-
-	public struct PosStruct {
-		public static PosStruct identity => new(Vector3.zero, 0);
-		
-		private float lastTime;
-		private float currTime;
-		private Vector3 curr;
-
-		// Cache values
-		private Transform lastTransform;
-		private HumanBodyBones lastBone;
-
-		public PosStruct(Vector3 init, float time) {
-			currTime = time;
-			lastTime = time;
-			curr = init;
-
-			lastTransform = null;
-			lastBone = HumanBodyBones.LastBone;
-		}
-
-		public void Add(Vector3 value, float time) {
-			lastTime = currTime;
-			currTime = time;
-			curr = value;
-		}
-
-		public Vector3 Get() {
-			return curr;
-		}
-
-		private Vector3 GetUpdatedPosition(Vector3 current, Vector3 curr, float time) {
-			return Vector3.Lerp(current, curr, Settings.TrackingInterpolation);
-		}
-		
-		private Transform GetTransform(Animator animator, HumanBodyBones bone) {
-			if (lastTransform == null || lastBone != bone) {
-				lastBone = bone;
-				lastTransform = animator.GetBoneTransform(bone);
-			}
-
-			return lastTransform;
-		}
-		
-		public void UpdatePosition(Animator animator, HumanBodyBones bone, float time) {
-			Transform transform = GetTransform(animator, bone);
-			if (time - 1 > currTime) {
-				transform.position = Vector3.Lerp(transform.position, curr, 0.1f);
-			} else {
-				transform.position = GetUpdatedPosition(transform.position, curr, time);
-			}
-		}
-
-		
-		public Vector3 GetRawUpdatePosition(Vector3 last, float time) {
-			return GetUpdatedPosition(last, curr, time);
-		}
-	}
-
 	public class HandValues {
-		public RotStruct Wrist = RotStruct.identity;
-		public RotStruct IndexPip = RotStruct.identity;
-		public RotStruct IndexDip = RotStruct.identity;
-		public RotStruct IndexTip = RotStruct.identity;
-		public RotStruct MiddlePip = RotStruct.identity;
-		public RotStruct MiddleDip = RotStruct.identity;
-		public RotStruct MiddleTip = RotStruct.identity;
-		public RotStruct RingPip = RotStruct.identity;
-		public RotStruct RingDip = RotStruct.identity;
-		public RotStruct RingTip = RotStruct.identity;
-		public RotStruct PinkyPip = RotStruct.identity;
-		public RotStruct PinkyDip = RotStruct.identity;
-		public RotStruct PinkyTip = RotStruct.identity;
-		public RotStruct ThumbPip = RotStruct.identity;
-		public RotStruct ThumbDip = RotStruct.identity;
-		public RotStruct ThumbTip = RotStruct.identity;
+		public DiscreteRotStruct Wrist    ;
+		public DiscreteRotStruct IndexPip ;
+		public DiscreteRotStruct IndexDip ;
+		public DiscreteRotStruct IndexTip ;
+		public DiscreteRotStruct MiddlePip;
+		public DiscreteRotStruct MiddleDip;
+		public DiscreteRotStruct MiddleTip;
+		public DiscreteRotStruct RingPip  ;
+		public DiscreteRotStruct RingDip  ;
+		public DiscreteRotStruct RingTip  ;
+		public DiscreteRotStruct PinkyPip ;
+		public DiscreteRotStruct PinkyDip ;
+		public DiscreteRotStruct PinkyTip ;
+		public DiscreteRotStruct ThumbPip ;
+		public DiscreteRotStruct ThumbDip ;
+		public DiscreteRotStruct ThumbTip ;
 
-		public void Update(Groups.HandRotation value, float time) {
-			Wrist.Add(value.Wrist, time);
-			IndexPip.Add(value.IndexFingerMCP, time);
-			IndexDip.Add(value.IndexFingerPIP, time);
-			IndexTip.Add(value.IndexFingerDIP, time);
-			MiddlePip.Add(value.MiddleFingerMCP, time);
-			MiddleDip.Add(value.MiddleFingerPIP, time);
-			MiddleTip.Add(value.MiddleFingerDIP, time);
-			RingPip.Add(value.RingFingerMCP, time);
-			RingDip.Add(value.RingFingerPIP, time);
-			RingTip.Add(value.RingFingerDIP, time);
-			PinkyPip.Add(value.PinkyMCP, time);
-			PinkyDip.Add(value.PinkyPIP, time);
-			PinkyTip.Add(value.PinkyDIP, time);
-			ThumbPip.Add(value.ThumbCMC, time);
-			ThumbDip.Add(value.ThumbMCP, time);
-			ThumbTip.Add(value.ThumbIP, time);
+		public HandValues(bool isLeft) {
+			Wrist     = new(isLeft ? HumanBodyBones.LeftHand               : HumanBodyBones.RightHand              );
+			IndexPip  = new(isLeft ? HumanBodyBones.LeftIndexProximal      : HumanBodyBones.RightIndexProximal     );
+			IndexDip  = new(isLeft ? HumanBodyBones.LeftIndexIntermediate  : HumanBodyBones.RightIndexIntermediate );
+			IndexTip  = new(isLeft ? HumanBodyBones.LeftIndexDistal        : HumanBodyBones.RightIndexDistal       );
+			MiddlePip = new(isLeft ? HumanBodyBones.LeftMiddleProximal     : HumanBodyBones.RightMiddleProximal    );
+			MiddleDip = new(isLeft ? HumanBodyBones.LeftMiddleIntermediate : HumanBodyBones.RightMiddleIntermediate);
+			MiddleTip = new(isLeft ? HumanBodyBones.LeftMiddleDistal       : HumanBodyBones.RightMiddleDistal      );
+			RingPip   = new(isLeft ? HumanBodyBones.LeftRingProximal       : HumanBodyBones.RightRingProximal      );
+			RingDip   = new(isLeft ? HumanBodyBones.LeftRingIntermediate   : HumanBodyBones.RightRingIntermediate  );
+			RingTip   = new(isLeft ? HumanBodyBones.LeftRingDistal         : HumanBodyBones.RightRingDistal        );
+			PinkyPip  = new(isLeft ? HumanBodyBones.LeftLittleProximal     : HumanBodyBones.RightLittleProximal    );
+			PinkyDip  = new(isLeft ? HumanBodyBones.LeftLittleIntermediate : HumanBodyBones.RightLittleIntermediate);
+			PinkyTip  = new(isLeft ? HumanBodyBones.LeftLittleDistal       : HumanBodyBones.RightLittleDistal      );
+			ThumbPip  = new(isLeft ? HumanBodyBones.LeftThumbProximal      : HumanBodyBones.RightThumbProximal     );
+			ThumbDip  = new(isLeft ? HumanBodyBones.LeftThumbIntermediate  : HumanBodyBones.RightThumbIntermediate );
+			ThumbTip  = new(isLeft ? HumanBodyBones.LeftThumbDistal        : HumanBodyBones.RightThumbDistal       );
 		}
-	}
-
-	public class HandValuesTest {
-		public DiscreteRotStruct Wrist     = DiscreteRotStruct.identity;
-		public DiscreteRotStruct IndexPip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct IndexDip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct IndexTip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct MiddlePip = DiscreteRotStruct.identity;
-		public DiscreteRotStruct MiddleDip = DiscreteRotStruct.identity;
-		public DiscreteRotStruct MiddleTip = DiscreteRotStruct.identity;
-		public DiscreteRotStruct RingPip   = DiscreteRotStruct.identity;
-		public DiscreteRotStruct RingDip   = DiscreteRotStruct.identity;
-		public DiscreteRotStruct RingTip   = DiscreteRotStruct.identity;
-		public DiscreteRotStruct PinkyPip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct PinkyDip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct PinkyTip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct ThumbPip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct ThumbDip  = DiscreteRotStruct.identity;
-		public DiscreteRotStruct ThumbTip  = DiscreteRotStruct.identity;
 
 		public void Update(Groups.HandRotation value, float time) {
 			Wrist.Add(value.Wrist, time);
@@ -356,31 +194,68 @@ namespace HardCoded.VRigUnity {
 			ThumbDip .Update(time);
 			ThumbTip .Update(time);
 		}
+
+		public void ApplyFingers(Dictionary<HumanBodyBones, Transform> modelBones) {
+			IndexPip .ApplyLocal(modelBones);
+			IndexDip .ApplyLocal(modelBones);
+			IndexTip .ApplyLocal(modelBones);
+			MiddlePip.ApplyLocal(modelBones);
+			MiddleDip.ApplyLocal(modelBones);
+			MiddleTip.ApplyLocal(modelBones);
+			RingPip  .ApplyLocal(modelBones);
+			RingDip  .ApplyLocal(modelBones);
+			RingTip  .ApplyLocal(modelBones);
+			PinkyPip .ApplyLocal(modelBones);
+			PinkyDip .ApplyLocal(modelBones);
+			PinkyTip .ApplyLocal(modelBones);
+			ThumbPip .ApplyLocal(modelBones);
+			ThumbDip .ApplyLocal(modelBones);
+			ThumbTip .ApplyLocal(modelBones);
+		}
 	}
 
 	public class PoseValues {
-		public RotStruct Neck = RotStruct.identity;
-		public RotStruct Chest = RotStruct.identity;
-		public RotStruct Hips = RotStruct.identity;
+		public DiscreteRotStruct Neck  = new(HumanBodyBones.Neck);
+		public DiscreteRotStruct Chest = new(HumanBodyBones.Chest);
+		public DiscreteRotStruct Hips  = new(HumanBodyBones.Hips);
 
-		public PosStruct HipsPosition = PosStruct.identity;
+		public DiscretePosStruct HipsPosition = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct RightShoulder = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct RightElbow = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct RightHand = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct LeftShoulder = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct LeftElbow = new(Vector3.zero, Vector3.zero);
+		public DiscretePosStruct LeftHand = new(Vector3.zero, Vector3.zero);
+		
+		public DiscreteRotStruct RightUpperArm = new(HumanBodyBones.RightUpperArm);
+		public DiscreteRotStruct RightLowerArm = new(HumanBodyBones.RightLowerArm);
+		public DiscreteRotStruct LeftUpperArm  = new(HumanBodyBones.LeftUpperArm);
+		public DiscreteRotStruct LeftLowerArm  = new(HumanBodyBones.LeftLowerArm);
+		public DiscreteRotStruct RightUpperLeg = new(HumanBodyBones.RightUpperLeg);
+		public DiscreteRotStruct RightLowerLeg = new(HumanBodyBones.RightLowerLeg);
+		public DiscreteRotStruct LeftUpperLeg  = new(HumanBodyBones.LeftUpperLeg);
+		public DiscreteRotStruct LeftLowerLeg  = new(HumanBodyBones.LeftLowerLeg);
 
-		public PosStruct RightShoulder = PosStruct.identity;
-		public PosStruct RightElbow = PosStruct.identity;
-		public PosStruct RightHand = PosStruct.identity;
-		
-		public PosStruct LeftShoulder = PosStruct.identity;
-		public PosStruct LeftElbow = PosStruct.identity;
-		public PosStruct LeftHand = PosStruct.identity;
-		
-		public RotStruct RightUpperArm = RotStruct.identity;
-		public RotStruct RightLowerArm = RotStruct.identity;
-		public RotStruct LeftUpperArm = RotStruct.identity;
-		public RotStruct LeftLowerArm = RotStruct.identity;
-		public RotStruct RightUpperLeg = RotStruct.identity;
-		public RotStruct RightLowerLeg = RotStruct.identity;
-		public RotStruct LeftUpperLeg = RotStruct.identity;
-		public RotStruct LeftLowerLeg = RotStruct.identity;
+		public void Update(float time) {
+			Neck .Update(time);
+			Chest.Update(time);
+			Hips .Update(time);
+			HipsPosition .Update(time);
+			RightShoulder.Update(time);
+			RightElbow   .Update(time);
+			RightHand    .Update(time);
+			LeftShoulder .Update(time);
+			LeftElbow    .Update(time);
+			LeftHand     .Update(time);
+			RightUpperArm.Update(time);
+			RightLowerArm.Update(time);
+			LeftUpperArm .Update(time);
+			LeftLowerArm .Update(time);
+			RightUpperLeg.Update(time);
+			RightLowerLeg.Update(time);
+			LeftUpperLeg .Update(time);
+			LeftLowerLeg .Update(time);
+		}
 	}
 
 	public class FaceData {

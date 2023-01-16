@@ -4,6 +4,9 @@ using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
+	/// <summary>
+	/// A simplification of the model handling. This class contains methods to change and update the model
+	/// </summary>
 	public class HolisticModel {
 		// Cache
 		private readonly Dictionary<BlendShapePreset, BlendShapeKey> blendShapeCache = new();
@@ -130,6 +133,10 @@ namespace HardCoded.VRigUnity {
 			// Our program should now track the bone
 			// Make sure all parts are cleared
 			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
+				if (!boneTransformCache.ContainsKey(bone)) {
+					continue;
+				}
+
 				Transform trans = boneTransformCache[bone];
 				if (trans != null) {
 					trans.localRotation = BoneSettings.GetDefaultRotation(bone);

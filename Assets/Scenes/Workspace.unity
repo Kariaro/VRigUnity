@@ -249,11 +249,7 @@ MonoBehaviour:
   textureFramePool: {fileID: 275874970}
   defaultVrmModel: {fileID: 1321532676}
   defaultVrmPrefab: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  vrmModel: {fileID: 1321532676}
-  vrmController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
-  vrmAnimator: {fileID: 0}
-  blendShapeProxy: {fileID: 1321532675}
-  animator: {fileID: 1321532674}
+  defaultController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
   guiMain: {fileID: 1973033084}
   TrackRightHand: 1
   TrackLeftHand: 1

@@ -19,8 +19,8 @@ namespace HardCoded.VRigUnity {
 
 		// Pose values
 		public readonly PoseValues Pose = new();
-		public readonly HandValues RightHand = new();
-		public readonly HandValues LeftHand = new();
+		public readonly HandValues RightHand = new(false);
+		public readonly HandValues LeftHand = new(true);
 		
 		private float mouthOpen = 0;
 
@@ -44,8 +44,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void OnStartRun() {
-			// (a, b) => { try { 
-			// (a, b); } catch (Exception e) {} };
 			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
 			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
 			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
@@ -189,16 +187,14 @@ namespace HardCoded.VRigUnity {
 			// Pose.Hips.Set(hipsRotation, time);
 			Pose.HipsPosition.Add(pose.hipsPosition, time);
 			
-			if (!Settings.UseFullIK) {
-				if (TrackRightHand) {
-					Pose.RightUpperArm.Add(pose.rUpperArm, time);
-					Pose.RightLowerArm.Add(pose.rLowerArm, time);
-				}
+			if (TrackRightHand) {
+				Pose.RightUpperArm.Add(pose.rUpperArm, time);
+				Pose.RightLowerArm.Add(pose.rLowerArm, time);
+			}
 
-				if (TrackLeftHand) {
-					Pose.LeftUpperArm.Add(pose.lUpperArm, time);
-					Pose.LeftLowerArm.Add(pose.lLowerArm, time);
-				}
+			if (TrackLeftHand) {
+				Pose.LeftUpperArm.Add(pose.lUpperArm, time);
+				Pose.LeftLowerArm.Add(pose.lLowerArm, time);
 			}
 
 			if (Settings.UseLegRotation) {
@@ -227,12 +223,23 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public virtual void ModelUpdate() {
+		/// <summary>
+		/// This method is called when the model should be updated
+		/// </summary>
+		public virtual void UpdateModel() {
+			float time = TimeNow;
+			RightHand.Update(time);
+			LeftHand.Update(time);
+			Pose.Update(time);
+		}
+
+		/// <summary>
+		/// This method is called when the model should be animated
+		/// </summary>
+		public virtual void AnimateModel() {
 			if (!model.VrmModel.activeInHierarchy) {
 				return;
 			}
-
-			float time = TimeNow;
 
 			// Apply the model transform
 			model.VrmModel.transform.position = guiMain.ModelTransform;
@@ -242,92 +249,62 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Animator animator = model.Animator;
-			// TODO: Remove HumanBodyBones from the update functions
 			if (BoneSettings.Get(BoneSettings.NECK)) {
-				Pose.Neck.UpdateRotationWithoutIK(animator, HumanBodyBones.Neck, time);
+				Pose.Neck.ApplyGlobal(model.ModelBones);
 			}
 
 			if (BoneSettings.Get(BoneSettings.CHEST)) {
-				Pose.Chest.UpdateRotationWithoutIK(animator, HumanBodyBones.Chest, time);
+				Pose.Chest.ApplyGlobal(model.ModelBones);
 			}
 
 			if (BoneSettings.Get(BoneSettings.HIPS)) {
-				Pose.Hips.UpdateRotationWithoutIK(animator, HumanBodyBones.Hips, time);
+				Pose.Hips.ApplyGlobal(model.ModelBones);
 			}
-			
-			if (!Settings.UseFullIK) { // Arms
+
+			if (!Settings.UseFullIK) {
 				if (BoneSettings.Get(BoneSettings.LEFT_ARM)) {
-					Pose.LeftUpperArm.UpdateRotation(animator, HumanBodyBones.LeftUpperArm, time);
-					Pose.LeftLowerArm.UpdateRotation(animator, HumanBodyBones.LeftLowerArm, time);
+					Pose.LeftUpperArm.ApplyGlobal(model.ModelBones, true);
+					Pose.LeftLowerArm.ApplyGlobal(model.ModelBones, true);
 				}
 
 				if (BoneSettings.Get(BoneSettings.RIGHT_ARM)) {
-					Pose.RightUpperArm.UpdateRotation(animator, HumanBodyBones.RightUpperArm, time);
-					Pose.RightLowerArm.UpdateRotation(animator, HumanBodyBones.RightLowerArm, time);
+					Pose.RightUpperArm.ApplyGlobal(model.ModelBones, true);
+					Pose.RightLowerArm.ApplyGlobal(model.ModelBones, true);
 				}
 			}
 
 			if (Settings.UseLegRotation) { // Legs
 				if (BoneSettings.Get(BoneSettings.LEFT_HIP)) {
-					Pose.LeftUpperLeg.UpdateRotation(animator, HumanBodyBones.LeftUpperLeg, time);
+					Pose.LeftUpperLeg.ApplyGlobal(model.ModelBones);
 				}
 
 				if (BoneSettings.Get(BoneSettings.LEFT_KNEE)) {
-					Pose.LeftLowerLeg.UpdateRotation(animator, HumanBodyBones.LeftLowerLeg, time);
+					Pose.LeftLowerLeg.ApplyGlobal(model.ModelBones);
 				}
 
 				if (BoneSettings.Get(BoneSettings.RIGHT_HIP)) {
-					Pose.RightUpperLeg.UpdateRotation(animator, HumanBodyBones.RightUpperLeg, time);
+					Pose.RightUpperLeg.ApplyGlobal(model.ModelBones);
 				}
 
 				if (BoneSettings.Get(BoneSettings.RIGHT_KNEE)) {
-					Pose.RightLowerLeg.UpdateRotation(animator, HumanBodyBones.RightLowerLeg, time);
+					Pose.RightLowerLeg.ApplyGlobal(model.ModelBones);
 				}
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {
-				RightHand.Wrist.UpdateRotation(animator, HumanBodyBones.RightHand, time);
+				RightHand.Wrist.ApplyGlobal(model.ModelBones, true);
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_FINGERS)) {
-				RightHand.IndexPip. UpdateLocalRotation(animator, HumanBodyBones.RightIndexProximal, time);
-				RightHand.IndexDip. UpdateLocalRotation(animator, HumanBodyBones.RightIndexIntermediate, time);
-				RightHand.IndexTip. UpdateLocalRotation(animator, HumanBodyBones.RightIndexDistal, time);
-				RightHand.MiddlePip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleProximal, time);
-				RightHand.MiddleDip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleIntermediate, time);
-				RightHand.MiddleTip.UpdateLocalRotation(animator, HumanBodyBones.RightMiddleDistal, time);
-				RightHand.RingPip.  UpdateLocalRotation(animator, HumanBodyBones.RightRingProximal, time);
-				RightHand.RingDip.  UpdateLocalRotation(animator, HumanBodyBones.RightRingIntermediate, time);
-				RightHand.RingTip.  UpdateLocalRotation(animator, HumanBodyBones.RightRingDistal, time);
-				RightHand.PinkyPip. UpdateLocalRotation(animator, HumanBodyBones.RightLittleProximal, time);
-				RightHand.PinkyDip. UpdateLocalRotation(animator, HumanBodyBones.RightLittleIntermediate, time);
-				RightHand.PinkyTip. UpdateLocalRotation(animator, HumanBodyBones.RightLittleDistal, time);
-				RightHand.ThumbPip. UpdateLocalRotation(animator, HumanBodyBones.RightThumbProximal, time);
-				RightHand.ThumbDip. UpdateLocalRotation(animator, HumanBodyBones.RightThumbIntermediate, time);
-				RightHand.ThumbTip. UpdateLocalRotation(animator, HumanBodyBones.RightThumbDistal, time);
+				RightHand.ApplyFingers(model.ModelBones);
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
-				LeftHand.Wrist.UpdateRotation(animator, HumanBodyBones.LeftHand, time);
+				LeftHand.Wrist.ApplyGlobal(model.ModelBones, true);
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_FINGERS)) {
-				LeftHand.IndexPip. UpdateLocalRotation(animator, HumanBodyBones.LeftIndexProximal, time);
-				LeftHand.IndexDip. UpdateLocalRotation(animator, HumanBodyBones.LeftIndexIntermediate, time);
-				LeftHand.IndexTip. UpdateLocalRotation(animator, HumanBodyBones.LeftIndexDistal, time);
-				LeftHand.MiddlePip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleProximal, time);
-				LeftHand.MiddleDip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleIntermediate, time);
-				LeftHand.MiddleTip.UpdateLocalRotation(animator, HumanBodyBones.LeftMiddleDistal, time);
-				LeftHand.RingPip.  UpdateLocalRotation(animator, HumanBodyBones.LeftRingProximal, time);
-				LeftHand.RingDip.  UpdateLocalRotation(animator, HumanBodyBones.LeftRingIntermediate, time);
-				LeftHand.RingTip.  UpdateLocalRotation(animator, HumanBodyBones.LeftRingDistal, time);
-				LeftHand.PinkyPip. UpdateLocalRotation(animator, HumanBodyBones.LeftLittleProximal, time);
-				LeftHand.PinkyDip. UpdateLocalRotation(animator, HumanBodyBones.LeftLittleIntermediate, time);
-				LeftHand.PinkyTip. UpdateLocalRotation(animator, HumanBodyBones.LeftLittleDistal, time);
-				LeftHand.ThumbPip. UpdateLocalRotation(animator, HumanBodyBones.LeftThumbProximal, time);
-				LeftHand.ThumbDip. UpdateLocalRotation(animator, HumanBodyBones.LeftThumbIntermediate, time);
-				LeftHand.ThumbTip. UpdateLocalRotation(animator, HumanBodyBones.LeftThumbDistal, time);
+				LeftHand.ApplyFingers(model.ModelBones);
 			}
 
 			// Face

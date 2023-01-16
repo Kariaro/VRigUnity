@@ -30,9 +30,9 @@ namespace HardCoded.VRigUnity {
 				float se_dist = Vector3.Distance(shoulder.position, elbow.position);
 				float eh_dist = Vector3.Distance(elbow.position, hand.position);
 
-				Vector3 ai_shoulder = sol.Pose.LeftShoulder.Get();
-				Vector3 ai_elbow = sol.Pose.LeftElbow.Get();
-				Vector3 ai_hand = sol.Pose.LeftHand.Get();
+				Vector3 ai_shoulder = sol.Pose.LeftShoulder.Target;
+				Vector3 ai_elbow = sol.Pose.LeftElbow.Target;
+				Vector3 ai_hand = sol.Pose.LeftHand.Target;
 				
 				if (!sol.TrackLeftHand) {
 					Vector3 direction = new Vector3(-0.5f, -2, 0).normalized;
@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 
 				rigger.leftHandHint.position = lElbow;
 				rigger.leftHandTarget.position = lHand;
-				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.GetLastRotation();
+				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.Current;
 				
 				if (!sol.LeftHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
 					rigger.leftHandTarget.rotation = elbow.rotation;
@@ -71,9 +71,9 @@ namespace HardCoded.VRigUnity {
 				float se_dist = Vector3.Distance(shoulder.position, elbow.position);
 				float eh_dist = Vector3.Distance(elbow.position, hand.position);
 
-				Vector3 ai_shoulder = sol.Pose.RightShoulder.Get();
-				Vector3 ai_elbow = sol.Pose.RightElbow.Get();
-				Vector3 ai_hand = sol.Pose.RightHand.Get();
+				Vector3 ai_shoulder = sol.Pose.RightShoulder.Target;
+				Vector3 ai_elbow = sol.Pose.RightElbow.Target;
+				Vector3 ai_hand = sol.Pose.RightHand.Target;
 
 				if (!sol.TrackRightHand) {
 					Vector3 direction = new Vector3(0.5f, -2, 0).normalized;
@@ -89,7 +89,7 @@ namespace HardCoded.VRigUnity {
 
 				rigger.rightHandHint.position = rElbow;
 				rigger.rightHandTarget.position = rHand;
-				rigger.rightHandTarget.rotation = sol.RightHand.Wrist.GetLastRotation();
+				rigger.rightHandTarget.rotation = sol.RightHand.Wrist.Current;
 
 				if (!sol.RightHand.Wrist.HasValue(time) || !BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {
 					rigger.rightHandTarget.rotation = elbow.rotation;
@@ -105,6 +105,16 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 		}
+		
+		/*
+		void FixedUpdate() {
+			if (Settings.UseFullIK && !SolutionUtils.GetSolution().IsPaused) {
+				PerformRigging();
+			}
+
+			SolutionUtils.GetSolution().UpdateModel();
+		}
+		*/
 
 		void LateUpdate() {
 			if (Settings.UseFullIK && !SolutionUtils.GetSolution().IsPaused) {
@@ -115,7 +125,8 @@ namespace HardCoded.VRigUnity {
 				anim.WriteDefaultValues();
 			}
 			
-			SolutionUtils.GetSolution().ModelUpdate();
+			SolutionUtils.GetSolution().UpdateModel();
+			SolutionUtils.GetSolution().AnimateModel();
 
 			// Apply VMC Receiver
 			VMCReceiver receiver = VMCReceiver.Receiver;
