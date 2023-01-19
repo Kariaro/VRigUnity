@@ -16,11 +16,7 @@ namespace HardCoded.VRigUnity {
 			text = GetComponentInChildren<TMP_Text>();
 			buttonImage = GetComponent<Image>();
 			toggleButton = GetComponent<Button>();
-
 			InitializeContents();
-			SolutionUtils.GetSolution().SetErrorListener(error => {
-				SetCamera(false);
-			});
 		}
 
 		private void InitializeContents() {
@@ -39,7 +35,10 @@ namespace HardCoded.VRigUnity {
 			text.text = enable ? "Stop Camera" : "Start Camera";
 			
 			if (enable) {
-				SolutionUtils.GetSolution().Play();
+				SolutionUtils.GetSolution().Play((_, _) => {
+					// Error handling
+					SetCamera(false);
+				});
 			} else {
 				SolutionUtils.GetSolution().ResetVRMAnimator();
 				SolutionUtils.GetSolution().Stop();

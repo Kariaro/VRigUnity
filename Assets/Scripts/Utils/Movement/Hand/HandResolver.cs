@@ -31,7 +31,7 @@ namespace HardCoded.VRigUnity {
 				Vector3 handUpDir = hand.Wrist - hand.MiddleFingerMCP;
 				Vector3 handForwardDir = plane.normal;
 
-				Quaternion rot = Quaternion.LookRotation(handForwardDir, handUpDir) * Quaternion.Euler(0, 90, 90);
+				Quaternion rot = Quaternion.LookRotation(handForwardDir, handUpDir) * Quaternion.Euler(0, 90, -90);
 				angles.Add(new(MediaPipe.Hand.WRIST, rot.eulerAngles));
 			}
 
@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 				Vector3 handUpDir = hand.Wrist - hand.MiddleFingerMCP;
 				Vector3 handForwardDir = plane.normal;
 
-				Quaternion rot = Quaternion.LookRotation(handForwardDir, handUpDir) * Quaternion.Euler(0, 90, -90);
+				Quaternion rot = Quaternion.LookRotation(handForwardDir, handUpDir) * Quaternion.Euler(0, 90, 90);
 				angles.Add(new(MediaPipe.Hand.WRIST, rot.eulerAngles));
 			}
 
@@ -79,7 +79,7 @@ namespace HardCoded.VRigUnity {
 					continue;
 				}
 
-				if (type == HandType.Left) {
+				if (type != HandType.Left) {
 					// Flip the x angles when left
 					xAngles[i] = -xAngles[i];
 					zAngles[i] = -zAngles[i];
@@ -89,7 +89,7 @@ namespace HardCoded.VRigUnity {
 					// The thumb needs to rotate around Y for X
 					if (i == MediaPipe.Hand.THUMB_CMC) {
 						// By default it has around 20 degree offset from the next segment
-						xAngles[i] -= 20 * (type == HandType.Left ? -1 : 1);
+						xAngles[i] -= 20 * (type != HandType.Left ? -1 : 1);
 					}
 
 					data.Add(new(i, new(0, -xAngles[i], 0)));
@@ -103,7 +103,7 @@ namespace HardCoded.VRigUnity {
 					}
 
 					// xAngles can never go more than 120 degrees
-					if (type == HandType.Right) {
+					if (type != HandType.Right) {
 						xAngles[i] = Mathf.Clamp(xAngles[i], -10, 110);
 					} else {
 						xAngles[i] = -Mathf.Clamp(-xAngles[i], -10, 110);
@@ -313,51 +313,6 @@ namespace HardCoded.VRigUnity {
 				C + (-0.5f * U) + ( 0.866025403784f * V),
 				C + (U)
 			};
-		}
-	}
-
-	// Old code for the hand resolver
-	class HandResolverOld {
-		public static Groups.HandRotation SolveLeftHand(Groups.HandPoints hand) {
-			return SolveHand(hand, HandType.Left);
-		}
-
-		public static Groups.HandRotation SolveRightHand(Groups.HandPoints hand) {
-			return SolveHand(hand, HandType.Right);
-		}
-		
-		enum HandType {
-			Left,
-			Right
-		}
-		
-		private static Groups.HandRotation SolveHand(Groups.HandPoints hand, HandType type) {
-			Groups.HandRotation handGroup = new();
-
-			Plane plane = new(hand.Wrist, hand.IndexFingerMCP, hand.PinkyMCP);
-			Vector3 handUpDir = hand.MiddleFingerMCP - hand.Wrist;
-			Vector3 handForwardDir = plane.normal;
-
-			float mul = type == HandType.Right ? 1 : -1;
-			Quaternion rotTest = Quaternion.Inverse(Quaternion.LookRotation(handForwardDir, handUpDir));
-			HandPoints.ComputeFinger(rotTest, mul,
-				hand.IndexFingerMCP, hand.IndexFingerPIP, hand.IndexFingerDIP, hand.IndexFingerTIP,
-				out handGroup.IndexFingerMCP, out handGroup.IndexFingerPIP, out handGroup.IndexFingerDIP);
-			HandPoints.ComputeFinger(rotTest, mul,
-				hand.MiddleFingerMCP, hand.MiddleFingerPIP, hand.MiddleFingerDIP, hand.MiddleFingerTIP,
-				out handGroup.MiddleFingerMCP, out handGroup.MiddleFingerPIP, out handGroup.MiddleFingerDIP);
-			HandPoints.ComputeFinger(rotTest, mul,
-				hand.RingFingerMCP, hand.RingFingerPIP, hand.RingFingerDIP, hand.RingFingerTIP,
-				out handGroup.RingFingerMCP, out handGroup.RingFingerPIP, out handGroup.RingFingerDIP);
-			HandPoints.ComputeFinger(rotTest, mul,
-				hand.PinkyMCP, hand.PinkyPIP, hand.PinkyDIP, hand.PinkyTIP,
-				out handGroup.PinkyMCP, out handGroup.PinkyPIP, out handGroup.PinkyDIP);
-			HandPoints.ComputeThumb(rotTest, mul,
-				hand.Wrist, hand.ThumbMCP, hand.ThumbIP, hand.ThumbTIP,
-				out handGroup.ThumbCMC, out handGroup.ThumbMCP, out handGroup.ThumbIP);
-			handGroup.Wrist = Quaternion.LookRotation(handForwardDir, -handUpDir) * Quaternion.Euler(0, 90, type == HandType.Right ? -90 : 90);
-
-			return handGroup;
 		}
 	}
 

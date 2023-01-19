@@ -1,34 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
-	public class GUICameraConfigWindow : GUIWindow {
-		private const string SourcePath                = "Contents/Source/Dropdown";
-		private const string ResolutionPath            = "Contents/Resolution/Dropdown";
-		private const string IsHorizontallyFlippedPath = "Contents/IsHorizontallyFlipped/Toggle";
-		private const string VirtualCameraToggle       = "Contents/Virtual/Panel/Toggle";
-		private const string VirtualCameraInstall      = "Contents/Virtual/Panel/Install";
-		private const string VirtualCameraUninstall    = "Contents/Virtual/Panel/Uninstall";
-		
-		[SerializeField] private GUIScript settings;
-		private Solution _solution;
-		private TMP_Dropdown _sourceInput;
-		private TMP_Dropdown _resolutionInput;
-		private Toggle _isHorizontallyFlippedInput;
-		private Toggle _virtualCameraToggle;
-		private Button _virtualCameraInstall;
-		private Button _virtualCameraUninstall;
+	public class GUICameraConfigWindow : GUISettingsBase {
+		private HolisticSolution _solution;
+		private SettingsField sourceField;
+		private SettingsField resolutionField;
+		private SettingsField customResolutionField;
 
-		void Start() {
+		protected override void InitializeSettings() {
+			var imageSource = SolutionUtils.GetImageSource();
 			_solution = SolutionUtils.GetSolution();
-			InitializeContents();
-		}
+			
+			AddDivider("Camera");
+			sourceField = CreateSetting("Source", builder => {
+				return builder
+					.AddDropdown((elm, value) => {
+						Settings.CameraName = elm.options[value].text;
+						imageSource.SelectSource(value);
+						if (!_solution.IsPaused) {
+							_solution.Play();
+						}
+					}, new(), 0, FieldData.None);
+			});
+			resolutionField = CreateSetting("Resolution", builder => {
+				return builder
+					.AddDropdown((elm, value) => {
+						Settings.CameraResolution = elm.options[value].text;
+						imageSource.SelectResolution(value);
+						UpdateCustomResolution();
+						if (!_solution.IsPaused) {
+							_solution.Play();
+						}
+					}, new(), 0, FieldData.None);
+			});
+			customResolutionField = CreateSetting("Custom Res", builder => {
+				return builder
+					.AddToggle((_, value) => { Settings.CameraCustomResolution = value; UpdateCustomResolution(true); }, Settings.CameraCustomResolution, new(24))
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(value, 0, 0), 1, 1920, 176, 640, FieldData.None)
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, value, 0), 1, 1080, 144, 360, FieldData.None)
+					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, 0, value), 1, 30, 30, 30, FieldData.None);
+			});
+			CreateSetting("Is Horizontally Flipped", builder => {
+				return builder.AddToggle((_, value) => {
+					Settings.CameraFlipped = value;
+					imageSource.IsHorizontallyFlipped = value;
+					if (!_solution.IsPaused) {
+						_solution.Play();
+					}
+				}, Settings.CameraFlipped, FieldData.None);
+			});
+			CreateSetting("Virtual Camera", builder => {
+				return builder
+					.AddToggle((_, value) => Settings.VirtualCamera = value, Settings.VirtualCamera, new(24))
+					.AddButton("Install", (_) => CameraCapture.InstallVirtualCamera(), FieldData.None)
+					.AddButton("Uninstall", (_) => CameraCapture.UninstallVirtualCamera(), FieldData.None);
+			});
 
-		private void InitializeContents() {
 			ReloadContents();
 		}
 
@@ -37,129 +68,91 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private IEnumerator UpdateContents() {
-			WebCamSource webCamSource = SolutionUtils.GetImageSource();
-			yield return webCamSource.UpdateSources();
-
-			// Updating the webcam source might break the current config
-			var sourceId = webCamSource.sourceCandidateNames.ToList().FindIndex(source => source == Settings.CameraName);
-			if (sourceId >= 0 && sourceId < webCamSource.sourceCandidateNames.Length) {
-				webCamSource.SelectSource(sourceId);
-			}
-			var resolutionId = webCamSource.availableResolutions.ToList().FindIndex(option => option.ToString() == Settings.CameraResolution);
-			if (resolutionId >= 0 && resolutionId < webCamSource.availableResolutions.Length) {
-				webCamSource.SelectResolution(resolutionId);
-			}
-			webCamSource.isHorizontallyFlipped = Settings.CameraFlipped;
+			var imageSource = SolutionUtils.GetImageSource();
+			yield return imageSource.UpdateSources();
 			
-			// Initialize UI
-			InitializeSource();
-			InitializeResolution();
-			InitializeIsHorizontallyFlipped();
-			InitializeVirtualCamera();
+			UpdateSources();
+			UpdateResolutions();
+			UpdateCustomResolution();
+			UpdateFlipped();
 
 			yield return null;
 		}
 
-		private void InitializeSource() {
-			_sourceInput = transform.Find(SourcePath).GetComponent<TMP_Dropdown>();
-			_sourceInput.ClearOptions();
-			_sourceInput.onValueChanged.RemoveAllListeners();
-
+		private void UpdateSources() {
 			var imageSource = SolutionUtils.GetImageSource();
-			var sourceNames = imageSource.sourceCandidateNames;
-			
-			if (sourceNames == null) {
-				_sourceInput.enabled = false;
-				return;
-			}
+			var sourceNames = imageSource.SourceCandidateNames;
+			int sourceId = imageSource.SelectSourceFromName(Settings.CameraName);
 
 			var options = new List<string>(sourceNames);
-			_sourceInput.AddOptions(options);
-
-			var currentSourceName = Settings.CameraName;
-			var defaultValue = options.FindIndex(option => option == currentSourceName);
-
-			if (defaultValue >= 0) {
-				_sourceInput.value = defaultValue;
-			}
-
-			_sourceInput.onValueChanged.AddListener(delegate {
-				imageSource.SelectSource(_sourceInput.value);
-				Settings.CameraName = options[_sourceInput.value];
-				if (!_solution.IsPaused()) {
-					_solution.Play();
-				}
-
-				InitializeResolution();
-			});
+			sourceField[0].Dropdown.ClearOptions();
+			sourceField[0].Dropdown.AddOptions(options);
+			sourceField[0].Dropdown.SetValueWithoutNotify(sourceId >= 0 ? sourceId : 0);
 		}
 
-		private void InitializeResolution() {
-			_resolutionInput = transform.Find(ResolutionPath).GetComponent<TMP_Dropdown>();
-			_resolutionInput.ClearOptions();
-			_resolutionInput.onValueChanged.RemoveAllListeners();
-
+		private void UpdateResolutions() {
 			var imageSource = SolutionUtils.GetImageSource();
-			var resolutions = imageSource.availableResolutions;
+			var resolutions = imageSource.AvailableResolutions;
+			int resolutionId = imageSource.SelectResolutionFromString(Settings.CameraResolution);
 
-			if (resolutions == null) {
-				_resolutionInput.enabled = false;
-				return;
+			var options = resolutions.ToList().Select(option => option.ToString()).ToList();
+			resolutionField[0].Dropdown.ClearOptions();
+			resolutionField[0].Dropdown.AddOptions(options);
+			if (resolutionId >= 0) {
+				resolutionField[0].Dropdown.SetValueWithoutNotify(resolutionId);
+			} else {
+				resolutionField[0].Dropdown.value = 6;
 			}
-
-			var options = resolutions.Select(resolution => resolution.ToString()).ToList();
-			_resolutionInput.AddOptions(options);
-
-			var currentResolutionStr = Settings.CameraResolution;
-			var defaultValue = options.FindIndex(option => option == currentResolutionStr);
-
-			if (defaultValue >= 0) {
-				_resolutionInput.value = defaultValue;
-			}
-
-			_resolutionInput.onValueChanged.AddListener(delegate {
-				imageSource.SelectResolution(_resolutionInput.value);
-				Settings.CameraResolution = options[_resolutionInput.value];
-				if (!_solution.IsPaused()) {
-					_solution.Play();
-				}
-			});
 		}
 
-		private void InitializeIsHorizontallyFlipped() {
-			_isHorizontallyFlippedInput = transform.Find(IsHorizontallyFlippedPath).GetComponent<Toggle>();
+		private void UpdateCustomResolution(bool custom = false) {
+			var widthField = customResolutionField[1].InputField;
+			var heightField = customResolutionField[2].InputField;
+			var fpsField = customResolutionField[3].InputField;
 
-			var imageSource = SolutionUtils.GetImageSource();
-			_isHorizontallyFlippedInput.isOn = Settings.CameraFlipped;
-			_isHorizontallyFlippedInput.onValueChanged.AddListener(delegate {
-				imageSource.isHorizontallyFlipped = _isHorizontallyFlippedInput.isOn;
-				Settings.CameraFlipped = _isHorizontallyFlippedInput.isOn;
-				if (!_solution.IsPaused()) {
-					_solution.Play();
-				}
-			});
+			bool active = customResolutionField[0].Toggle.isOn;
+			widthField.interactable = active;
+			heightField.interactable = active;
+			fpsField.interactable = active;
+			resolutionField[0].Dropdown.interactable = !active;
+
+			if (!active && custom) {
+				UpdateResolutions();
+			}
+
+			var res = SettingsUtil.GetResolution(Settings.CameraResolution);
+			widthField.SetTextWithoutNotify(res.width.ToString());
+			heightField.SetTextWithoutNotify(res.height.ToString());
+			fpsField.SetTextWithoutNotify(((int) res.frameRate).ToString());
+
+			if (active) {
+				// Values of zero means uninitialized
+				UpdateCustomResolutionTest(0, 0, 0);
+			}
 		}
 
-		private void InitializeVirtualCamera() {
-			_virtualCameraToggle = transform.Find(VirtualCameraToggle).GetComponent<Toggle>();
-			_virtualCameraToggle.isOn = Settings.VirtualCamera;
-			_virtualCameraToggle.onValueChanged.AddListener(delegate {
-				Settings.VirtualCamera = _virtualCameraToggle.isOn;
-			});
-
-			_virtualCameraInstall = transform.Find(VirtualCameraInstall).GetComponent<Button>();
-			_virtualCameraUninstall = transform.Find(VirtualCameraUninstall).GetComponent<Button>();
-			_virtualCameraInstall.enabled = CameraCapture.IsVirtualCameraSupported;
-			_virtualCameraInstall.onClick.RemoveAllListeners();
-			_virtualCameraInstall.onClick.AddListener(delegate {
-				CameraCapture.InstallVirtualCamera();
-			});
+		private void UpdateCustomResolutionTest(int width, int height, int frameRate) {
+			var widthField = customResolutionField[1].InputField;
+			var heightField = customResolutionField[2].InputField;
+			var fpsField = customResolutionField[3].InputField;
+			if (width == 0) int.TryParse(widthField.text, out width);
+			if (height == 0) int.TryParse(heightField.text, out height);
+			if (frameRate == 0) int.TryParse(fpsField.text, out frameRate);
 			
-			_virtualCameraUninstall.enabled = CameraCapture.IsVirtualCameraSupported;
-			_virtualCameraUninstall.onClick.RemoveAllListeners();
-			_virtualCameraUninstall.onClick.AddListener(delegate {
-				CameraCapture.UninstallVirtualCamera();
-			});
+			string resolutionText = $"{width}x{height} ({frameRate}Hz)";
+
+			// The resolution field should contain the custom resolution
+			resolutionField[0].Dropdown.ClearOptions();
+			resolutionField[0].Dropdown.AddOptions(new List<string> { resolutionText });
+			resolutionField[0].Dropdown.SetValueWithoutNotify(0);
+
+			// Update the camera resolution
+			Settings.CameraResolution = resolutionText;
+		}
+
+		private void UpdateFlipped() {
+			var imageSource = SolutionUtils.GetImageSource();
+			imageSource.IsHorizontallyFlipped = Settings.CameraFlipped;
 		}
 	}
 }

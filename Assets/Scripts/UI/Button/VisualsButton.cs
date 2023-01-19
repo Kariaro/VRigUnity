@@ -33,8 +33,8 @@ namespace HardCoded.VRigUnity {
 			text.color = enable ? toggleOffColor : toggleOnColor;
 			text.text = enable ? "Visuals On" : "Visuals Off";
 
-			HolisticTrackingSolution solution = SolutionUtils.GetSolution();
-			solution.canvas.ShowAnnotations(enable);
+			HolisticSolution solution = SolutionUtils.GetSolution();
+			solution.Canvas.ShowAnnotations(enable);
 		}
 	}
 }

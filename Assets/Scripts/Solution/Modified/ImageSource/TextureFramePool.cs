@@ -15,7 +15,7 @@ namespace Mediapipe.Unity {
 
 		[SerializeField] private int _poolSize = 10;
 
-		private readonly object _formatLock = new object();
+		private readonly object _formatLock = new();
 		private int _textureWidth = 0;
 		private int _textureHeight = 0;
 		private TextureFormat _format = TextureFormat.RGBA32;
@@ -64,10 +64,6 @@ namespace Mediapipe.Unity {
 				_textureHeight = textureHeight;
 				_format = format;
 			}
-		}
-
-		public void ResizeTexture(int textureWidth, int textureHeight) {
-			ResizeTexture(textureWidth, textureHeight, _format);
 		}
 
 		public bool TryGetTextureFrame(out TextureFrame outFrame) {
@@ -126,7 +122,6 @@ namespace Mediapipe.Unity {
 		private TextureFrame CreateNewTextureFrame() {
 			var textureFrame = new TextureFrame(_textureWidth, _textureHeight, _format);
 			textureFrame.OnRelease.AddListener(OnTextureFrameRelease);
-
 			return textureFrame;
 		}
 	}

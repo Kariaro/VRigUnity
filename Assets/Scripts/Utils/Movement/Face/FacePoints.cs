@@ -69,7 +69,7 @@ namespace HardCoded.VRigUnity {
 			float x = Vector3.Distance(leftPoint, point) / d;
 			float y = (Vector3.Distance(point, irisPoint) * (clockwise ? 1 : -1)) / d;
 			
-			return new(x - 0.5f, y);
+			return new(0.5f - x, y);
 		}
 
 		static bool IsClockwise(Vector3 a, Vector3 b, Vector3 c) {

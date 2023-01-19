@@ -5,7 +5,6 @@ using static HardCoded.VRigUnity.FileDialogUtils;
 
 namespace HardCoded.VRigUnity {
 	public class GUISettingsMenu : GUIWindow {
-		[SerializeField] GUIScript settings;
 		[SerializeField] TMP_InputField inputFieldModelX;
 		[SerializeField] TMP_InputField inputFieldModelY;
 		[SerializeField] TMP_InputField inputFieldModelZ;
@@ -19,13 +18,13 @@ namespace HardCoded.VRigUnity {
 			FileDialogUtils.OpenFilePanel(this, "Open File", Settings.ModelFile, extensions, false, (paths) => {
 				if (paths.Length > 0) {
 					string filePath = paths[0];
-					settings.LoadVrmModel(filePath);
+					GuiScript.LoadVrmModel(filePath);
 				}
 			});
 		}
 
 		public void ResetModel() {
-			settings.ResetModel();
+			GuiScript.ResetModel();
 		}
 
 		private bool TryParseFloat(string s, out float value) {
@@ -44,19 +43,19 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			settings.ModelTransform = new(x, y, z);
+			GuiScript.ModelTransform = new(x, y, z);
 		}
 
 		public void SetBackgroundColor(Color color) {
-			settings.SetBackgroundColor(color);
+			GuiScript.SetBackgroundColor(color);
 		}
 
 		public void ResetCamera() {
-			settings.ResetCamera();
+			GuiScript.ResetCamera();
 		}
 
 		public void SetShowCamera(bool show) {
-			settings.SetShowCamera(show);
+			GuiScript.SetShowCamera(show);
 		}
 
 		public void OpenGithub() {

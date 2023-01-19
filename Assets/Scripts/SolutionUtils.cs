@@ -2,19 +2,19 @@
 
 namespace HardCoded.VRigUnity {
 	public class SolutionUtils {
-		private static HolisticTrackingSolution _solution;
+		private static HolisticSolution _solution;
 		private static AssetManager _assetManager;
 		private static WebCamSource _webCamSource;
 		private static Bootstrap _bootstrap;
 
-		public static HolisticTrackingSolution GetSolution() {
+		public static HolisticSolution GetSolution() {
 			if (_solution == null) {
 				GameObject gameObject = GameObject.FindGameObjectWithTag("Solution");
 				if (gameObject == null) {
 					return null;
 				}
 
-				_solution = gameObject.GetComponent<HolisticTrackingSolution>();
+				_solution = gameObject.GetComponent<HolisticSolution>();
 			}
 
 			return _solution;

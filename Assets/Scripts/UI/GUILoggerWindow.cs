@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace HardCoded.VRigUnity {
 	public class GUILoggerWindow : GUIWindow {
@@ -12,9 +14,27 @@ namespace HardCoded.VRigUnity {
 			get {
 				if (_loggerWindow == null) {
 					_loggerWindow = FindObjectOfType<GUILoggerWindow>(true);
+					
+					// Initialize the logger loop
+					if (_loggerWindow != null) {
+						// Initialize thread
+						_loggerWindow.unityThread = Thread.CurrentThread;
+
+						LoggerLoop loggerLoop = _loggerWindow.transform.parent.gameObject.AddComponent<LoggerLoop>();
+						loggerLoop.window = _loggerWindow;
+					}
 				}
 
 				return _loggerWindow;
+			}
+		}
+
+		// We need to add something that keeps updating the messages
+		public class LoggerLoop : MonoBehaviour {
+			public GUILoggerWindow window;
+
+			void Update() {
+				window.UpdateMesages();
 			}
 		}
 
@@ -25,25 +45,16 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Settings")]
 		public int maxLogs = 128;
-
-		private string FilterString(TMP_Text tmp, string message) {
-			string result = "";
-			for (int i = 0; i < message.Length; i++) {
-				char c = message[i];
-				if (tmp.font.HasCharacter(c)) {
-					result += c;
-				}
-			}
-
-			// Fix escaping issues
-			result = result.Replace("\\", "\\\\");
-
-			return result;
-		}
-
-		private bool evenMessage;
+		
+		// Style
 		public Color evenColor = new(0.5660378f, 0.2269491f, 0.2269491f);
 		public Color oddColor;
+		private bool evenMessage;
+		public int TotalLogs { get; protected set; }
+
+		// Thread safe
+		protected Thread unityThread;
+		private readonly ConcurrentQueue<Message> messageQueue = new();
 
 		public void OpenLogsFolder() {
 			static string CombinePaths(params string[] paths) {
@@ -67,19 +78,28 @@ namespace HardCoded.VRigUnity {
 #endif
 		}
 
-		public void AddMessage(Logger.LogLevel level, string tag, object obj) {
-			string color = level switch {
-				Logger.LogLevel.Fatal or Logger.LogLevel.Error => "red",
-				Logger.LogLevel.Warn => "yellow",
-				_ => "white"
-			};
-
-			string value;
-			if (tag != null) {
-				value = $"[{DateTime.Now:H:mm:ss}] <color={color}>[{level}]</color> [{tag}]: {obj}";
-			} else {
-				value = $"[{DateTime.Now:H:mm:ss}] <color={color}>[{level}]</color>: {obj}";
+		void UpdateMesages() {
+			// Technically this could put messages in the wrong order
+			while (messageQueue.TryDequeue(out Message message)) {
+				InternalAddMessage(message);
 			}
+		}
+		
+		public void AddMessage(Logger.LogLevel level, string tag, object obj) {
+			// Format the message
+			Message message = new() { level = level, message = FormatMessage(level, tag, obj) };
+
+			if (Thread.CurrentThread != unityThread) {
+				// We can only add messages in the unity thread
+				messageQueue.Enqueue(message);
+			} else {
+				InternalAddMessage(message);
+			}
+		}
+
+		private void InternalAddMessage(Message msg) {
+			// Increment the log count
+			TotalLogs++;
 
 			GameObject empty = Instantiate(emptyLog);
 			empty.transform.localScale = Vector3.one;
@@ -92,11 +112,10 @@ namespace HardCoded.VRigUnity {
 			}
 
 			TMP_Text text = empty.GetComponentInChildren<TMP_Text>();
-			text.text = FilterString(text, value);
+			text.text = FilterString(text, msg.message);
 
 			var imageColor = evenMessage ? evenColor : oddColor;
-
-			switch (level) {
+			switch (msg.level) {
 				case Logger.LogLevel.Fatal or Logger.LogLevel.Error: {
 					loggerButton.HasErrors = true;
 					imageColor = new((imageColor.r + 1f) / 2.0f, imageColor.g, imageColor.b);
@@ -111,6 +130,43 @@ namespace HardCoded.VRigUnity {
 			TMP_TextInfo info = text.GetTextInfo(text.text);
 			LayoutElement layout = empty.GetComponent<LayoutElement>();
 			layout.minHeight = Math.Max(1, info.lineCount) * text.fontSize + 8;
+		}
+		
+		// Format a message
+		private string FormatMessage(Logger.LogLevel level, string tag, object obj) {
+			string color = level switch {
+				Logger.LogLevel.Fatal or Logger.LogLevel.Error => "red",
+				Logger.LogLevel.Warn => "yellow",
+				_ => "white"
+			};
+
+			string value;
+			if (tag != null) {
+				value = $"[{DateTime.Now:H:mm:ss}] <color={color}>[{level}]</color> [{tag}]: {obj}";
+			} else {
+				value = $"[{DateTime.Now:H:mm:ss}] <color={color}>[{level}]</color>: {obj}";
+			}
+
+			return value;
+		}
+
+		// Filter a string to make it displayable in the text field
+		private string FilterString(TMP_Text tmp, string message) {
+			string result = "";
+			for (int i = 0; i < message.Length; i++) {
+				char c = message[i];
+				if (tmp.font.HasCharacter(c)) {
+					result += c;
+				}
+			}
+
+			// Fix escaping issues
+			return result.Replace("\\", "\\\\");
+		}
+
+		struct Message {
+			public Logger.LogLevel level;
+			public string message;
 		}
 	}
 }

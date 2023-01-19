@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.IO;
 using UniGLTF;
 using UnityEngine;
@@ -10,8 +9,9 @@ namespace HardCoded.VRigUnity {
 		[Header("Settings")]
 		[SerializeField] private GUISettingsMenu settingsMenu;
 		[SerializeField] private OrbitalCamera orbitalCamera;
-		[SerializeField] private CustomizableCanvas customizableCanvas;
-		[SerializeField] private CanvasScaler canvasScaler;
+		[SerializeField] private CanvasScaler[] canvasScalers;
+		public CustomizableCanvas customizableCanvas;
+		public TrackingResizableBox trackingBox;
 
 		public Vector3 ModelTransform { get; set; }
 
@@ -21,10 +21,24 @@ namespace HardCoded.VRigUnity {
 			LoadCustomImage(Settings.ImageFile);
 			SetShowBackgroundImage(Settings.ShowCustomBackground);
 			
-			canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
+			UpdateCanvasScale(SettingsUtil.GetUIScaleValue(Settings.GuiScale));
 			Settings.GuiScaleListener += (value) => {
-				canvasScaler.scaleFactor = SettingsUtil.GetUIScaleValue(value);
+				UpdateCanvasScale(SettingsUtil.GetUIScaleValue(value));
 			};
+		}
+
+		private void UpdateCanvasScale(float scaleFactor) {
+			// Update position of UI windows
+			float positionMultiplier = canvasScalers[0].scaleFactor / scaleFactor;
+			Transform parent = settingsMenu.transform.parent;
+			foreach (Transform child in parent) {
+				RectTransform rect = child.GetComponent<RectTransform>();
+				rect.anchoredPosition *= positionMultiplier;
+			}
+
+			foreach (CanvasScaler canvas in canvasScalers) {
+				canvas.scaleFactor = scaleFactor;
+			}
 		}
 
 		public void ResetModel() {

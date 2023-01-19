@@ -6,44 +6,12 @@ on:
       tag:
         type: string
         default: v0.10.1-macos11
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 jobs:
-  build-project:
-    name: Build for ${{ matrix.systemName }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        systemName: [ "Windows" ]
-        targetPlatform: [ "StandaloneWindows64" ]
-        include:
-          - systemName: Linux
-            targetPlatform: StandaloneLinux64
-          - systemName: OSX
-            targetPlatform: StandaloneOSX
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Download libs
-        run: bash download_libs.sh "${{ inputs.tag }}"
-
-      - uses: actions/cache@v2
-        with:
-          path: Library
-          key: Library-VRigUnity-${{ matrix.targetPlatform }}
-          restore-keys: |
-            Library-VRigUnity-
-            Library-
-
-      - uses: game-ci/unity-builder@v2
-        with:
-          buildName: VRigUnity
-          versioning: None
-          targetPlatform: ${{ matrix.targetPlatform }}
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
+  builds:
+    name: Builds
+    uses: ./.github/workflows/build.yml
+    with:
+      tag: ${{ inputs.tag }}
+    secrets:
+      unityLicense: ${{ secrets.UNITY_LICENSE }}
+      githubToken: ${{ secrets.GITHUB_TOKEN }}

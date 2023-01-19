@@ -8,8 +8,6 @@ using UnityEngine;
 
 using Stopwatch = System.Diagnostics.Stopwatch;
 
-// Default RunningMode is 'Async';
-// TODO: Simplify file
 namespace HardCoded.VRigUnity {
 	public abstract class GraphRunner : MonoBehaviour {
 		public enum ConfigType {
@@ -26,8 +24,8 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private TextAsset _openGlEsConfig = null;
 		[SerializeField] private long _timeoutMicrosec = 0;
 
-		private static readonly GlobalInstanceTable<int, GraphRunner> _InstanceTable = new GlobalInstanceTable<int, GraphRunner>(5);
-		private static readonly Dictionary<IntPtr, int> _NameTable = new Dictionary<IntPtr, int>();
+		private static readonly GlobalInstanceTable<int, GraphRunner> _InstanceTable = new(5);
+		private static readonly Dictionary<IntPtr, int> _NameTable = new();
 
 		private bool _isRunning = false;
 
@@ -156,11 +154,6 @@ namespace HardCoded.VRigUnity {
 			AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, latestTimestamp));
 		}
 
-		protected bool TryGetNext<TPacket, TValue>(OutputStream<TPacket, TValue> stream, out TValue value, bool allowBlock, long currentTimestampMicrosec) where TPacket : Packet<TValue>, new() {
-			var result = stream.TryGetNext(out value, allowBlock);
-			return result || allowBlock || stream.ResetTimestampIfTimedOut(currentTimestampMicrosec, TimeoutMicrosec);
-		}
-
 		protected long GetCurrentTimestampMicrosec() {
 			return _stopwatch == null || !_stopwatch.IsRunning ? -1 : _stopwatch.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000);
 		}
@@ -188,8 +181,7 @@ namespace HardCoded.VRigUnity {
 				}
 				var status = ConfigureCalculatorGraph(baseConfig);
 				return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : CalculatorGraph.SetGpuResources(GpuManager.GpuResources);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				return Status.FailedPrecondition(e.ToString());
 			}
 		}
@@ -200,10 +192,10 @@ namespace HardCoded.VRigUnity {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
 
 			// TODO: Check if this code can be removed?
-			Rotation = imageSource.rotation.Reverse();
+			Rotation = imageSource.Rotation.Reverse();
 			var inputRotation = Rotation;
 			var isInverted = Mediapipe.Unity.CoordinateSystem.ImageCoordinate.IsInverted(Rotation);
-			var shouldBeMirrored = imageSource.isHorizontallyFlipped ^ expectedToBeMirrored;
+			var shouldBeMirrored = imageSource.IsHorizontallyFlipped ^ expectedToBeMirrored ^ true;
 			var inputHorizontallyFlipped = isInverted ^ shouldBeMirrored;
 			var inputVerticallyFlipped = !isInverted;
 
@@ -219,23 +211,10 @@ namespace HardCoded.VRigUnity {
 			sidePacket.Emplace("input_horizontally_flipped", new BoolPacket(inputHorizontallyFlipped));
 			sidePacket.Emplace("input_vertically_flipped", new BoolPacket(inputVerticallyFlipped));
 		}
-		
-		// TODO: Find a way of requesting these assets from source?
-		// TODO: Remove unused calls
-		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, long timeoutMillisec, bool overwrite = false) {
-			return new WaitForResult(this, SolutionUtils.GetAssetManager().PrepareAssetAsync(assetName, uniqueKey, overwrite), timeoutMillisec);
-		}
 
-		protected WaitForResult WaitForAsset(string assetName, long timeoutMillisec, bool overwrite = false) {
-			return WaitForAsset(assetName, assetName, timeoutMillisec, overwrite);
-		}
-
-		protected WaitForResult WaitForAsset(string assetName, string uniqueKey, bool overwrite = false) {
-			return new WaitForResult(this, SolutionUtils.GetAssetManager().PrepareAssetAsync(assetName, uniqueKey, overwrite));
-		}
-
-		protected WaitForResult WaitForAsset(string assetName, bool overwrite = false) {
-			return WaitForAsset(assetName, assetName, overwrite);
+		protected WaitForResult WaitForAsset(string assetName) {
+			bool overwrite = false;
+			return new WaitForResult(this, SolutionUtils.GetAssetManager().PrepareAssetAsync(assetName, assetName, overwrite));
 		}
 
 		protected abstract IList<WaitForResult> RequestDependentAssets();
