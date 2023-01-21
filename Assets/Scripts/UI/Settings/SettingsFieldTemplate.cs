@@ -221,10 +221,10 @@ namespace HardCoded.VRigUnity {
 			field.name = "SliderIntField";
 
 			Slider sliderField = field.GetComponent<Slider>();
+			sliderField.wholeNumbers = true;
 			sliderField.minValue = min;
 			sliderField.maxValue = max;
 			sliderField.value = value;
-			sliderField.wholeNumbers = true;
 			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, (int) sliderField.value); });
 			fieldObjects.Add(sliderField);
 			
