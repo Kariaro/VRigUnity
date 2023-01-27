@@ -8,6 +8,7 @@ namespace HardCoded.VRigUnity {
 		[Header("Settings")]
 		[SerializeField] private Toggle[] toggles;
 		[SerializeField] private TMP_Text hoverText;
+		[SerializeField] private RectTransform bonesTransform;
 		
 		private class ToggleHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 			public GUITabBoneSettings gui;
@@ -48,6 +49,16 @@ namespace HardCoded.VRigUnity {
 				hoverText.text = "";
 			} else {
 				hoverText.text = ": " + desc;
+			}
+		}
+
+		void Update() {
+			float height = rectTransform.rect.height - 34;
+			if (height < bonesTransform.rect.height) {
+				float size = height / bonesTransform.rect.height;
+				bonesTransform.localScale = new(size, size, 1);
+			} else {
+				bonesTransform.localScale = Vector3.one;
 			}
 		}
 

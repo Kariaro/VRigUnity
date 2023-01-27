@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
 	public class GUITabDrag : MonoBehaviour, IDragHandler {
@@ -15,49 +14,14 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private int maxHeight;
 
 		private class Drag : MonoBehaviour, IDragHandler {
-			public RectTransform _parent;
-		
-			private Canvas canvas;
-		
-			void Start() {
-				canvas = GetComponentInParent<Canvas>();
-			}
-
-			void LateUpdate() {
-				CheckPosition();
-			}
+			public GUITabDrag tabDrag;
 
 			public void OnDrag(PointerEventData eventData) {
 				if (eventData.used) {
 					return;
 				}
 
-				// TODO: If the Transform is dragged outside the screen it should remember the original drag point
-				_parent.anchoredPosition += eventData.delta / canvas.scaleFactor;
-
-				// Make sure the window is within the correct position
-				CheckPosition();
-			}
-
-			private void CheckPosition() {
-				Vector2 screenSize = canvas.pixelRect.size / canvas.scaleFactor;
-				Vector2 newPos = _parent.anchoredPosition;
-				Vector2 size = _parent.sizeDelta;
-				newPos.x = Mathf.Clamp(newPos.x, (size.x - screenSize.x) / 2.0f, (screenSize.x - size.x) / 2.0f);
-				newPos.y = Mathf.Clamp(newPos.y, (size.y - screenSize.y) / 2.0f, (screenSize.y - size.y) / 2.0f);
-
-				if (size.x > screenSize.x) {
-					newPos.x = (size.x - screenSize.x) / 2.0f;
-					_parent.sizeDelta = new(screenSize.x, size.y);
-					size = _parent.sizeDelta;
-				}
-
-				if (size.y > screenSize.y) {
-					newPos.y = (screenSize.y - size.y) / 2.0f;
-					_parent.sizeDelta = new(size.x, screenSize.y);
-				}
-				
-				_parent.anchoredPosition = newPos;
+				tabDrag.OnMoveEvent(eventData.delta);
 			}
 		}
 
@@ -65,13 +29,48 @@ namespace HardCoded.VRigUnity {
 			tabSettings = GetComponentInParent<GUITabSettings>(true);
 			canvas = GetComponentInParent<Canvas>();
 			parent = tabSettings.GetComponent<RectTransform>();
-			Drag drag = tabSettings.gameObject.AddComponent<Drag>();
-			drag._parent = tabSettings.GetComponent<RectTransform>();
+			tabSettings.gameObject.AddComponent<Drag>().tabDrag = this;
 		}
 
+		// What is the purpose of this class
+		// 1. When dragged the settings should be resized
+		// 2. When the settings is moved
 		public void OnDrag(PointerEventData eventData) {
-			Vector2 delta = eventData.delta;
-			delta = new Vector2(delta.x, -delta.y) / canvas.scaleFactor;
+			OnSizeEvent(eventData.delta);
+		}
+
+		void LateUpdate() {
+			// Fix size and position
+			OnSizeEvent(Vector2.zero);
+			OnMoveEvent(Vector2.zero);
+		}
+
+		public void OnMoveEvent(Vector2 delta) {
+			float scale = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
+
+			Vector2 screenSize = canvas.pixelRect.size / scale;
+			Vector2 newPos = parent.anchoredPosition + (delta / scale);
+			Vector2 size = parent.sizeDelta;
+			newPos.x = Mathf.Clamp(newPos.x, (size.x - screenSize.x) / 2.0f, (screenSize.x - size.x) / 2.0f);
+			newPos.y = Mathf.Clamp(newPos.y, (size.y - screenSize.y) / 2.0f, (screenSize.y - size.y) / 2.0f);
+
+			if (size.x > screenSize.x) {
+				newPos.x = 0;
+				size.x = screenSize.x;
+			}
+
+			if (size.y > screenSize.y) {
+				newPos.y = 0;
+				size.y = screenSize.y;
+			}
+			
+			parent.anchoredPosition = newPos;
+			parent.sizeDelta = size;
+		}
+
+		public void OnSizeEvent(Vector2 delta) {
+			float scale = SettingsUtil.GetUIScaleValue(Settings.GuiScale);
+			delta = new Vector2(delta.x, -delta.y) / scale;
 
 			Vector2 newSize = parent.sizeDelta + delta;
 			if (minWidth != 0 && newSize.x < minWidth) {
@@ -90,10 +89,22 @@ namespace HardCoded.VRigUnity {
 				newSize.y = maxHeight;
 			}
 			
-			Vector2 size = parent.rect.size;
-			Vector2 screenSize = canvas.pixelRect.size / canvas.scaleFactor;
-			if (newSize.y > parent.sizeDelta.y + parent.anchoredPosition.y - (size.y / 2f) + (screenSize.y / 2f)) {
-				newSize.y = parent.sizeDelta.y + parent.anchoredPosition.y - (size.y / 2f) + (screenSize.y / 2f);
+			Vector2 screenSize = canvas.pixelRect.size / scale;
+			if (newSize.y > (screenSize.y + parent.sizeDelta.y) / 2.0f + parent.anchoredPosition.y) {
+				newSize.y = (screenSize.y + parent.sizeDelta.y) / 2.0f + parent.anchoredPosition.y;
+			}
+			
+			if (newSize.x > (screenSize.x + parent.sizeDelta.x) / 2.0f - parent.anchoredPosition.x) {
+				newSize.x = (screenSize.x + parent.sizeDelta.x) / 2.0f - parent.anchoredPosition.x;
+			}
+
+			// Always try to make the tab atleast the minimum size
+			if (newSize.x < minWidth) {
+				newSize.x = minWidth;
+			}
+
+			if (newSize.y < minHeight) {
+				newSize.y = minHeight;
 			}
 
 			if (newSize.x > screenSize.x) {
@@ -104,11 +115,9 @@ namespace HardCoded.VRigUnity {
 				newSize.y = screenSize.y;
 			}
 
-			// Min height 240 or 430
 			Vector2 posAdj = (newSize - parent.sizeDelta) / 2f;
 			posAdj.y = -posAdj.y;
 
-			// TODO: Make sure we cant resize larger than the screen
 			parent.anchoredPosition += posAdj;
 			parent.sizeDelta = newSize;
 		}

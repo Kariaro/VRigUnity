@@ -10,10 +10,6 @@ namespace HardCoded.VRigUnity {
 		// API Getters
 		public Vector2 Min => box.Offset - box.Size / 2.0f;
 		public Vector2 Max => box.Offset + box.Size / 2.0f;
-		
-		void Start() {
-			Init();
-		}
 
 		public void Init() {
 			Vector4 rect = SettingsUtil.GetResizableBox(Settings.TrackingBox);

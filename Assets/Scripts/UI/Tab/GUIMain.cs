@@ -10,13 +10,20 @@ namespace HardCoded.VRigUnity {
 	/// </summary>
 	public class GUIMain : MonoBehaviour {
 		[Header("Settings")]
-		[SerializeField] private GameObject settingsMenu;
-		[SerializeField] private OrbitalCamera orbitalCamera;
+		[SerializeField] private RectTransform windowTransform;
 		[SerializeField] private CanvasScaler[] canvasScalers;
-		public CustomizableCanvas customizableCanvas;
-		public TrackingResizableBox trackingBox;
-
+		[SerializeField] private TrackingResizableBox trackingBox;
+		private CustomizableCanvas customizableCanvas;
+		private OrbitalCamera orbitalCamera;
+		
 		public Vector3 ModelTransform { get; set; }
+		public TrackingResizableBox TrackingBox => trackingBox;
+		public CustomizableCanvas CustomizableCanvas => customizableCanvas;
+
+		void Awake() {
+			customizableCanvas = FindObjectOfType<CustomizableCanvas>();
+			orbitalCamera = FindObjectOfType<OrbitalCamera>();
+		}
 
 		void Start() {
 			// Configure scene with settings
@@ -33,8 +40,7 @@ namespace HardCoded.VRigUnity {
 		private void UpdateCanvasScale(float scaleFactor) {
 			// Update position of UI windows
 			float positionMultiplier = canvasScalers[0].scaleFactor / scaleFactor;
-			Transform parent = settingsMenu.transform.parent;
-			foreach (Transform child in parent) {
+			foreach (Transform child in windowTransform) {
 				RectTransform rect = child.GetComponent<RectTransform>();
 				rect.anchoredPosition *= positionMultiplier;
 			}

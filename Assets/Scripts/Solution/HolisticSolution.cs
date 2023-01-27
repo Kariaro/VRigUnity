@@ -16,8 +16,8 @@ namespace HardCoded.VRigUnity {
 
 		[Header("UI")]
 		public GUIMain guiMain;
-		public CustomizableCanvas Canvas => guiMain.customizableCanvas;
-		public TrackingResizableBox TrackingBox => guiMain.trackingBox;
+		public CustomizableCanvas Canvas => guiMain.CustomizableCanvas;
+		public TrackingResizableBox TrackingBox => guiMain.TrackingBox;
 
 		// Pose values
 		public readonly PoseValues Pose = new();
@@ -42,7 +42,6 @@ namespace HardCoded.VRigUnity {
 
 		void Awake() {
 			SetVRMModel(vrmModel);
-			TrackingBox.Init();
 		}
 
 		public void ResetVRMModel() {

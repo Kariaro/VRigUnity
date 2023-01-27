@@ -55,16 +55,11 @@ namespace HardCoded.VRigUnity {
 
 		// Size correction
 		private Vector2 previousSize;
-		private RectTransform rectTransform;
 		[SerializeField] private Scrollbar scrollbar;
 
 		// Thread safe
 		protected Thread unityThread;
 		private readonly ConcurrentQueue<Message> messageQueue = new();
-
-		void Start() {
-			rectTransform = GetComponent<RectTransform>();
-		}
 
 		public void OpenLogsFolder() {
 			static string CombinePaths(params string[] paths) {
@@ -195,7 +190,7 @@ namespace HardCoded.VRigUnity {
 			}
 
 			// Fix escaping issues
-			return result.Replace("\\", "\\\\");
+			return result; //result.Replace("\\", "\\\\");
 		}
 
 		struct Message {

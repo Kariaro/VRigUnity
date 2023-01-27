@@ -16,5 +16,10 @@ namespace HardCoded.VRigUnity {
 				return _tabSettings;
 			}
 		}
+
+		protected RectTransform rectTransform;
+		public virtual void Awake() {
+			rectTransform = GetComponent<RectTransform>();
+		}
 	}
 }
