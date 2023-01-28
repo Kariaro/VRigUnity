@@ -20,7 +20,8 @@ namespace HardCoded.VRigUnity {
 						// Initialize thread
 						_loggerWindow.unityThread = Thread.CurrentThread;
 
-						LoggerLoop loggerLoop = _loggerWindow.transform.parent.gameObject.AddComponent<LoggerLoop>();
+						// Add the logger loop to the Window Canvas object
+						LoggerLoop loggerLoop = _loggerWindow.transform.parent.parent.parent.gameObject.AddComponent<LoggerLoop>();
 						loggerLoop.window = _loggerWindow;
 					}
 				}

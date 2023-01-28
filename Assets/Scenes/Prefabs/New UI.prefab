@@ -1676,7 +1676,6 @@ GameObject:
   - component: {fileID: 8087047091327183518}
   - component: {fileID: 8087047091327183456}
   - component: {fileID: 8087047091327183458}
-  - component: {fileID: 8087047091327183459}
   m_Layer: 5
   m_Name: Camera Tab
   m_TagString: Untagged
@@ -1764,20 +1763,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &8087047091327183459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047091327183517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78516d324ccfa964c87bee5f02cf52c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outline: {fileID: 8087047092281067815}
-  color: {fileID: 8087047091635641002}
 --- !u!1 &8087047091333793428
 GameObject:
   m_ObjectHideFlags: 0
@@ -5231,7 +5216,6 @@ GameObject:
   - component: {fileID: 8087047092059352035}
   - component: {fileID: 8087047092059352039}
   - component: {fileID: 8087047092059352036}
-  - component: {fileID: 8087047092059352040}
   m_Layer: 5
   m_Name: Model Tab
   m_TagString: Untagged
@@ -5319,20 +5303,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
---- !u!114 &8087047092059352040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047092059352034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78516d324ccfa964c87bee5f02cf52c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outline: {fileID: 8087047093251953052}
-  color: {fileID: 8087047092733777210}
 --- !u!1 &8087047092073288393
 GameObject:
   m_ObjectHideFlags: 0
@@ -5913,7 +5883,6 @@ GameObject:
   - component: {fileID: 8087047092113138499}
   - component: {fileID: 8087047092113138502}
   - component: {fileID: 8087047092113138504}
-  - component: {fileID: 8087047092113138505}
   m_Layer: 5
   m_Name: Bones Tab
   m_TagString: Untagged
@@ -6001,20 +5970,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &8087047092113138505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047092113138498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78516d324ccfa964c87bee5f02cf52c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outline: {fileID: 8087047091884418936}
-  color: {fileID: 8087047091309801652}
 --- !u!1 &8087047092119761011
 GameObject:
   m_ObjectHideFlags: 0
@@ -7959,7 +7914,6 @@ GameObject:
   - component: {fileID: 8087047092401135432}
   - component: {fileID: 8087047092401135434}
   - component: {fileID: 8087047092401135436}
-  - component: {fileID: 8087047092401135437}
   m_Layer: 5
   m_Name: Logger Tab
   m_TagString: Untagged
@@ -8047,20 +8001,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &8087047092401135437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047092401135431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78516d324ccfa964c87bee5f02cf52c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outline: {fileID: 8087047092912816023}
-  color: {fileID: 8087047092973466749}
 --- !u!1 &8087047092434360197
 GameObject:
   m_ObjectHideFlags: 0
@@ -10370,8 +10310,6 @@ GameObject:
   - component: {fileID: 8087047092711443814}
   - component: {fileID: 8087047092711443816}
   - component: {fileID: 8087047092711443817}
-  - component: {fileID: 8087047092711443819}
-  - component: {fileID: 8087047092711443820}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -10472,56 +10410,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleGroup: {fileID: 8087047092522720680}
   pageGroup: {fileID: 8087047092493780624}
-  guiMain: {fileID: 8087047093094016909}
---- !u!114 &8087047092711443819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047092711443812}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e081576b4273cb949a0cfc31334c1683, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  colors: []
-  textColor: {r: 1, g: 1, b: 1, a: 1}
-  tabOutline: {r: 1, g: 1, b: 1, a: 1}
-  colorA: {r: 0.07450981, g: 0.14901961, b: 0.13725491, a: 1}
-  colorB: {r: 0.19215687, g: 0.26666668, b: 0.28235295, a: 1}
-  colorC: {r: 0.2358491, g: 0.1715313, b: 0.1101371, a: 1}
-  colorLogger: {r: 0.1429779, g: 0.1885245, b: 0.1981132, a: 1}
-  buttons:
-  - {fileID: 8087047091809418263}
-  - {fileID: 8087047092976494796}
-  - {fileID: 8087047092617641962}
-  - {fileID: 8087047092450830558}
-  - {fileID: 8087047093140721756}
-  - {fileID: 8087047092059352034}
-  - {fileID: 8087047091327183517}
-  - {fileID: 8087047093180978140}
-  - {fileID: 8087047092113138498}
-  - {fileID: 8087047092401135431}
---- !u!114 &8087047092711443820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047092711443812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c633a761eb169b4b843dbafc8ab21a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  color: {fileID: 8087047092493780626}
-  footers:
-  - {fileID: 8087047092348229757}
-  - {fileID: 8087047092293943059}
-  - {fileID: 8087047092915415604}
-  - {fileID: 8087047091357498355}
-  - {fileID: 8087047092049651495}
 --- !u!1 &8087047092712902875
 GameObject:
   m_ObjectHideFlags: 0
@@ -13838,7 +13726,6 @@ GameObject:
   - component: {fileID: 8087047093180978141}
   - component: {fileID: 8087047093180978080}
   - component: {fileID: 8087047093180978082}
-  - component: {fileID: 8087047093180978083}
   m_Layer: 5
   m_Name: Advanced Tab
   m_TagString: Untagged
@@ -13926,20 +13813,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
---- !u!114 &8087047093180978083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8087047093180978140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78516d324ccfa964c87bee5f02cf52c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outline: {fileID: 8087047091245424780}
-  color: {fileID: 8087047091573255716}
 --- !u!1 &8087047093251953050
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,11 +11,7 @@ namespace HardCoded.VRigUnity {
 		[Header("Settings")]
 		public RectTransform toggleGroup;
 		public RectTransform pageGroup;
-		
-		[Header("External")]
-		[SerializeField] private GUIMain guiMain;
 
-		public GUIMain Main => guiMain;
 		private GameObject[] pages;
 		private Toggle[] tabs;
 		private GameObject[] tabOutlines;
@@ -63,39 +59,5 @@ namespace HardCoded.VRigUnity {
 			pages[index].SetActive(true);
 			tabOutlines[index].SetActive(true);
 		}
-
-		/*
-		public void ResetModel() {
-			guiMain.ResetModel();
-		}
-
-		public void LoadVrmModel(string path) {
-			guiMain.LoadVrmModel(path);
-		}
-
-		public void LoadCustomImage(string path) {
-			guiMain.LoadCustomImage(path);
-		}
-
-		public void SetBackgroundColor(Color color) {
-			guiMain.SetBackgroundColor(color);
-		}
-
-		public void ResetCamera() {
-			guiMain.ResetCamera();
-		}
-
-		public void SetShowCamera(bool show) {
-			guiMain.SetShowCamera(show);
-		}
-
-		public void SetShowBackgroundImage(bool show) {
-			guiMain.SetShowBackgroundImage(show);
-		}
-
-		public void SetShowBackgroundColor(bool show) {
-			guiMain.SetShowBackgroundColor(show);
-		}
-		*/
 	}
 }

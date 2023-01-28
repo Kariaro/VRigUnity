@@ -48,7 +48,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void ResetModel() {
-			TabSettings.Main.ResetModel();
+			guiMain.ResetModel();
 		}
 
 		private void SelectModel() {
@@ -60,13 +60,13 @@ namespace HardCoded.VRigUnity {
 			FileDialogUtils.OpenFilePanel(this, "Open File", Settings.ModelFile, extensions, false, (paths) => {
 				if (paths.Length > 0) {
 					string filePath = paths[0];
-					TabSettings.Main.LoadVrmModel(filePath);
+					guiMain.LoadVrmModel(filePath);
 				}
 			});
 		}
 
 		private void ResetCamera() {
-			TabSettings.Main.ResetCamera();
+			guiMain.ResetCamera();
 		}
 
 		private bool TryParseFloat(string s, out float value) {
@@ -85,7 +85,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			TabSettings.Main.ModelTransform = new(x, y, z);
+			guiMain.ModelTransform = new(x, y, z);
 		}
 	}
 }
