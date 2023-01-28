@@ -31,6 +31,9 @@ namespace HardCoded.VRigUnity {
 
 			// Init quality settings
 			QualitySettings.antiAliasing = SettingsUtil.GetQualityValue(Settings.AntiAliasing);
+
+			// Init tracking box
+			FindObjectOfType<TrackingResizableBox>(true).Init();
 		}
 
 		private IEnumerator Init() {

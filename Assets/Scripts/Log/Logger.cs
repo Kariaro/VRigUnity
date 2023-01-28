@@ -81,10 +81,10 @@ namespace HardCoded.VRigUnity {
 				msg = string.Format("[{0}]: {1}", level, obj);
 			}
 			
-			if (GUILoggerWindow.Window != null) {
-				GUILoggerWindow.Window.AddMessage(level, tag, obj);
+			if (GUITabLogger.Window != null) {
+				GUITabLogger.Window.AddMessage(level, tag, obj);
 			}
-				
+
 			// TODO: Print this to stdout always
 			UnityEngine.Debug.LogWarning(msg);
 		}

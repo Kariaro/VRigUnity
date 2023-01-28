@@ -40,7 +40,9 @@ namespace HardCoded.VRigUnity {
 			hasHandData = true;
 		}
 
-		void Update() {
+		public override void Update() {
+			base.Update();
+
 			if (Application.targetFrameRate != fps) {
 				Application.targetFrameRate = fps;
 			}

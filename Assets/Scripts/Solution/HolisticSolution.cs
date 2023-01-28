@@ -15,9 +15,9 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected Animator animator;
 
 		[Header("UI")]
-		public GUIScript guiScript;
-		public CustomizableCanvas Canvas => guiScript.customizableCanvas;
-		public TrackingResizableBox TrackingBox => guiScript.trackingBox;
+		public GUIMain guiMain;
+		public CustomizableCanvas Canvas => guiMain.CustomizableCanvas;
+		public TrackingResizableBox TrackingBox => guiMain.TrackingBox;
 
 		// Pose values
 		public readonly PoseValues Pose = new();
@@ -332,7 +332,7 @@ namespace HardCoded.VRigUnity {
 			Pose.LeftHand.Set(pose.lHand, time);
 		}
 
-		void Update() {
+		public virtual void Update() {
 			if (Settings.ShowModel != (vrmModel.layer == 0)) {
 				int nextLayer = Settings.ShowModel ? 0 : LayerMask.NameToLayer("HiddenModel");
 				foreach (var transform in vrmModel.GetComponentsInChildren<Transform>()) {
@@ -349,7 +349,7 @@ namespace HardCoded.VRigUnity {
 			float time = TimeNow;
 
 			// Apply the model transform
-			vrmModel.transform.position = guiScript.ModelTransform;
+			vrmModel.transform.position = guiMain.ModelTransform;
 
 			if (IsPaused) {
 				DefaultVRMAnimator();
