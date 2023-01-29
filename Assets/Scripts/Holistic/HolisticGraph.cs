@@ -17,7 +17,6 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public ModelComplexity modelComplexity = ModelComplexity.Full;
-		public bool smoothLandmarks = true;
 
 		private float _minDetectionConfidence = 0.5f;
 		public float MinDetectionConfidence {
@@ -181,11 +180,10 @@ namespace HardCoded.VRigUnity {
 			Logger.Debug($"output_rotation = {outputRotation}, output_horizontally_flipped = {outputHorizontallyFlipped}, output_vertically_flipped = {outputVerticallyFlipped}");
 
 			sidePacket.Emplace("refine_face_landmarks", new BoolPacket(true));
+			sidePacket.Emplace("smooth_landmarks", new BoolPacket(true));
 			sidePacket.Emplace("model_complexity", new IntPacket((int)modelComplexity));
-			sidePacket.Emplace("smooth_landmarks", new BoolPacket(smoothLandmarks));
 
 			Logger.Info(TAG, $"Model Complexity = {modelComplexity}");
-			Logger.Info(TAG, $"Smooth Landmarks = {smoothLandmarks}");
 
 			return sidePacket;
 		}

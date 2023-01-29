@@ -74,11 +74,9 @@ namespace HardCoded.VRigUnity {
 				BoneSettings.RIGHT_FINGERS => "Right Fingers",
 				BoneSettings.CHEST => "Chest",
 				BoneSettings.HIPS => "Hips",
-				BoneSettings.LEFT_HIP => "Left Hip",
-				BoneSettings.LEFT_KNEE => "Left Knee",
+				BoneSettings.LEFT_LEG => "Left Leg",
 				BoneSettings.LEFT_ANKLE => "Left Ankle",
-				BoneSettings.RIGHT_HIP => "Right Hip",
-				BoneSettings.RIGHT_KNEE => "Right Knee",
+				BoneSettings.RIGHT_LEG => "Right Leg",
 				BoneSettings.RIGHT_ANKLE => "Right Ankle",
 				_ => null
 			};

@@ -36,11 +36,13 @@ namespace HardCoded.VRigUnity {
 		public bool IsPrepared
 			=> VrmModel != null
 			&& VrmAnimator != null
+			&& RigAnimator != null
 			&& Animator != null
 			&& BlendShapeProxy != null;
 
 		public VRMBlendShapeProxy BlendShapeProxy { get; private set; }
 		public VRMAnimator VrmAnimator { get; private set; }
+		public RigAnimator RigAnimator { get; private set; }
 		public Animator Animator { get; private set; }
 		public GameObject VrmModel { get; private set; }
 
@@ -84,6 +86,7 @@ namespace HardCoded.VRigUnity {
 			VrmModel = gameObject;
 			VrmAnimator = gameObject.AddComponent<VRMAnimator>();
 			VrmAnimator.controller = m_defaultController;
+			RigAnimator = gameObject.AddComponent<RigAnimator>();
 			BlendShapeProxy = blendShapeProxy;
 			Animator = animator;
 			

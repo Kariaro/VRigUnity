@@ -14,7 +14,8 @@ namespace HardCoded.VRigUnity {
 
 		void Start() {
 			anim = GetComponent<Animator>();
-			rigger = gameObject.AddComponent<RigAnimator>();
+			anim.runtimeAnimatorController = controller;
+			rigger = GetComponent<RigAnimator>();
 			rigger.SetupRigging();
 		}
 
@@ -45,7 +46,7 @@ namespace HardCoded.VRigUnity {
 
 				Vector3 lElbow = shoulder.position + LeftElbow;
 				Vector3 lHand = lElbow + LeftHand;
-
+				
 				rigger.leftHandHint.position = lElbow;
 				rigger.leftHandTarget.position = lHand;
 				rigger.leftHandTarget.rotation = sol.LeftHand.Wrist.Current;
@@ -116,17 +117,16 @@ namespace HardCoded.VRigUnity {
 		}
 		*/
 
-		void LateUpdate() {
-			if (Settings.UseFullIK && !SolutionUtils.GetSolution().IsPaused) {
-				anim.runtimeAnimatorController = controller;
-				PerformRigging();
-			} else {
-				anim.runtimeAnimatorController = null;
+		void Update() {
+			var sol = SolutionUtils.GetSolution();
+			if (sol.IsPaused) {
 				anim.WriteDefaultValues();
+			} else {
+				PerformRigging();
 			}
 			
-			SolutionUtils.GetSolution().UpdateModel();
-			SolutionUtils.GetSolution().AnimateModel();
+			sol.UpdateModel();
+			sol.AnimateModel();
 
 			// Apply VMC Receiver
 			VMCReceiver receiver = VMCReceiver.Receiver;

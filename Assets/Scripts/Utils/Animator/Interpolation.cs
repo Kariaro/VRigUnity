@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace HardCoded.VRigUnity {
 	public struct DiscreteRotStruct {
@@ -53,27 +52,28 @@ namespace HardCoded.VRigUnity {
 			m_current = Quaternion.Slerp(m_current, m_hasFocus ? m_target : m_lostFocus, iv);
 		}
 
-
-		public void ApplyLocal(Transform transform) {
-			transform.localRotation = m_current;
+		public void ApplyLocal(OverrideTransform transform) {
+			transform.data.rotation = m_current.eulerAngles;
 		}
 
-		public void ApplyLocal(Dictionary<HumanBodyBones, Transform> dictionary) {
-			if (dictionary.TryGetValue(m_bone, out var transform)) {
+		public void ApplyLocal(HolisticModel model) {
+			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyLocal(transform);
 			}
 		}
 
-		public void ApplyGlobal(Transform transform, bool localWhenLostFocus = false) {
+		public void ApplyGlobal(OverrideTransform transform, bool localWhenLostFocus = false) {
+			transform.data.rotation = m_current.eulerAngles;
+
 			if (localWhenLostFocus && !m_hasFocus) {
-				transform.localRotation = m_current;
+				transform.data.space = OverrideTransformData.Space.World;
 			} else {
-				transform.rotation = m_current;
+				transform.data.space = OverrideTransformData.Space.Local;
 			}
 		}
 
-		public void ApplyGlobal(Dictionary<HumanBodyBones, Transform> dictionary, bool localWhenLostFocus = false) {
-			if (dictionary.TryGetValue(m_bone, out var transform)) {
+		public void ApplyGlobal(HolisticModel model, bool localWhenLostFocus = false) {
+			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyGlobal(transform, localWhenLostFocus);
 			}
 		}
@@ -195,22 +195,22 @@ namespace HardCoded.VRigUnity {
 			ThumbTip .Update(time);
 		}
 
-		public void ApplyFingers(Dictionary<HumanBodyBones, Transform> modelBones) {
-			IndexPip .ApplyLocal(modelBones);
-			IndexDip .ApplyLocal(modelBones);
-			IndexTip .ApplyLocal(modelBones);
-			MiddlePip.ApplyLocal(modelBones);
-			MiddleDip.ApplyLocal(modelBones);
-			MiddleTip.ApplyLocal(modelBones);
-			RingPip  .ApplyLocal(modelBones);
-			RingDip  .ApplyLocal(modelBones);
-			RingTip  .ApplyLocal(modelBones);
-			PinkyPip .ApplyLocal(modelBones);
-			PinkyDip .ApplyLocal(modelBones);
-			PinkyTip .ApplyLocal(modelBones);
-			ThumbPip .ApplyLocal(modelBones);
-			ThumbDip .ApplyLocal(modelBones);
-			ThumbTip .ApplyLocal(modelBones);
+		public void ApplyFingers(HolisticModel model) {
+			IndexPip .ApplyLocal(model);
+			IndexDip .ApplyLocal(model);
+			IndexTip .ApplyLocal(model);
+			MiddlePip.ApplyLocal(model);
+			MiddleDip.ApplyLocal(model);
+			MiddleTip.ApplyLocal(model);
+			RingPip  .ApplyLocal(model);
+			RingDip  .ApplyLocal(model);
+			RingTip  .ApplyLocal(model);
+			PinkyPip .ApplyLocal(model);
+			PinkyDip .ApplyLocal(model);
+			PinkyTip .ApplyLocal(model);
+			ThumbPip .ApplyLocal(model);
+			ThumbDip .ApplyLocal(model);
+			ThumbTip .ApplyLocal(model);
 		}
 	}
 
@@ -219,6 +219,7 @@ namespace HardCoded.VRigUnity {
 		public DiscreteRotStruct Chest = new(HumanBodyBones.Chest);
 		public DiscreteRotStruct Hips  = new(HumanBodyBones.Hips);
 
+		// IK pos structures
 		public DiscretePosStruct HipsPosition = new(Vector3.zero, Vector3.zero);
 		public DiscretePosStruct RightShoulder = new(Vector3.zero, Vector3.zero);
 		public DiscretePosStruct RightElbow = new(Vector3.zero, Vector3.zero);
@@ -227,10 +228,6 @@ namespace HardCoded.VRigUnity {
 		public DiscretePosStruct LeftElbow = new(Vector3.zero, Vector3.zero);
 		public DiscretePosStruct LeftHand = new(Vector3.zero, Vector3.zero);
 		
-		public DiscreteRotStruct RightUpperArm = new(HumanBodyBones.RightUpperArm);
-		public DiscreteRotStruct RightLowerArm = new(HumanBodyBones.RightLowerArm);
-		public DiscreteRotStruct LeftUpperArm  = new(HumanBodyBones.LeftUpperArm);
-		public DiscreteRotStruct LeftLowerArm  = new(HumanBodyBones.LeftLowerArm);
 		public DiscreteRotStruct RightUpperLeg = new(HumanBodyBones.RightUpperLeg);
 		public DiscreteRotStruct RightLowerLeg = new(HumanBodyBones.RightLowerLeg);
 		public DiscreteRotStruct LeftUpperLeg  = new(HumanBodyBones.LeftUpperLeg);
@@ -247,10 +244,6 @@ namespace HardCoded.VRigUnity {
 			LeftShoulder .Update(time);
 			LeftElbow    .Update(time);
 			LeftHand     .Update(time);
-			RightUpperArm.Update(time);
-			RightLowerArm.Update(time);
-			LeftUpperArm .Update(time);
-			LeftLowerArm .Update(time);
 			RightUpperLeg.Update(time);
 			RightLowerLeg.Update(time);
 			LeftUpperLeg .Update(time);

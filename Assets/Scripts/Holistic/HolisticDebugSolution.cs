@@ -15,6 +15,9 @@ namespace HardCoded.VRigUnity {
 
 		// Used by 'FaceGizmos'
 		public NormalizedLandmarkList facePoints;
+		
+		// Used for custom mesh
+		public GameObject meshObject;
 
 		protected override void OnStartRun() {
 			base.OnStartRun();

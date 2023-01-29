@@ -190,16 +190,6 @@ namespace HardCoded.VRigUnity {
 			Pose.Chest.Add(pose.chestRotation, time);
 			// Pose.Hips.Set(hipsRotation, time);
 			Pose.HipsPosition.Add(pose.hipsPosition, time);
-			
-			if (TrackRightHand) {
-				Pose.RightUpperArm.Add(pose.rUpperArm, time);
-				Pose.RightLowerArm.Add(pose.rLowerArm, time);
-			}
-
-			if (TrackLeftHand) {
-				Pose.LeftUpperArm.Add(pose.lUpperArm, time);
-				Pose.LeftLowerArm.Add(pose.lLowerArm, time);
-			}
 
 			if (Settings.UseLegRotation) {
 				if (pose.hasRightLeg) {
@@ -237,78 +227,61 @@ namespace HardCoded.VRigUnity {
 			Pose.Update(time);
 		}
 
+		void LateUpdate() {
+			if (model.VrmModel.activeInHierarchy && IsPaused) {
+				model.DefaultVRMAnimator();
+			}
+		}
+
 		/// <summary>
 		/// This method is called when the model should be animated
 		/// </summary>
 		public virtual void AnimateModel() {
-			if (!model.VrmModel.activeInHierarchy) {
+			if (!model.VrmModel.activeInHierarchy || IsPaused) {
 				return;
 			}
-
+			
 			// Apply the model transform
 			model.VrmModel.transform.position = guiMain.ModelTransform;
 
-			if (IsPaused) {
-				model.DefaultVRMAnimator();
-				return;
-			}
-
 			if (BoneSettings.Get(BoneSettings.NECK)) {
-				Pose.Neck.ApplyGlobal(model.ModelBones);
+				Pose.Neck.ApplyGlobal(model);
 			}
 
 			if (BoneSettings.Get(BoneSettings.CHEST)) {
-				Pose.Chest.ApplyGlobal(model.ModelBones);
+				Pose.Chest.ApplyGlobal(model);
 			}
 
 			if (BoneSettings.Get(BoneSettings.HIPS)) {
-				Pose.Hips.ApplyGlobal(model.ModelBones);
-			}
-
-			if (!Settings.UseFullIK) {
-				if (BoneSettings.Get(BoneSettings.LEFT_ARM)) {
-					Pose.LeftUpperArm.ApplyGlobal(model.ModelBones, true);
-					Pose.LeftLowerArm.ApplyGlobal(model.ModelBones, true);
-				}
-
-				if (BoneSettings.Get(BoneSettings.RIGHT_ARM)) {
-					Pose.RightUpperArm.ApplyGlobal(model.ModelBones, true);
-					Pose.RightLowerArm.ApplyGlobal(model.ModelBones, true);
-				}
+				Pose.Hips.ApplyGlobal(model);
 			}
 
 			if (Settings.UseLegRotation) { // Legs
-				if (BoneSettings.Get(BoneSettings.LEFT_HIP)) {
-					Pose.LeftUpperLeg.ApplyGlobal(model.ModelBones);
+				if (BoneSettings.Get(BoneSettings.LEFT_LEG)) {
+					Pose.LeftUpperLeg.ApplyGlobal(model);
+					Pose.LeftLowerLeg.ApplyGlobal(model);
 				}
 
-				if (BoneSettings.Get(BoneSettings.LEFT_KNEE)) {
-					Pose.LeftLowerLeg.ApplyGlobal(model.ModelBones);
-				}
-
-				if (BoneSettings.Get(BoneSettings.RIGHT_HIP)) {
-					Pose.RightUpperLeg.ApplyGlobal(model.ModelBones);
-				}
-
-				if (BoneSettings.Get(BoneSettings.RIGHT_KNEE)) {
-					Pose.RightLowerLeg.ApplyGlobal(model.ModelBones);
+				if (BoneSettings.Get(BoneSettings.RIGHT_LEG)) {
+					Pose.RightUpperLeg.ApplyGlobal(model);
+					Pose.RightLowerLeg.ApplyGlobal(model);
 				}
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_WRIST)) {
-				RightHand.Wrist.ApplyGlobal(model.ModelBones, true);
+				RightHand.Wrist.ApplyGlobal(model, true);
 			}
 
 			if (BoneSettings.Get(BoneSettings.RIGHT_FINGERS)) {
-				RightHand.ApplyFingers(model.ModelBones);
+				RightHand.ApplyFingers(model);
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_WRIST)) {
-				LeftHand.Wrist.ApplyGlobal(model.ModelBones, true);
+				LeftHand.Wrist.ApplyGlobal(model, true);
 			}
 			
 			if (BoneSettings.Get(BoneSettings.LEFT_FINGERS)) {
-				LeftHand.ApplyFingers(model.ModelBones);
+				LeftHand.ApplyFingers(model);
 			}
 
 			// Face
@@ -325,13 +298,13 @@ namespace HardCoded.VRigUnity {
 				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_R], rEyeValue);
 				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_L], lEyeValue);
 
-				// TODO: Update this code to make it more correct
-				model.ModelBones[HumanBodyBones.LeftEye].localRotation = Quaternion.Euler(
+				// TODO: Find a better eye tracking method
+				model.RigAnimator.Transforms[HumanBodyBones.LeftEye].data.rotation = new(
 					(lEyeIris.Average().y - 0.14f) * -30,
 					lEyeIris.Average().x * -30,
 					0
 				);
-				model.ModelBones[HumanBodyBones.RightEye].localRotation = Quaternion.Euler(
+				model.RigAnimator.Transforms[HumanBodyBones.RightEye].data.rotation = new(
 					(rEyeIris.Average().y - 0.14f) * -30,
 					rEyeIris.Average().x * -30,
 					0
