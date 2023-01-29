@@ -10,6 +10,16 @@ namespace HardCoded.VRigUnity {
 			new int[] { MediaPipe.Hand.RING_FINGER_MCP,   MediaPipe.Hand.RING_FINGER_TIP },   // Ring
 			new int[] { MediaPipe.Hand.PINKY_MCP,         MediaPipe.Hand.PINKY_TIP },         // Pinky
 		};
+
+		public struct FingerAngle {
+			public int idx;
+			public Vector3 angle;
+
+			public FingerAngle(int idx, Vector3 angle) {
+				this.idx = idx;
+				this.angle = angle;
+			}
+		}
 		
 		private static Groups.HandPoints SetGlobalOrigin(Groups.HandPoints hand) {
 			Groups.HandPoints result = new();
@@ -73,59 +83,53 @@ namespace HardCoded.VRigUnity {
 
 			float[] xAngles = GetXAngles(hand);
 			float[] zAngles = GetZAngles(hand);
-
 			for (int i = 0; i < 20; i++) {
-				if (xAngles[i] == 0 && zAngles[i] == 0) {
+				float xAngle = xAngles[i] * 1.1f; // Multiplier
+				float zAngle = zAngles[i];
+				if (xAngle == 0 && zAngle == 0) {
 					continue;
 				}
 
-				if (type != HandType.Left) {
-					// Flip the x angles when left
-					xAngles[i] = -xAngles[i];
-					zAngles[i] = -zAngles[i];
-				}
-
 				if (i >= MediaPipe.Hand.THUMB_CMC && i <= MediaPipe.Hand.THUMB_TIP) {
+					// Thumb should move more than the fingers
+					xAngle *= 1.1f;
+
 					// The thumb needs to rotate around Y for X
 					if (i == MediaPipe.Hand.THUMB_CMC) {
 						// By default it has around 20 degree offset from the next segment
-						xAngles[i] -= 20 * (type != HandType.Left ? -1 : 1);
+						xAngle -= 25;
 					}
 
-					data.Add(new(i, new(0, -xAngles[i], 0)));
+					if (type == HandType.Right) {
+						xAngle = -xAngle;
+					}
+
+					data.Add(new(i, new(0, -xAngle, type == HandType.Right ? -10 : 10)));
 				} else {
-					// TODO: This is just a visual helper for hands but is not reqired
+					// xAngles can never go more than 120 degrees
+					xAngle = Mathf.Clamp(xAngle, -10, 110);
 
 					// If the x_angle is greather than 45 we will lerp the z_angle towards zero
-					if (xAngles[i] > 45) {
+					if (xAngle > 45) {
 						// When the x_angle is greater than 90 the z_angle will be zero
-						zAngles[i] = Mathf.Max(0, Mathf.Lerp(zAngles[i], 0, (xAngles[i] - 45) / 45.0f));
+						zAngle = Mathf.Max(0, Mathf.Lerp(zAngle, 0, (xAngle - 45) / 45.0f));
 					}
 
-					// xAngles can never go more than 120 degrees
-					if (type != HandType.Right) {
-						xAngles[i] = Mathf.Clamp(xAngles[i], -10, 110);
-					} else {
-						xAngles[i] = -Mathf.Clamp(-xAngles[i], -10, 110);
+					if (type == HandType.Right) {
+						xAngle = -xAngle;
+						zAngle = -zAngle;
 					}
 
-					data.Add(new(i, new(0, zAngles[i], xAngles[i])));
+					data.Add(new(i, new(0, zAngle, xAngle)));
 				}
 			}
 
 			return data;
 		}
 
-		public struct FingerAngle {
-			public int idx;
-			public Vector3 angle;
-
-			public FingerAngle(int idx, Vector3 angle) {
-				this.idx = idx;
-				this.angle = angle;
-			}
-		}
-
+		/// <summary>
+		/// Calculate the X angles for each finger on the hand
+		/// </summary>
 		private static float[] GetXAngles(Groups.HandPoints hand) {
 			// Create an array that contains the position of all finger joints
 			Vector3[][] fingers = new Vector3[Fingers.Length][];
@@ -161,10 +165,11 @@ namespace HardCoded.VRigUnity {
 				float[] angles = xFingerAngles[i];
 
 				// Apply the finger angles to the data array
+				float average = 0;
 				int mcp = Fingers[i][0];
 				int tip = Fingers[i][1];
-				for (int j = 0, k = mcp; k <= tip - 1; j++, k++) {
-					data[k] = angles[j];
+				for (int j = 0, k = mcp; k < tip; j++, k++) {
+					average += angles[j];
 					
 #if UNITY_EDITOR
 					// Debug visualization code
@@ -178,6 +183,10 @@ namespace HardCoded.VRigUnity {
 						}
 					}
 #endif
+				}
+
+				for (int j = 0, k = mcp; k < tip; j++, k++) {
+					data[k] = average / (tip - mcp);
 				}
 			}
 
@@ -208,7 +217,13 @@ namespace HardCoded.VRigUnity {
 				
 				// Calculate the distance to the plane and angle between the (forwardVector) and MCP, PIP
 				float dist = plane.GetDistanceToPoint(pips[i]);
-				float angle = Vector3.Angle(forwardVector, pips[i] - mcps[i]);
+				float angle;
+
+				{
+					Vector3 pt = plane.ClosestPointOnPlane(pips[i]);
+					Vector3 np = plane.normal * dist + pt;
+					angle = Vector3.Angle(pt - mcps[i], np - mcps[i]);
+				}
 
 				// If the distance to the plane is negative we are rotating against the normal of the plane
 				if (dist < 0) {
@@ -231,12 +246,14 @@ namespace HardCoded.VRigUnity {
 						np
 					};
 
+					// Draw the distance a finger is from up
 					for (int j = 0; j < 3; j++) {
 						Vector3 a = tri[j];
 						Vector3 b = tri[(j + 1) % 3];
 						Debug.DrawLine(a, b, color[i]);
 					}
 					
+					// Draw the finger forward triangle
 					Vector3[] triangle = HandResolverUtil.CreateTriangleAroundVector(tangent, mcps[i], forwardVector);
 					for (int j = 0; j < triangle.Length; j++) {
 						float triDist = Vector3.Distance(mcps[i], pips[i]);

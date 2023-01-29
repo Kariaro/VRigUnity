@@ -54,7 +54,7 @@ namespace HardCoded.VRigUnity {
 
 		private Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
 			NormalizedLandmark mark = list.Landmark[idx];
-			return new(mark.X * 2, mark.Y, mark.Z, mark.Visibility);
+			return new(mark.X * 2, mark.Y, mark.Z * 2, mark.Visibility);
 		}
 
 		protected override void SetupScreen(ImageSource imageSource) {
@@ -99,10 +99,14 @@ namespace HardCoded.VRigUnity {
 				}
 
 				// Eyes
-				lEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.LeftEyeEAR, converter));
-				rEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.RightEyeEAR, converter));
-				lEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.LeftEyeIrisPoint, converter));
-				rEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.RightEyeIrisPoint, converter));
+				lEyeOpen = FacePointsNew.CalculateEyeAspectRatio(Array.ConvertAll(FacePointsNew.LeftEyeEAR, converter));
+				rEyeOpen = FacePointsNew.CalculateEyeAspectRatio(Array.ConvertAll(FacePointsNew.RightEyeEAR, converter));
+				// Vector2 olEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.LeftEyeIrisPoint, converter));
+				// Vector2 orEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.RightEyeIrisPoint, converter));
+				lEyeIris = FacePointsNew.CalculateIrisPosition(FacePointsNew.LeftEyeIrisPoint, converter);
+				rEyeIris = FacePointsNew.CalculateIrisPosition(FacePointsNew.RightEyeIrisPoint, converter);
+
+				// Debug.Log(rEyeIris + ", " + lEyeIris + " ||| " + orEyeIris + ", " + olEyeIris);
 			}
 
 			{

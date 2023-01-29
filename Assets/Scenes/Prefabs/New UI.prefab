@@ -2409,9 +2409,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6651f6cbee76ca1458bfeda264b9d4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vrmModel: {fileID: 0}
-  vrmAnimator: {fileID: 0}
-  vrmBlendShapeProxy: {fileID: 0}
 --- !u!1 &8087047091499856266
 GameObject:
   m_ObjectHideFlags: 0
@@ -13151,11 +13148,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowTransform: {fileID: 8087047093141927501}
+  trackingBox: {fileID: 8087047091399183622}
   canvasScalers:
   - {fileID: 8087047092822310564}
   - {fileID: 8087047093141927499}
   - {fileID: 8087047093259718135}
-  trackingBox: {fileID: 8087047091399183622}
 --- !u!1 &8087047093129105196
 GameObject:
   m_ObjectHideFlags: 0

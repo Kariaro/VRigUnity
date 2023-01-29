@@ -11,8 +11,8 @@ namespace HardCoded.VRigUnity {
 	public class GUIMain : MonoBehaviour {
 		[Header("Settings")]
 		[SerializeField] private RectTransform windowTransform;
-		[SerializeField] private CanvasScaler[] canvasScalers;
 		[SerializeField] private TrackingResizableBox trackingBox;
+		[SerializeField] private CanvasScaler[] canvasScalers;
 		private CustomizableCanvas customizableCanvas;
 		private OrbitalCamera orbitalCamera;
 		
