@@ -1,35 +1,38 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using VRM;
+using UnityEngine.Animations.Rigging;
 
 namespace HardCoded.VRigUnity {
 	public class VRMAnimator : MonoBehaviour {
+		// Distance offset to remove arm glitches
+		public const float ArmJointOffset = 0.01f;
+
+		private HolisticSolution sol;
 		private RigAnimator rigger;
 		private Animator anim;
 		
-		public bool slerp;
-		public RuntimeAnimatorController controller;
 		public Vector3 LeftElbow;
 		public Vector3 LeftHand;
 		public Vector3 RightElbow;
 		public Vector3 RightHand;
 
 		void Start() {
+			sol = SolutionUtils.GetSolution();
 			anim = GetComponent<Animator>();
-			anim.runtimeAnimatorController = controller;
 			rigger = GetComponent<RigAnimator>();
 			rigger.SetupRigging();
 		}
 
 		void PerformRigging() {
-			HolisticSolution sol = SolutionUtils.GetSolution();
 			float time = sol.TimeNow;
-			// TODO: Fix hands when full body moves
 
 			{
 				Transform shoulder = anim.GetBoneTransform(HumanBodyBones.LeftUpperArm);
 				Transform elbow = anim.GetBoneTransform(HumanBodyBones.LeftLowerArm);
 				Transform hand = anim.GetBoneTransform(HumanBodyBones.LeftHand);
-				float se_dist = Vector3.Distance(shoulder.position, elbow.position);
-				float eh_dist = Vector3.Distance(elbow.position, hand.position);
+				float se_dist = Vector3.Distance(shoulder.position, elbow.position) + ArmJointOffset;
+				float eh_dist = Vector3.Distance(elbow.position, hand.position) + ArmJointOffset;
 
 				Vector3 ai_shoulder = sol.Pose.LeftShoulder.Target;
 				Vector3 ai_elbow = sol.Pose.LeftElbow.Target;
@@ -69,8 +72,8 @@ namespace HardCoded.VRigUnity {
 				Transform shoulder = anim.GetBoneTransform(HumanBodyBones.RightUpperArm);
 				Transform elbow = anim.GetBoneTransform(HumanBodyBones.RightLowerArm);
 				Transform hand = anim.GetBoneTransform(HumanBodyBones.RightHand);
-				float se_dist = Vector3.Distance(shoulder.position, elbow.position);
-				float eh_dist = Vector3.Distance(elbow.position, hand.position);
+				float se_dist = Vector3.Distance(shoulder.position, elbow.position) + ArmJointOffset;
+				float eh_dist = Vector3.Distance(elbow.position, hand.position) + ArmJointOffset;
 
 				Vector3 ai_shoulder = sol.Pose.RightShoulder.Target;
 				Vector3 ai_elbow = sol.Pose.RightElbow.Target;
@@ -109,29 +112,63 @@ namespace HardCoded.VRigUnity {
 		
 		/*
 		void FixedUpdate() {
-			if (Settings.UseFullIK && !SolutionUtils.GetSolution().IsPaused) {
+			if (!sol.IsPaused) {
 				PerformRigging();
 			}
 
-			SolutionUtils.GetSolution().UpdateModel();
+			sol.UpdateModel();
 		}
 		*/
 
 		void Update() {
-			var sol = SolutionUtils.GetSolution();
-			if (sol.IsPaused) {
-				anim.WriteDefaultValues();
-			} else {
+			if (!sol.IsPaused) {
 				PerformRigging();
+			} else {
+				// Do we need to do this?
+				// anim.WriteDefaultValues();
 			}
-			
+
+			UpdateFromReceiver();
 			sol.UpdateModel();
 			sol.AnimateModel();
+		}
+		
+		void UpdateFromReceiver() {
+			// Make sure the hand constraints are not applied when they are turned off
+			sol.Model.RigAnimator.UseHandIK(true, BoneSettings.Get(BoneSettings.LEFT_ARM));
+			sol.Model.RigAnimator.UseHandIK(false, BoneSettings.Get(BoneSettings.RIGHT_ARM));
 
 			// Apply VMC Receiver
 			VMCReceiver receiver = VMCReceiver.Receiver;
 			if (receiver.IsRunning()) {
-				receiver.vmcReceiver.ModelUpdate();
+				Dictionary<BlendShapeKey, float> dict = null;
+				// First save all blend shapes to make sure we do not overwrite if the face is not applied
+				if (!BoneSettings.Get(BoneSettings.FACE)) {
+					// Overwrite all blend shape changes	
+					dict = new(sol.Model.BlendShapeProxy.GetValues());
+				}
+				
+				receiver.vmcReceiver.Update();
+
+				// Get all the transforms and apply them to the OverwriteTransforms
+				foreach (var entry in sol.Model.ModelBones) {
+					if (!BoneSettings.CanExternalModify(entry.Key)) {
+						continue;
+					}
+
+					if (sol.Model.Transforms.TryGetValue(entry.Key, out var trans) && trans != null) {
+						// Rotate the transform based on the space
+						if (trans.data.space == OverrideTransformData.Space.World) {
+							trans.data.rotation = entry.Value.rotation.eulerAngles;
+						} else if (trans.data.space == OverrideTransformData.Space.Local) {
+							trans.data.rotation = entry.Value.localRotation.eulerAngles;
+						}
+					}
+				}
+
+				if (dict != null) {
+					sol.Model.BlendShapeProxy.SetValues(dict);
+				}
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using VRM;
 
 namespace HardCoded.VRigUnity {
@@ -20,6 +21,7 @@ namespace HardCoded.VRigUnity {
 		// API Getters
 		public Dictionary<BlendShapePreset, BlendShapeKey> BlendShapes => blendShapeCache;
 		public Dictionary<HumanBodyBones, Transform> ModelBones => boneTransformCache;
+		public Dictionary<HumanBodyBones, OverrideTransform> Transforms => RigAnimator.Transforms;
 		public bool IsVisible {
 			get => visible;
 			set {
@@ -85,10 +87,10 @@ namespace HardCoded.VRigUnity {
 			
 			VrmModel = gameObject;
 			VrmAnimator = gameObject.AddComponent<VRMAnimator>();
-			VrmAnimator.controller = m_defaultController;
 			RigAnimator = gameObject.AddComponent<RigAnimator>();
 			BlendShapeProxy = blendShapeProxy;
 			Animator = animator;
+			Animator.runtimeAnimatorController = m_defaultController;
 			
 			UpdateCaches();
 			UpdateVisibility();
@@ -133,6 +135,8 @@ namespace HardCoded.VRigUnity {
 
 		// Called when a bone is selected or deselected
 		public void OnBoneUpdate(int index, bool set) {
+			// TODO: Make sure this is correctly cleared for the new bone transforms
+
 			// Our program should now track the bone
 			// Make sure all parts are cleared
 			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
@@ -143,6 +147,12 @@ namespace HardCoded.VRigUnity {
 				Transform trans = boneTransformCache[bone];
 				if (trans != null) {
 					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
+				}
+
+				// Reset new animator data
+				if (RigAnimator.Transforms.TryGetValue(bone, out var trans2)) {
+					trans2.data.rotation = Vector3.zero;
+					trans2.data.space = OverrideTransformData.Space.Local;
 				}
 			}
 		}
