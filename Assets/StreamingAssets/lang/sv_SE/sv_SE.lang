@@ -1,5 +1,7 @@
 camera.start=Starta Kamera
 camera.stop=Stäng av Kamera
+mocap_recording.start=Spela in Mocap
+mocap_recording.stop=Avsluta inspelning
 visuals.on=Visa Debug Vy
 visuals.off=Göm Debug Vy
 vmc_receiver.start=Starta Mottagare

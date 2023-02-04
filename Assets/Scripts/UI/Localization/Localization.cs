@@ -66,6 +66,8 @@ namespace HardCoded.VRigUnity {
 		public static readonly Lang
 				CameraStart = new("camera.start", "Start Camera"),
 				CameraStop = new("camera.stop", "Stop Camera"),
+				MocapRecordingStart = new("mocap_recording.start", "Record Mocap"),
+				MocapRecordingStop = new("mocap_recording.stop", "Stop Recording"),
 				VisualsOn = new("visuals.on", "Visuals On"),
 				VisualsOff = new("visuals.off", "Visuals Off"),
 				VmcReceiverStart = new("vmc_receiver.start", "Start Receiver VMC"),
