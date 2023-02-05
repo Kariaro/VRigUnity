@@ -99,14 +99,10 @@ namespace HardCoded.VRigUnity {
 				}
 
 				// Eyes
-				lEyeOpen = FacePointsNew.CalculateEyeAspectRatio(Array.ConvertAll(FacePointsNew.LeftEyeEAR, converter));
-				rEyeOpen = FacePointsNew.CalculateEyeAspectRatio(Array.ConvertAll(FacePointsNew.RightEyeEAR, converter));
-				// Vector2 olEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.LeftEyeIrisPoint, converter));
-				// Vector2 orEyeIris = FacePoints.CalculateIrisPosition(Array.ConvertAll(FacePoints.RightEyeIrisPoint, converter));
-				lEyeIris = FacePointsNew.CalculateIrisPosition(FacePointsNew.LeftEyeIrisPoint, converter);
-				rEyeIris = FacePointsNew.CalculateIrisPosition(FacePointsNew.RightEyeIrisPoint, converter);
-
-				// Debug.Log(rEyeIris + ", " + lEyeIris + " ||| " + orEyeIris + ", " + olEyeIris);
+				lEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.LeftEyeEAR, converter));
+				rEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.RightEyeEAR, converter));
+				lEyeIris = FacePoints.CalculateIrisPosition(FacePoints.LeftEyeIrisPoint, converter);
+				rEyeIris = FacePoints.CalculateIrisPosition(FacePoints.RightEyeIrisPoint, converter);
 			}
 
 			{
@@ -227,12 +223,6 @@ namespace HardCoded.VRigUnity {
 			Pose.Update(time);
 		}
 
-		void LateUpdate() {
-			if (model.VrmModel.activeInHierarchy && IsPaused) {
-				model.DefaultVRMAnimator();
-			}
-		}
-
 		/// <summary>
 		/// This method is called when the model should be animated
 		/// </summary>
@@ -256,7 +246,7 @@ namespace HardCoded.VRigUnity {
 				Pose.Hips.ApplyGlobal(model);
 			}
 
-			if (Settings.UseLegRotation) { // Legs
+			if (Settings.UseLegRotation) {
 				if (BoneSettings.Get(BoneSettings.LEFT_LEG)) {
 					Pose.LeftUpperLeg.ApplyGlobal(model);
 					Pose.LeftLowerLeg.ApplyGlobal(model);
@@ -284,7 +274,6 @@ namespace HardCoded.VRigUnity {
 				LeftHand.ApplyFingers(model);
 			}
 
-			// Face
 			if (BoneSettings.Get(BoneSettings.FACE)) {
 				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], mouthOpen);
 

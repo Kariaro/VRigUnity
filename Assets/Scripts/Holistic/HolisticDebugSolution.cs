@@ -62,10 +62,6 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		[Range(0, 1)]
-		public float angleTest = 0;
-		public int test;
-
 		public override void UpdateModel() {
 			if (!renderUpdate) {	
 				base.UpdateModel();

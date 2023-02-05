@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -19,11 +20,11 @@ namespace HardCoded.VRigUnity {
 		public Transform rightLegHint;
 
 		// Hand constraints (First element is IK)
-		private IRigConstraint[] leftHandConstraints = new IRigConstraint[3];
-		private IRigConstraint[] rightHandConstraints = new IRigConstraint[3];
+		private readonly IRigConstraint[] leftHandConstraints = new IRigConstraint[4];
+		private readonly IRigConstraint[] rightHandConstraints = new IRigConstraint[4];
 
 		// API Getters
-		private Dictionary<HumanBodyBones, OverrideTransform> _transforms = new();
+		private readonly Dictionary<HumanBodyBones, OverrideTransform> _transforms = new();
 		public Dictionary<HumanBodyBones, OverrideTransform> Transforms => _transforms;
 
 		public void SetupRigging() {
@@ -78,8 +79,10 @@ namespace HardCoded.VRigUnity {
 			rigBuilder.Build();
 
 			// By default both hands use IK
-			UseHandIK(true, true);
-			UseHandIK(false, true);
+			UseHandIK(true, false);
+			UseHandIK(false, false);
+
+			SolutionUtils.GetSolution().Model.ResetVRMAnimator();
 		}
 
 		public void UseHandIK(bool leftHand, bool enable) {
@@ -90,61 +93,48 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void SetupOffsets(Rig rig) {
+		private void SetupOffsets(Rig rig) {
 			_transforms.Clear();
 
 			GameObject offsets = new("Offsets");
 			offsets.transform.SetParent(rig.transform);
 			
-			// Left fingers
-			foreach (var bone in BoneSettings.GetBones(BoneSettings.LEFT_FINGERS)) {
-				CreateBone(offsets, bone);
-			}
+			// Create OverrideTransforms for all bones
+			foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
+				if (bone == HumanBodyBones.LastBone) {
+					continue;
+				}
 
-			// Right fingers
-			foreach (var bone in BoneSettings.GetBones(BoneSettings.RIGHT_FINGERS)) {
 				CreateBone(offsets, bone);
 			}
 
 			// Create constraints map
-			leftHandConstraints[1] = CreateBone(offsets, HumanBodyBones.LeftUpperArm);
-			leftHandConstraints[2] = CreateBone(offsets, HumanBodyBones.LeftLowerArm);
-			rightHandConstraints[1] = CreateBone(offsets, HumanBodyBones.RightUpperArm);
-			rightHandConstraints[2] = CreateBone(offsets, HumanBodyBones.RightLowerArm);
-
-			CreateBone(offsets, HumanBodyBones.Chest);
-			CreateBone(offsets, HumanBodyBones.Neck);
-			CreateBone(offsets, HumanBodyBones.Hips);
-			CreateBone(offsets, HumanBodyBones.LeftHand);
-			CreateBone(offsets, HumanBodyBones.LeftEye);
-			CreateBone(offsets, HumanBodyBones.LeftUpperLeg);
-			CreateBone(offsets, HumanBodyBones.LeftLowerLeg);
-			CreateBone(offsets, HumanBodyBones.RightHand);
-			CreateBone(offsets, HumanBodyBones.RightEye);
-			CreateBone(offsets, HumanBodyBones.RightUpperLeg);
-			CreateBone(offsets, HumanBodyBones.RightLowerLeg);
+			leftHandConstraints[1] = _transforms[HumanBodyBones.LeftUpperArm];
+			leftHandConstraints[2] = _transforms[HumanBodyBones.LeftLowerArm];
+			leftHandConstraints[3] = _transforms[HumanBodyBones.LeftShoulder];
+			rightHandConstraints[1] = _transforms[HumanBodyBones.RightUpperArm];
+			rightHandConstraints[2] = _transforms[HumanBodyBones.RightLowerArm];
+			rightHandConstraints[3] = _transforms[HumanBodyBones.RightShoulder];
 		}
 
-		private IRigConstraint CreateBone(GameObject parent, HumanBodyBones bone) {
+		private IRigConstraint CreateBone(GameObject parent, HumanBodyBones bone, bool local = true) {
 			GameObject element = new(bone.ToString());
 			element.transform.SetParent(parent.transform);
 
 			var offset = element.AddComponent<OverrideTransform>();
 			offset.data.constrainedObject = anim.GetBoneTransform(bone);
-			offset.data.space = OverrideTransformData.Space.Local;
+			offset.data.space = local ? OverrideTransformData.Space.Local : OverrideTransformData.Space.World;
 			offset.data.rotationWeight = 1;
 			_transforms.Add(bone, offset);
 
 			return offset;
 		}
 
-		public void SetupHands(Rig rig) {
-			var sol = SolutionUtils.GetSolution() as HolisticDebugSolution;
-
+		private void SetupHands(Rig rig) {
 			{ // Left Hand
 				GameObject hand = new("LeftHandIK");
-				GameObject target = Instantiate(sol.meshObject); target.name = "Left Target"; //new("Left Target");
-				GameObject hint = Instantiate(sol.meshObject); hint.name = "Left Hint"; //new("Left Hint");
+				GameObject target = new("Left Target");
+				GameObject hint = new("Left Hint");
 				hand.transform.SetParent(rig.transform);
 				target.transform.SetParent(hand.transform);
 				hint.transform.SetParent(hand.transform);
@@ -188,7 +178,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void SetupLegs(Rig rig) {
+		private void SetupLegs(Rig rig) {
 			{ // Left Leg
 				GameObject leg = new("Left Leg");
 				GameObject target = new("Target");

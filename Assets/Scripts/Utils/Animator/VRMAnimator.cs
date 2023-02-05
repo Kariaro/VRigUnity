@@ -124,8 +124,11 @@ namespace HardCoded.VRigUnity {
 			if (!sol.IsPaused) {
 				PerformRigging();
 			} else {
-				// Do we need to do this?
-				// anim.WriteDefaultValues();
+				// If the app is paused reset the rig hand positions
+				rigger.leftHandHint.SetPositionAndRotation(new(-0.5f, -1, 0), BoneSettings.DefaultLeftArm);
+				rigger.leftHandTarget.SetPositionAndRotation(new(-0.5f, -1, 0), BoneSettings.DefaultLeftArm);
+				rigger.rightHandHint.SetPositionAndRotation(new(0.5f, -1, 0), BoneSettings.DefaultRightArm);
+				rigger.rightHandTarget.SetPositionAndRotation(new(0.5f, -1, 0), BoneSettings.DefaultRightArm);
 			}
 
 			UpdateFromReceiver();

@@ -1,7 +1,4 @@
-using Mediapipe;
-using Mediapipe.Unity;
-using System.Collections;
-using System.IO;
+using System;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
@@ -28,48 +25,52 @@ namespace HardCoded.VRigUnity {
 		// Left
 		//  p1 = 263, p2 = 387, p3 = 384,
 		//  p4 = 463, p5 = 380, p6 = 373
-		public static readonly int[] LeftEyeEAR = { 263, 387, 384, 463, 380, 373 };
+		public static readonly int[] LeftEyeEAR = { 362, 263, 386, 374 };
 		
 		// Right
 		//  p1 = 133, p2 = 157, p3 = 160,
 		//  p4 =  33, p5 = 144, p6 = 153
-		public static readonly int[] RightEyeEAR = { 133, 157, 160, 33, 144, 153 };
+		public static readonly int[] RightEyeEAR = { 33, 133, 159, 145 };
 		
 		// Eye Aspect Ratio
 		// https://pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
+		// https://www.youtube.com/watch?v=XIJD43rbI-4
 		public static float CalculateEyeAspectRatio(Vector3[] points) {
-			Vector3 p1 = points[0];
-			Vector3 p2 = points[1];
-			Vector3 p3 = points[2];
-			Vector3 p4 = points[3];
-			Vector3 p5 = points[4];
-			Vector3 p6 = points[5];
+			// Left
+			// left/right 33  -> 133
+			// top/down   159 -> 145
 
-			return ((p2 - p6).magnitude + (p3 - p5).magnitude) / (2 * (p1 - p4).magnitude);
+			// Right
+			// left/right 362 -> 263
+			// top/down   386 -> 374
+
+			float horizontal = (points[0] - points[1]).magnitude;
+			float vertical = (points[2] - points[3]).magnitude;
+			return vertical / horizontal;
 		}
 
 		
 		// Iris Points
-		public static readonly int[] LeftEyeIrisPoint = { LeftEyeEAR[0], LeftEyeEAR[3], LeftEyeIris[0] };
-		public static readonly int[] RightEyeIrisPoint = { RightEyeEAR[0], RightEyeEAR[3], RightEyeIris[0] };
+		public static readonly int[] LeftEyeIrisPoint = { LeftEyeEAR[0], LeftEyeEAR[1], LeftEyeIris[IrisCenter] };
+		public static readonly int[] RightEyeIrisPoint = { RightEyeEAR[0], RightEyeEAR[1], RightEyeIris[IrisCenter] };
 
-		public static Vector2 CalculateIrisPosition(Vector3[] points) {
+		public static Vector2 CalculateIrisPosition(int[] points, Converter<int, Vector3> converter) {
 			// /-------\
 			// L   I   R
 			// \-------/
 
-			Vector3 leftPoint = points[0];
-			Vector3 rightPoint = points[1];
-			Vector3 irisPoint = points[2];
-			
+			Vector3 leftPoint  = converter(points[0]);
+			Vector3 rightPoint = converter(points[1]);
+			Vector3 irisPoint  = converter(points[2]);
+
 			// Find the index (0, 1) where I is on the line LR
 			Vector3 point = GetClosestPointOnLine(leftPoint, rightPoint, irisPoint);
 			bool clockwise = IsClockwise(leftPoint, rightPoint, irisPoint);
 			float d = Vector3.Distance(leftPoint, rightPoint);
 			float x = Vector3.Distance(leftPoint, point) / d;
-			float y = (Vector3.Distance(point, irisPoint) * (clockwise ? 1 : -1)) / d;
+			float y = (Vector3.Distance(point, irisPoint) * (clockwise ? -1 : 1)) / d;
 			
-			return new(0.5f - x, y);
+			return new(x - 0.5f, y);
 		}
 
 		static bool IsClockwise(Vector3 a, Vector3 b, Vector3 c) {

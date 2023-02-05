@@ -94,7 +94,6 @@ namespace HardCoded.VRigUnity {
 			
 			UpdateCaches();
 			UpdateVisibility();
-			DefaultVRMAnimator();
 
 			return true;
 		}
@@ -127,32 +126,14 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void DefaultVRMAnimator() {
-			foreach (var entry in boneTransformCache) {
-				entry.Value.localRotation = BoneSettings.GetDefaultRotation(entry.Key);
-			}
-		}
-
-		// Called when a bone is selected or deselected
+		/// <summary>
+		/// Used with bone settings
+		/// </summary>
 		public void OnBoneUpdate(int index, bool set) {
-			// TODO: Make sure this is correctly cleared for the new bone transforms
-
-			// Our program should now track the bone
-			// Make sure all parts are cleared
 			foreach (HumanBodyBones bone in BoneSettings.GetBones(index)) {
-				if (!boneTransformCache.ContainsKey(bone)) {
-					continue;
-				}
-
-				Transform trans = boneTransformCache[bone];
-				if (trans != null) {
-					trans.localRotation = BoneSettings.GetDefaultRotation(bone);
-				}
-
-				// Reset new animator data
-				if (RigAnimator.Transforms.TryGetValue(bone, out var trans2)) {
-					trans2.data.rotation = Vector3.zero;
-					trans2.data.space = OverrideTransformData.Space.Local;
+				// If the bone is present in the OverrideTransform list
+				if (RigAnimator.Transforms.TryGetValue(bone, out var trans)) {
+					trans.data.rotation = BoneSettings.GetDefaultRotation(bone).eulerAngles;
 				}
 			}
 		}
@@ -162,6 +143,11 @@ namespace HardCoded.VRigUnity {
 			Animator.Rebind();
 			foreach (var item in blendShapeCache) {
 				BlendShapeProxy.ImmediatelySetValue(item.Value, 0);
+			}
+
+			// Reset all bone rotations
+			for (int i = 0; i < BoneSettings.Count; i++) {
+				OnBoneUpdate(i, true);
 			}
 		}
 	}

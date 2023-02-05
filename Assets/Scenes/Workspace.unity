@@ -184,37 +184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultAvailableResolutions:
-  - width: 1920
-    height: 1080
-    frameRate: 30
-  - width: 1600
-    height: 896
-    frameRate: 30
-  - width: 1280
-    height: 720
-    frameRate: 30
-  - width: 960
-    height: 540
-    frameRate: 30
-  - width: 848
-    height: 480
-    frameRate: 30
-  - width: 640
-    height: 480
-    frameRate: 30
-  - width: 640
-    height: 360
-    frameRate: 30
-  - width: 424
-    height: 240
-    frameRate: 30
-  - width: 320
-    height: 240
-    frameRate: 30
-  - width: 176
-    height: 144
-    frameRate: 30
 --- !u!114 &275874975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,7 +201,6 @@ MonoBehaviour:
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
   _timeoutMicrosec: 100000
   modelComplexity: 1
-  smoothLandmarks: 1
 --- !u!114 &275874976
 MonoBehaviour:
   m_ObjectHideFlags: 0
