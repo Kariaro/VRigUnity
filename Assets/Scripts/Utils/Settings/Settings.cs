@@ -17,12 +17,15 @@ namespace HardCoded.VRigUnity {
 			BoneMask = BoneSettings.Default;
 		}
 
+		public static class Temporary {
+			public static bool VirtualCamera = false;
+		}
+
 		// Camera Settings
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);
 		public static Text _CameraResolution = new("camera.resolution", "");
 		public static Bool _CameraCustomResolution = new("camera.resolution.custom", false);
-		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
 			get => _CameraName.Get();
@@ -42,11 +45,6 @@ namespace HardCoded.VRigUnity {
 		public static bool CameraCustomResolution {
 			get => _CameraCustomResolution.Get();
 			set => _CameraCustomResolution.Set(value);
-		}
-
-		public static bool VirtualCamera {
-			get => _VirtualCamera.Get();
-			set => _VirtualCamera.Set(value);
 		}
 
 		// Tracking Settings

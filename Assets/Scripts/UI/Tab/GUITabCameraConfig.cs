@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static HardCoded.VRigUnity.FileDialogUtils;
 using static HardCoded.VRigUnity.SettingsFieldTemplate;
 
 namespace HardCoded.VRigUnity {
@@ -63,9 +64,28 @@ namespace HardCoded.VRigUnity {
 			});
 			CreateSetting("Virtual Camera", builder => {
 				return builder
-					.AddToggle((_, value) => Settings.VirtualCamera = value, Settings.VirtualCamera, new(24))
+					.AddToggle((_, value) => Settings.Temporary.VirtualCamera = value, Settings.Temporary.VirtualCamera, new(24))
 					.AddButton("Install", (_) => CameraCapture.InstallVirtualCamera(), FieldData.None)
 					.AddButton("Uninstall", (_) => CameraCapture.UninstallVirtualCamera(), FieldData.None);
+			});
+
+			AddDivider("Effects");
+			CreateSetting("Custom Background", builder => {
+				return builder
+					.AddToggle((_, value) => guiMain.SetShowBackgroundImage(value), Settings.ShowCustomBackground, new(24))
+					.AddButton("Select Image", (_) => {
+						var extensions = new [] {
+							new CustomExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
+							new CustomExtensionFilter("All Files", "*"),
+						};
+			
+						FileDialogUtils.OpenFilePanel(this, "Open Image", Settings.ImageFile, extensions, false, (paths) => {
+							if (paths.Length > 0) {
+								string filePath = paths[0];
+								guiMain.LoadCustomImage(filePath);
+							}
+						});
+					}, FieldData.None);
 			});
 
 			ReloadContents();
