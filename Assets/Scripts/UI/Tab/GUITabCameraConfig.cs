@@ -24,8 +24,8 @@ namespace HardCoded.VRigUnity {
 			reloadContentButton.onClick.RemoveAllListeners();
 			reloadContentButton.onClick.AddListener(ReloadContents);
 
-			AddDivider("Camera");
-			sourceField = CreateSetting("Source", builder => {
+			AddDivider(Lang.CameraTabDividerCamera); 
+			sourceField = CreateSetting(Lang.CameraTabSource, builder => {
 				return builder
 					.AddDropdown((elm, value) => {
 						Settings.CameraName = elm.options[value].text;
@@ -35,7 +35,7 @@ namespace HardCoded.VRigUnity {
 						}
 					}, new(), 0, FieldData.None);
 			});
-			resolutionField = CreateSetting("Resolution", builder => {
+			resolutionField = CreateSetting(Lang.CameraTabResolution, builder => {
 				return builder
 					.AddDropdown((elm, value) => {
 						Settings.CameraResolution = elm.options[value].text;
@@ -46,14 +46,14 @@ namespace HardCoded.VRigUnity {
 						}
 					}, new(), 0, FieldData.None);
 			});
-			customResolutionField = CreateSetting("Custom Res", builder => {
+			customResolutionField = CreateSetting(Lang.CameraTabCustomResolution, builder => {
 				return builder
 					.AddToggle((_, value) => { Settings.CameraCustomResolution = value; UpdateCustomResolution(true); }, Settings.CameraCustomResolution, new(24))
 					.AddNumberInput((_, value) => UpdateCustomResolutionTest(value, 0, 0), 1, 1920, 176, 640, FieldData.None)
 					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, value, 0), 1, 1080, 144, 360, FieldData.None)
 					.AddNumberInput((_, value) => UpdateCustomResolutionTest(0, 0, value), 1, 30, 30, 30, FieldData.None);
 			});
-			CreateSetting("Is Horizontally Flipped", builder => {
+			CreateSetting(Lang.CameraTabIsHorizontallyFlipped, builder => {
 				return builder.AddToggle((_, value) => {
 					Settings.CameraFlipped = value;
 					imageSource.IsHorizontallyFlipped = value;
@@ -62,24 +62,24 @@ namespace HardCoded.VRigUnity {
 					}
 				}, Settings.CameraFlipped, FieldData.None);
 			});
-			CreateSetting("Virtual Camera", builder => {
+			CreateSetting(Lang.CameraTabVirtualCamera, builder => {
 				return builder
 					.AddToggle((_, value) => Settings.Temporary.VirtualCamera = value, Settings.Temporary.VirtualCamera, new(24))
-					.AddButton("Install", (_) => CameraCapture.InstallVirtualCamera(), FieldData.None)
-					.AddButton("Uninstall", (_) => CameraCapture.UninstallVirtualCamera(), FieldData.None);
+					.AddButton(Lang.CameraTabVirtualCameraInstall, (_) => CameraCapture.InstallVirtualCamera(), FieldData.None)
+					.AddButton(Lang.CameraTabVirtualCameraUninstall, (_) => CameraCapture.UninstallVirtualCamera(), FieldData.None);
 			});
 
-			AddDivider("Effects");
-			CreateSetting("Custom Background", builder => {
+			AddDivider(Lang.CameraTabDividerEffects);
+			CreateSetting(Lang.CameraTabCustomBackground, builder => {
 				return builder
 					.AddToggle((_, value) => guiMain.SetShowBackgroundImage(value), Settings.ShowCustomBackground, new(24))
-					.AddButton("Select Image", (_) => {
+					.AddButton(Lang.CameraTabCustomBackgroundSelectImage, (_) => {
 						var extensions = new [] {
-							new CustomExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
-							new CustomExtensionFilter("All Files", "*"),
+							new CustomExtensionFilter(Lang.DialogImageFiles.Get(), new string[] { "png", "jpg", "jpeg" }),
+							new CustomExtensionFilter(Lang.DialogAllFiles.Get(), "*"),
 						};
 			
-						FileDialogUtils.OpenFilePanel(this, "Open Image", Settings.ImageFile, extensions, false, (paths) => {
+						FileDialogUtils.OpenFilePanel(this, Lang.DialogOpenImage.Get(), Settings.ImageFile, extensions, false, (paths) => {
 							if (paths.Length > 0) {
 								string filePath = paths[0];
 								guiMain.LoadCustomImage(filePath);

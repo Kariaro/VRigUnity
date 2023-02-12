@@ -21,6 +21,14 @@ namespace HardCoded.VRigUnity {
 			public static bool VirtualCamera = false;
 		}
 
+		// Language Settings
+		public static Text _Language = new("language", "en_US");
+
+		public static string Language {
+			get => _Language.Get();
+			set => _Language.Set(value);
+		}
+
 		// Camera Settings
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);

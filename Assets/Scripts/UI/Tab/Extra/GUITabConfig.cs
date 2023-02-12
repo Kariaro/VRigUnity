@@ -16,20 +16,21 @@ namespace HardCoded.VRigUnity {
 
 		protected abstract void InitializeSettings();
 
-		protected void AddDivider(string name) {
+		protected void AddDivider(Lang data) {
 			GameObject empty = Instantiate(templateObject);
 			empty.transform.localScale = Vector3.one;
 			empty.transform.SetParent(contentTransform, false);
+			empty.GetComponent<SettingsFieldTemplate>().BuildDivider(data, 24);
 			empty.SetActive(true);
-			empty.GetComponent<SettingsFieldTemplate>().BuildDivider(name, 24);
 		}
 
-		protected SettingsField CreateSetting(string name, Func<SettingsFieldTemplate, SettingsFieldTemplate> builder) {
+		protected SettingsField CreateSetting(Lang data, Func<SettingsFieldTemplate, SettingsFieldTemplate> builder) {
 			GameObject empty = Instantiate(templateObject);
 			empty.transform.localScale = Vector3.one;
 			empty.transform.SetParent(contentTransform, false);
+			SettingsField field = builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(data);
 			empty.SetActive(true);
-			return builder.Invoke(empty.GetComponent<SettingsFieldTemplate>()).Build(name);
+			return field;
 		}
 	}
 }

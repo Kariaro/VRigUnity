@@ -1,5 +1,6 @@
 using Mediapipe;
 using Mediapipe.Unity;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -34,6 +35,14 @@ namespace HardCoded.VRigUnity {
 
 			// Init tracking box
 			FindObjectOfType<TrackingResizableBox>(true).Init();
+
+			// Init language
+			try {
+				Localization.SetLanguage(LanguageLoader.FromCode(Settings.Language));
+			} catch {
+				Logger.Warning("Failed to apply previously loaded language. Swiching to default");
+				Settings.Language = Settings._Language.Default();
+			}
 		}
 
 		private IEnumerator Init() {

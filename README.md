@@ -17,6 +17,14 @@ Features:
 * VMC sender
 * Virtual camera support *(Only Windows)*
 
+## Translations
+It is allowed to make PR's for language translations of this app.
+
+Here is a small guide on how to add translations: [Translation Guide](./Assets/StreamingAssets/lang/README.md)
+
+## Translation Credits
+
+
 ## Dependencies
 + [MediaPipeUnityPlugin v0.10.1](https://github.com/homuler/MediaPipeUnityPlugin)
 + [UniVRM v0.107.0](https://github.com/vrm-c/UniVRM)
