@@ -40,7 +40,7 @@ namespace HardCoded.VRigUnity {
 					SetCamera(false);
 				});
 			} else {
-				SolutionUtils.GetSolution().ResetVRMAnimator();
+				SolutionUtils.GetSolution().Model.ResetVRMAnimator();
 				SolutionUtils.GetSolution().Stop();
 			}
 		}

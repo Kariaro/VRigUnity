@@ -66,7 +66,6 @@ namespace HardCoded.VRigUnity {
 		// Bone Settings
 		public static Int _BoneMask = new("bone.mask", BoneSettings.Default);
 		public static Bool _UseLegRotation = new("bone.use.legs", false);
-		public static Bool _UseFullIK = new("bone.use.ik", false);
 		public static Float _HandTrackingThreshold = new("tracking.threshold.hand", 0f);
 		public static Float _TrackingInterpolation = new("tracking.interpolation", 0.1f);
 
@@ -78,11 +77,6 @@ namespace HardCoded.VRigUnity {
 		public static bool UseLegRotation {
 			get => _UseLegRotation.Get();
 			set => _UseLegRotation.Set(value);
-		}
-		
-		public static bool UseFullIK {
-			get => _UseFullIK.Get();
-			set => _UseFullIK.Set(value);
 		}
 
 		public static float HandTrackingThreshold {

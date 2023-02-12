@@ -184,37 +184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 498146e99d4934673bd948c8be11227e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultAvailableResolutions:
-  - width: 1920
-    height: 1080
-    frameRate: 30
-  - width: 1600
-    height: 896
-    frameRate: 30
-  - width: 1280
-    height: 720
-    frameRate: 30
-  - width: 960
-    height: 540
-    frameRate: 30
-  - width: 848
-    height: 480
-    frameRate: 30
-  - width: 640
-    height: 480
-    frameRate: 30
-  - width: 640
-    height: 360
-    frameRate: 30
-  - width: 424
-    height: 240
-    frameRate: 30
-  - width: 320
-    height: 240
-    frameRate: 30
-  - width: 176
-    height: 144
-    frameRate: 30
 --- !u!114 &275874975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,7 +201,6 @@ MonoBehaviour:
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
   _timeoutMicrosec: 100000
   modelComplexity: 1
-  smoothLandmarks: 1
 --- !u!114 &275874976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,12 +215,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphRunner: {fileID: 275874975}
   textureFramePool: {fileID: 275874970}
+  defaultVrmModel: {fileID: 1321532676}
   defaultVrmPrefab: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  vrmModel: {fileID: 1321532676}
-  vrmController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
-  vrmAnimator: {fileID: 0}
-  blendShapeProxy: {fileID: 1321532675}
-  animator: {fileID: 1321532674}
+  defaultController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}
   guiMain: {fileID: 1973033084}
   TrackRightHand: 1
   TrackLeftHand: 1
@@ -459,22 +424,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
---- !u!95 &1321532674 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 3181082426570656820, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  m_PrefabInstance: {fileID: 1321532673}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1321532675 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4111744551054172291, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
-  m_PrefabInstance: {fileID: 1321532673}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1321532676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b678c1df50cfb547990db24a32856da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1321532676 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}

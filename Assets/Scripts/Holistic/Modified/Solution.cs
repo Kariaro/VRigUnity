@@ -34,7 +34,9 @@ namespace HardCoded.VRigUnity {
 
 		public void Stop() {
 			IsPaused = true;
-			StopCoroutine(runtimeCoroutine);
+			if (runtimeCoroutine != null) {
+				StopCoroutine(runtimeCoroutine);
+			}
 			imageSource.Stop();
 			graphRunner.Stop();
 		}

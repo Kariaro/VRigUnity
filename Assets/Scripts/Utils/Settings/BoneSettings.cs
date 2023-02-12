@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	// TODO: Optimize this class
 	public class BoneSettings {
 		public const int FACE = 0;
 		public const int NECK = 1;
@@ -13,18 +12,16 @@ namespace HardCoded.VRigUnity {
 		public const int RIGHT_FINGERS = 7;
 		public const int CHEST = 8;
 		public const int HIPS = 9;
-		public const int LEFT_HIP = 10;
-		public const int LEFT_KNEE = 11;
-		public const int LEFT_ANKLE = 12;
-		public const int RIGHT_HIP = 13;
-		public const int RIGHT_KNEE = 14;
-		public const int RIGHT_ANKLE = 15;
+		public const int LEFT_LEG = 10;
+		public const int LEFT_ANKLE = 11;
+		public const int RIGHT_LEG = 12;
+		public const int RIGHT_ANKLE = 13;
 		public const int Count = RIGHT_ANKLE;
 
 		// 16 bits set
 		public const int Default = ((1 << (Count + 2)) - 1) & ~(
-			(1 << LEFT_HIP) | (1 << LEFT_KNEE) | (1 << LEFT_ANKLE) |
-			(1 << RIGHT_HIP) | (1 << RIGHT_KNEE) | (1 << RIGHT_ANKLE)
+			(1 << LEFT_LEG) | (1 << LEFT_ANKLE) |
+			(1 << RIGHT_LEG) | (1 << RIGHT_ANKLE)
 		);
 
 		public static bool Get(int index) {
@@ -51,6 +48,7 @@ namespace HardCoded.VRigUnity {
 		};
 
 		private static readonly HumanBodyBones[] LEFT_ARM_BONES = new [] {
+			HumanBodyBones.LeftShoulder, // Part of group
 			HumanBodyBones.LeftUpperArm,
 			HumanBodyBones.LeftLowerArm
 		};
@@ -74,6 +72,7 @@ namespace HardCoded.VRigUnity {
 		};
 		
 		private static readonly HumanBodyBones[] RIGHT_ARM_BONES = new [] {
+			HumanBodyBones.RightShoulder, // Part of group
 			HumanBodyBones.RightUpperArm,
 			HumanBodyBones.RightLowerArm
 		};
@@ -103,12 +102,10 @@ namespace HardCoded.VRigUnity {
 		};
 
 		private static readonly HumanBodyBones[] HIPS_BONES = new [] { HumanBodyBones.Hips };
-		private static readonly HumanBodyBones[] LEFT_HIP_BONES = new [] { HumanBodyBones.LeftUpperLeg };
-		private static readonly HumanBodyBones[] LEFT_KNEE_BONES = new [] { HumanBodyBones.LeftLowerLeg };
-		private static readonly HumanBodyBones[] LEFT_ANKLE_BONES = new [] { HumanBodyBones.LeftFoot };
-		private static readonly HumanBodyBones[] RIGHT_HIP_BONES = new [] { HumanBodyBones.RightUpperLeg };
-		private static readonly HumanBodyBones[] RIGHT_KNEE_BONES = new [] { HumanBodyBones.RightLowerLeg };
-		private static readonly HumanBodyBones[] RIGHT_ANKLE_BONES = new [] { HumanBodyBones.RightFoot };
+		private static readonly HumanBodyBones[] LEFT_LEG_BONES = new [] { HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg };
+		private static readonly HumanBodyBones[] LEFT_ANKLE_BONES = new [] { HumanBodyBones.LeftFoot, HumanBodyBones.LeftToes };
+		private static readonly HumanBodyBones[] RIGHT_LEG_BONES = new [] { HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg };
+		private static readonly HumanBodyBones[] RIGHT_ANKLE_BONES = new [] { HumanBodyBones.RightFoot, HumanBodyBones.RightToes };
 		private static readonly HumanBodyBones[] NONE_BONES = new HumanBodyBones[0];
 
 		public static HumanBodyBones[] GetBones(int index) {
@@ -123,11 +120,9 @@ namespace HardCoded.VRigUnity {
 				RIGHT_FINGERS => RIGHT_FINGERS_BONES,
 				CHEST => CHEST_BONES,
 				HIPS => HIPS_BONES,
-				LEFT_HIP => LEFT_HIP_BONES,
-				LEFT_KNEE => LEFT_KNEE_BONES,
+				LEFT_LEG => LEFT_LEG_BONES,
 				LEFT_ANKLE => LEFT_ANKLE_BONES,
-				RIGHT_HIP => RIGHT_HIP_BONES,
-				RIGHT_KNEE => RIGHT_KNEE_BONES,
+				RIGHT_LEG => RIGHT_LEG_BONES,
 				RIGHT_ANKLE => RIGHT_ANKLE_BONES,
 				_ => NONE_BONES
 			};
@@ -135,7 +130,7 @@ namespace HardCoded.VRigUnity {
 
 		public static bool CanExternalModify(HumanBodyBones bone) {
 			for (int i = 0; i < Count; i++) {
-				// If the bone is not disabled we do not allow thiss
+				// If the bone is not disabled we do not allow this
 				if (Get(i)) {
 					HumanBodyBones[] array = GetBones(i);
 					foreach (HumanBodyBones item in array) {
@@ -150,13 +145,15 @@ namespace HardCoded.VRigUnity {
 			return true;
 		}
 
-		private static readonly Quaternion DefaultLeftUpperArm = Quaternion.Euler(0, 0, 80);
-		private static readonly Quaternion DefaultRightUpperArm = Quaternion.Euler(0, 0, -80);
+		public static readonly Quaternion DefaultLeftArm = Quaternion.Euler(0, 0, 80);
+		public static readonly Quaternion DefaultRightArm = Quaternion.Euler(0, 0, -80);
 		private static readonly Quaternion DefaultRot = Quaternion.identity;
 		public static Quaternion GetDefaultRotation(HumanBodyBones bone) {
 			return bone switch {
-				HumanBodyBones.LeftUpperArm => DefaultLeftUpperArm,
-				HumanBodyBones.RightUpperArm => DefaultRightUpperArm,
+				HumanBodyBones.LeftHand => DefaultLeftArm,
+				HumanBodyBones.LeftUpperArm => DefaultLeftArm,
+				HumanBodyBones.RightHand => DefaultRightArm,
+				HumanBodyBones.RightUpperArm => DefaultRightArm,
 				_ => DefaultRot
 			};
 		}

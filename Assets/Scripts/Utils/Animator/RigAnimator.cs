@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -17,6 +18,14 @@ namespace HardCoded.VRigUnity {
 		public Transform leftLegHint;
 		public Transform rightLegTarget;
 		public Transform rightLegHint;
+
+		// Hand constraints (First element is IK)
+		private readonly IRigConstraint[] leftHandConstraints = new IRigConstraint[4];
+		private readonly IRigConstraint[] rightHandConstraints = new IRigConstraint[4];
+
+		// API Getters
+		private readonly Dictionary<HumanBodyBones, OverrideTransform> _transforms = new();
+		public Dictionary<HumanBodyBones, OverrideTransform> Transforms => _transforms;
 
 		public void SetupRigging() {
 			anim = GetComponent<Animator>();
@@ -51,24 +60,81 @@ namespace HardCoded.VRigUnity {
 #endif
 
 			RigBuilder rigBuilder = gameObject.AddComponent<RigBuilder>();
-
-			GameObject rigObject = new("Rig");
+			
+			GameObject rigOffsetObject = new("RigLayerOffset");
+			rigOffsetObject.transform.SetParent(transform);			
+			Rig offsetRig = rigOffsetObject.AddComponent<Rig>();
+			rigBuilder.layers.Add(new RigLayer(offsetRig));
+			
+			GameObject rigObject = new("RigLayerHands");
 			rigObject.transform.SetParent(transform);
-
-			Rig rig = rigObject.AddComponent<Rig>();
-			rigBuilder.layers.Add(new RigLayer(rig));
-
-			SetupHands(rig);
+			Rig handRig = rigObject.AddComponent<Rig>();
+			rigBuilder.layers.Add(new RigLayer(handRig));
+			
+			SetupOffsets(offsetRig);
+			SetupHands(handRig);
 			// SetupLegs(rig);
 
+			// To make this the root transform
 			rigBuilder.Build();
+
+			// By default both hands use IK
+			UseHandIK(true, false);
+			UseHandIK(false, false);
+
+			SolutionUtils.GetSolution().Model.ResetVRMAnimator();
 		}
 
-		public void SetupHands(Rig rig) {
+		public void UseHandIK(bool leftHand, bool enable) {
+			var constraints = leftHand ? leftHandConstraints : rightHandConstraints;
+			for (int i = 0; i < constraints.Length; i++) {
+				var constraint = constraints[i];
+				constraint.weight = (i > 0) ^ enable ? 1 : 0;
+			}
+		}
+
+		private void SetupOffsets(Rig rig) {
+			_transforms.Clear();
+
+			GameObject offsets = new("Offsets");
+			offsets.transform.SetParent(rig.transform);
+			
+			// Create OverrideTransforms for all bones
+			foreach (HumanBodyBones bone in Enum.GetValues(typeof(HumanBodyBones))) {
+				if (bone == HumanBodyBones.LastBone) {
+					continue;
+				}
+
+				CreateBone(offsets, bone);
+			}
+
+			// Create constraints map
+			leftHandConstraints[1] = _transforms[HumanBodyBones.LeftUpperArm];
+			leftHandConstraints[2] = _transforms[HumanBodyBones.LeftLowerArm];
+			leftHandConstraints[3] = _transforms[HumanBodyBones.LeftShoulder];
+			rightHandConstraints[1] = _transforms[HumanBodyBones.RightUpperArm];
+			rightHandConstraints[2] = _transforms[HumanBodyBones.RightLowerArm];
+			rightHandConstraints[3] = _transforms[HumanBodyBones.RightShoulder];
+		}
+
+		private IRigConstraint CreateBone(GameObject parent, HumanBodyBones bone, bool local = true) {
+			GameObject element = new(bone.ToString());
+			element.transform.SetParent(parent.transform);
+
+			var offset = element.AddComponent<OverrideTransform>();
+			offset.data.constrainedObject = anim.GetBoneTransform(bone);
+			offset.data.space = local ? OverrideTransformData.Space.Local : OverrideTransformData.Space.World;
+			offset.data.rotationWeight = 1;
+			_transforms.Add(bone, offset);
+
+			return offset;
+		}
+
+		private void SetupHands(Rig rig) {
 			{ // Left Hand
-				GameObject hand = new("Left Hand");
-				GameObject target = new("Target");
-				GameObject hint = new("Hint");
+				GameObject hand = new("LeftHandIK");
+				GameObject target = new("Left Target");
+				GameObject hint = new("Left Hint");
 				hand.transform.SetParent(rig.transform);
 				target.transform.SetParent(hand.transform);
 				hint.transform.SetParent(hand.transform);
@@ -85,12 +151,13 @@ namespace HardCoded.VRigUnity {
 				constraint.data.targetPositionWeight = 1f;
 				constraint.data.targetRotationWeight = 1f;
 				constraint.data.hintWeight = 1f;
+				leftHandConstraints[0] = constraint;
 			}
 
 			{ // Right Hand
-				GameObject hand = new("Right Hand");
-				GameObject target = new("Target");
-				GameObject hint = new("Hint");
+				GameObject hand = new("RightHandIK");
+				GameObject target = new("Right Target");
+				GameObject hint = new("Right Hint");
 				hand.transform.SetParent(rig.transform);
 				target.transform.SetParent(hand.transform);
 				hint.transform.SetParent(hand.transform);
@@ -107,10 +174,11 @@ namespace HardCoded.VRigUnity {
 				constraint.data.targetPositionWeight = 1f;
 				constraint.data.targetRotationWeight = 1f;
 				constraint.data.hintWeight = 1f;
+				rightHandConstraints[0] = constraint;
 			}
 		}
 
-		public void SetupLegs(Rig rig) {
+		private void SetupLegs(Rig rig) {
 			{ // Left Leg
 				GameObject leg = new("Left Leg");
 				GameObject target = new("Target");

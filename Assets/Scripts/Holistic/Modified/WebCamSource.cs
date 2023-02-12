@@ -8,7 +8,6 @@ namespace HardCoded.VRigUnity {
 	public class WebCamSource : ImageSource {
 		private const string _TAG = nameof(WebCamSource);
 
-		[SerializeField]
 		private ResolutionStruct[] _defaultAvailableResolutions = new ResolutionStruct[] {
 			new(1920, 1080, 30),
 			new(1600, 896, 30),
@@ -18,7 +17,7 @@ namespace HardCoded.VRigUnity {
 			new(640, 480, 30),
 			new(640, 360, 30),
 			new(424, 240, 30),
-			new(320, 240, 30),
+			new(320, 180, 30), // 320x240 -> 16:19 better
 			new(176, 144, 30),
 		};
 

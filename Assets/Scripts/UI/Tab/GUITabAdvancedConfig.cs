@@ -72,9 +72,6 @@ namespace HardCoded.VRigUnity {
 			CreateSetting("(E) Leg rotation", builder => {
 				return builder.AddToggle((_, value) => Settings.UseLegRotation = value, Settings.UseLegRotation, FieldData.None);
 			});
-			CreateSetting("(E) Full IK", builder => {
-				return builder.AddToggle((_, value) => Settings.UseFullIK = value, Settings.UseFullIK, FieldData.None);
-			});
 			CreateSetting("(E) Hand threshold", builder => {
 				return builder.AddFloatTickSlider((_, value) => Settings.HandTrackingThreshold = value, 0f, 1f, 10, Settings.HandTrackingThreshold, FieldData.None);
 			});
