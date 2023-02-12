@@ -1,6 +1,9 @@
 # VRigUnity
-A virtual character AI animator.
-This app takes a `VRM` model and uses your webcam to move the virtual character.
+A virtual character animator. This app uses your webcam and an AI to move a `VRM` model.
+
+This app can be used in combination with other tools like *VSeeFace* and *VRM Posing Desktop*
+
+<a href="https://github.com/Kariaro/VRigUnity/releases/latest" target="blank"><b>Download</b></a>
 
 ![Example](.github/assets/videos/show0.gif)
 
@@ -11,10 +14,12 @@ This app has been tested on:
 + *Mac 11.x & 12.x*
 
 Features:
-* Panning and rotation controls (Shift *Pan*) (Ctrl *Rotate*)
+* Panning and rotation controls
+  - Shift to Pan
+  - Ctrl to Rotate
 * Allows custom background images
 * Allows custom VRM models
-* VMC sender
+* VMC sender and receiver
 * Virtual camera support *(Only Windows)*
 
 ## Translations
