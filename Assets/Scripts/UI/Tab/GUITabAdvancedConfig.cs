@@ -44,23 +44,6 @@ namespace HardCoded.VRigUnity {
 			CreateSetting("Show Model", builder => {
 				return builder.AddToggle((_, value) => Settings.ShowModel = value, Settings.ShowModel, FieldData.None);
 			});
-			CreateSetting("Custom Background", builder => {
-				return builder
-					.AddToggle((_, value) => guiMain.SetShowBackgroundImage(value), Settings.ShowCustomBackground, FieldData.None)
-					.AddButton("Select Image", (_) => {
-						var extensions = new [] {
-							new CustomExtensionFilter("Image Files", new string[] { "png", "jpg", "jpeg" }),
-							new CustomExtensionFilter("All Files", "*"),
-						};
-			
-						FileDialogUtils.OpenFilePanel(this, "Open Image", Settings.ImageFile, extensions, false, (paths) => {
-							if (paths.Length > 0) {
-								string filePath = paths[0];
-								guiMain.LoadCustomImage(filePath);
-							}
-						});
-					}, FieldData.None);
-			});
 			CreateSetting("Gui Scale", builder => {
 				return builder.AddIntSlider((_, value) => Settings.GuiScale = value, 1, 10, Settings.GuiScale, FieldData.None);
 			});

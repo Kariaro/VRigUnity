@@ -59,8 +59,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		void Update() {
-			if (streamCamera.enabled != Settings.VirtualCamera) {
-				streamCamera.enabled = Settings.VirtualCamera;
+			if (streamCamera.enabled != Settings.Temporary.VirtualCamera) {
+				streamCamera.enabled = Settings.Temporary.VirtualCamera;
 			}
 		}
 

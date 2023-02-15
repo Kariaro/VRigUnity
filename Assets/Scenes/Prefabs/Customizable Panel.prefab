@@ -1182,7 +1182,7 @@ GameObject:
   - component: {fileID: 6447137187690980418}
   - component: {fileID: 6447137187690980420}
   - component: {fileID: 6447137187690980421}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1343,7 +1343,7 @@ GameObject:
   - component: {fileID: 6447137188151484115}
   - component: {fileID: 6447137188151484117}
   - component: {fileID: 3743528749840115948}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1567,7 +1567,7 @@ GameObject:
   - component: {fileID: 6447137188617013784}
   - component: {fileID: 6447137188617013789}
   - component: {fileID: 6447137188617013788}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Capture Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
