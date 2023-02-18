@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using System.Linq;
 using System.Collections;
 using UnityEngine.TestTools;
 using Assets.Tests.Utils;
@@ -15,9 +14,7 @@ public class TestLogging {
 	public void Setup() {
 		SceneUtils.Load();
 
-		var domain = AppDomain.CurrentDomain.GetAssemblies()
-			.Where(item => item.GetName().Name == "Assembly-CSharp")
-			.First();
+		var domain = TypeUtils.GetAssemblyCSharp();
 		
 		loggingTabType = domain.GetType("HardCoded.VRigUnity.GUITabLogger");
 		loggerType = domain.GetType("HardCoded.VRigUnity.Logger");

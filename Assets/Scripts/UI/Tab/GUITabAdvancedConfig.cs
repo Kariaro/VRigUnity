@@ -90,8 +90,9 @@ namespace HardCoded.VRigUnity {
 		private List<Language> languages = new();
 		private void ChangeLanguage(TMP_Dropdown obj, int value) {
 			var lang = languages[value];
-			Settings.Language = lang.Code;
-			Localization.SetLanguage(lang);
+			if (Localization.SetLanguage(lang)) {
+				Settings.Language = lang.Code;
+			}
 		}
 
 		private void UpdateLanguages() {

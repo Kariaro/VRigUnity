@@ -19,7 +19,7 @@ namespace HardCoded.VRigUnity {
 		/// <summary>
 		/// Update the current language
 		/// </summary>
-		public static void SetLanguage(Language lang) {
+		public static bool SetLanguage(Language lang) {
 			try {
 				Dictionary<string, string> language = LanguageLoader.LoadLanguage(lang);
 
@@ -29,8 +29,11 @@ namespace HardCoded.VRigUnity {
 				}
 				_localizationChangeEvent?.Invoke();
 			} catch (Exception e) {
-				Logger.Error("Localization", "Failed to change to language '" + lang.Code + "'. " + e.Message);
+				Logger.Error("Localization", $"Failed to change to language '{lang.Code}'. {e.Message}");
+				return false;
 			}
+			
+			return true;
 		}
 
 		public delegate void LocalizationChangeEvent();

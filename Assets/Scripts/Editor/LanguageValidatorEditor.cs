@@ -1,21 +1,10 @@
 ﻿using HardCoded.VRigUnity;
 using System.IO;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(LanguageValidator), true, isFallback = true)]
 public class LanguageValidatorEditor : Editor {
-	public static string TemplateFallback {
-		get {
-			StringBuilder sb = new();
-			foreach (var lang in Lang.Elements) {
-				sb.Append(lang.id).Append('=').Append(LanguageLoader.EscapeString(lang.fallback)).Append('\n');
-			}
-			return sb.ToString();
-		}
-	}
-
 	private bool once;
 
 	private void OnEnable() {
@@ -34,7 +23,7 @@ public class LanguageValidatorEditor : Editor {
 
 		if (GUILayout.Button("Copy Fallback", GUILayout.Width(200))) {
 			TextEditor textEditor = new();
-			textEditor.text = TemplateFallback;
+			textEditor.text = LanguageLoader.TemplateFallback;
 			textEditor.SelectAll();
 			textEditor.Copy();
 		}
@@ -49,7 +38,7 @@ public class LanguageValidatorEditor : Editor {
 
 	public void Validate() {
 		foreach (var lang in LanguageLoader.Languages) {
-			if (!LanguageLoader.HasLanguage(lang)) {
+			if (!lang.IsDebug && !File.Exists(LanguageLoader.GetLanguagePath(lang))) {
 				Debug.LogError($"A language '{lang.Code}' was specified but was not found!");
 			}
 		}
@@ -57,7 +46,7 @@ public class LanguageValidatorEditor : Editor {
 		// Check that the english language and fallback are synced
 		var path = LanguageLoader.GetLanguagePath(LanguageLoader.FromCode("en_US"));
 		string a = string.Join('\n', File.ReadAllLines(path)).Trim();
-		string b = TemplateFallback.Trim();
+		string b = LanguageLoader.TemplateFallback.Trim();
 		if (a != b) {
 			Debug.LogError($"'en_US' is outdated and not the same as the fallback language");
 		}

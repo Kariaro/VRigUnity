@@ -5,13 +5,15 @@ namespace HardCoded.VRigUnity {
 	[ExecuteAlways]
 #endif
 	public class LanguageValidator : MonoBehaviour {
-		void LateUpdate() {
 #if UNITY_EDITOR
+		void LateUpdate() {
 			if (!Application.isPlaying) {
 				return;
 			}
-#endif
-			var test = LanguageLoader.Languages;
+
+			// Try get the languages to give errors in the editor
+			_ = LanguageLoader.Languages;
 		}
+#endif
 	}
 }

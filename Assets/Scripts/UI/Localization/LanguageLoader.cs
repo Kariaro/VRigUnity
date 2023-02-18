@@ -22,19 +22,29 @@ namespace HardCoded.VRigUnity {
 		/// </summary>
 		public static string LanguageJsonFile => Path.Combine(Application.streamingAssetsPath, "lang", "languages.json");
 
+		public static string TemplateFallback {
+			get {
+				StringBuilder sb = new();
+				foreach (var lang in Lang.Elements) {
+					sb.Append(lang.id).Append('=').Append(EscapeString(lang.fallback)).Append('\n');
+				}
+				return sb.ToString();
+			}
+		}
+
 		private static readonly FileWatcher _languageWatcher = new(LanguageJsonFile);
 		private static List<Language> _languages;
 		public static List<Language> Languages {
 			get {
 				if (_languageWatcher.IsUpdated || _languages == null) {
-					_languages = GetLanguages();
+					_languages = TryGetLanguages();
 				}
 
 				return _languages;
 			}
 		}
 
-		public static string EscapeString(string text) {
+		private static string EscapeString(string text) {
 			StringBuilder sb = new();
 
 			foreach (char c in text) {
@@ -50,7 +60,7 @@ namespace HardCoded.VRigUnity {
 			return sb.ToString();
 		}
 		
-		public static string UnescapeString(string text) {
+		private static string UnescapeString(string text) {
 			StringBuilder sb = new();
 
 			bool lastSlash = false;
@@ -85,20 +95,9 @@ namespace HardCoded.VRigUnity {
 			return sb.ToString();
 		}
 
-		private static List<Language> GetLanguages() {
-			List<Language> languages = new();
+		private static List<Language> TryGetLanguages() {
 			try {
-				var json = JObject.Parse(File.ReadAllText(LanguageJsonFile));
-
-				foreach (var entry in json) {
-					string code = entry.Key.ToString();
-					string name = entry.Value.ToString();
-					if (code == "debug") {
-						name = "Debug";
-					}
-
-					languages.Add(new() { Code = code, DisplayName = name });
-				}
+				return GetLanguages();
 			} catch (Exception e) {
 #if UNITY_EDITOR
 				if (Application.isPlaying) {
@@ -109,6 +108,27 @@ namespace HardCoded.VRigUnity {
 #else
 				Logger.Error("languages.json", e.Message);
 #endif
+			}
+
+			return new();
+		}
+
+		private static List<Language> GetLanguages() {
+			List<Language> languages = new();
+			var json = JObject.Parse(File.ReadAllText(LanguageJsonFile));
+
+			foreach (var entry in json) {
+				if (entry.Value.Type != JTokenType.String) {
+					throw new Exception($"languages.json: Invalid display name for language '{entry.Key}'");
+				}
+				
+				string code = entry.Key.ToString();
+				string name = entry.Value.ToString();
+				if (code == "debug") {
+					name = "Debug";
+				}
+
+				languages.Add(new() { Code = code, DisplayName = name });
 			}
 
 			return languages;
@@ -123,10 +143,6 @@ namespace HardCoded.VRigUnity {
 
 		public static string GetLanguagePath(Language lang) {
 			return Path.Combine(Application.streamingAssetsPath, "lang", lang.Code, lang.Code + ".lang");
-		}
-
-		public static bool HasLanguage(Language lang) {
-			return lang.IsDebug || File.Exists(GetLanguagePath(lang));
 		}
 
 		/// <summary>
