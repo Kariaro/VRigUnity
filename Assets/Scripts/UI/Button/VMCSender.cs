@@ -35,7 +35,7 @@ namespace HardCoded.VRigUnity {
 			uClient = GetComponent<uOscClient>();
 		}
 
-		void Update() {
+		void LateUpdate() {
 			var holisticModel = SolutionUtils.GetSolution().Model;
 
 			// Check if we should be sending
@@ -47,10 +47,12 @@ namespace HardCoded.VRigUnity {
 			var boneBundle = new Bundle(Timestamp.Now);
 			foreach (var pair in holisticModel.ModelBones) {
 				Transform tr = pair.Value;
+				var pos = tr.localPosition;
+				var rot = tr.localRotation;
 				boneBundle.Add(new Message("/VMC/Ext/Bone/Pos",
 					pair.Key.ToString(),
-					tr.localPosition.x, tr.localPosition.y, tr.localPosition.z,
-					tr.localRotation.x, tr.localRotation.y, tr.localRotation.z, tr.localRotation.w
+					pos.x, pos.y, pos.z,
+					rot.x, rot.y, rot.z, rot.w
 				));
 			}
 			uClient.Send(boneBundle);
