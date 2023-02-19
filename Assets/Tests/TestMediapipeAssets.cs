@@ -3,10 +3,8 @@ using System.Collections;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Assets.Tests.Utils;
-using System.Linq;
 
 public class TestMediapipeAssets {
 	private Type holisticGraphType;
@@ -16,10 +14,8 @@ public class TestMediapipeAssets {
 	[SetUp]
 	public void Setup() {
 		SceneUtils.Load();
-
-		var domain = AppDomain.CurrentDomain.GetAssemblies()
-			.Where(item => item.GetName().Name == "Assembly-CSharp")
-			.First();
+		
+		var domain = TypeUtils.GetAssemblyCSharp();
 			
 		holisticGraphType = domain.GetType("HardCoded.VRigUnity.HolisticGraph");
 		emptySourceType = domain.GetType("HardCoded.VRigUnity.EmptySource");
@@ -37,7 +33,6 @@ public class TestMediapipeAssets {
 		object holisticTrackingGraph = UnityEngine.Object.FindObjectOfType(holisticGraphType);
 
 		// Try to initialize the graph
-		Debug.Log("Running WaitForInitAsync");
 		IEnumerator waitForResult = holisticGraphType.GetMethod("WaitForInitAsync").Invoke(holisticTrackingGraph, new object[] {}) as IEnumerator;
 		yield return waitForResult;
 
@@ -51,7 +46,6 @@ public class TestMediapipeAssets {
 		}
 
 		// Try start the graph
-		Debug.Log("Running StartRun");
 		GameObject testObject = new("TestObject");
 		object emptySource = testObject.AddComponent(emptySourceType);
 		holisticGraphType.GetMethod("StartRun").Invoke(holisticTrackingGraph, new object[] { emptySource });
@@ -72,7 +66,6 @@ public class TestMediapipeAssets {
 		
 		yield return null;
 		
-		Debug.Log("Stop Graph");
 		holisticGraphType.GetMethod("Stop").Invoke(holisticTrackingGraph, new object[] {});
 
 		yield return null;

@@ -53,11 +53,11 @@ namespace HardCoded.VRigUnity {
 
 		private void SelectModel() {
 			var extensions = new [] {
-				new CustomExtensionFilter("VRM Files", "vrm"),
-				new CustomExtensionFilter("All Fil1es", "*"),
+				new CustomExtensionFilter(Lang.DialogVrmFiles.Get(), "vrm"),
+				new CustomExtensionFilter(Lang.DialogAllFiles.Get(), "*"),
 			};
 
-			FileDialogUtils.OpenFilePanel(this, "Open File", Settings.ModelFile, extensions, false, (paths) => {
+			FileDialogUtils.OpenFilePanel(this, Lang.DialogOpenFile.Get(), Settings.ModelFile, extensions, false, (paths) => {
 				if (paths.Length > 0) {
 					string filePath = paths[0];
 					guiMain.LoadVrmModel(filePath);

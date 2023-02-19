@@ -16,6 +16,7 @@ namespace HardCoded.VRigUnity {
 			toggleButton = GetComponent<Button>();
 
 			InitializeContents();
+			Localization.OnLocalizationChangeEvent += UpdateLanguage;
 		}
 
 		private void InitializeContents() {
@@ -31,10 +32,16 @@ namespace HardCoded.VRigUnity {
 		private void SetDebug(bool enable) {
 			isDebugShowing = enable;
 			text.color = enable ? toggleOffColor : toggleOnColor;
-			text.text = enable ? "Visuals On" : "Visuals Off";
+			UpdateLanguage();
 
 			HolisticSolution solution = SolutionUtils.GetSolution();
 			solution.Canvas.ShowAnnotations(enable);
+		}
+
+		private void UpdateLanguage() {
+			text.text = isDebugShowing
+				? Lang.VisualsOn.Get()
+				: Lang.VisualsOff.Get();
 		}
 	}
 }

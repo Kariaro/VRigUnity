@@ -9,24 +9,24 @@ using System.Collections.Concurrent;
 
 namespace HardCoded.VRigUnity {
 	public class GUITabLogger : GUITab {
-		private static GUITabLogger _loggerWindow;
-		public static GUITabLogger Window {
+		private static GUITabLogger _loggerInstance;
+		public static GUITabLogger Instance {
 			get {
-				if (_loggerWindow == null) {
-					_loggerWindow = FindObjectOfType<GUITabLogger>(true);
+				if (_loggerInstance == null) {
+					_loggerInstance = FindObjectOfType<GUITabLogger>(true);
 					
 					// Initialize the logger loop
-					if (_loggerWindow != null) {
+					if (_loggerInstance != null) {
 						// Initialize thread
-						_loggerWindow.unityThread = Thread.CurrentThread;
+						_loggerInstance.unityThread = Thread.CurrentThread;
 
 						// Add the logger loop to the Window Canvas object
-						LoggerLoop loggerLoop = _loggerWindow.transform.parent.parent.parent.gameObject.AddComponent<LoggerLoop>();
-						loggerLoop.window = _loggerWindow;
+						LoggerLoop loggerLoop = _loggerInstance.transform.parent.parent.parent.gameObject.AddComponent<LoggerLoop>();
+						loggerLoop.window = _loggerInstance;
 					}
 				}
 
-				return _loggerWindow;
+				return _loggerInstance;
 			}
 		}
 
@@ -39,13 +39,13 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
+		// Const variables
+		public const int MaxLogs = 128;
+		public const int MaxMessageLength = 512;
+
 		[Header("Template")]
 		public RectTransform emptyLog;
 		public Transform contentTransform;
-		// public LoggerButton loggerButton;
-
-		[Header("Settings")]
-		public int maxLogs = 128;
 		
 		// Style
 		public Color errorColor = new(0.3962264f, 0.1925062f, 0.1967066f);
@@ -111,7 +111,7 @@ namespace HardCoded.VRigUnity {
 			template.transform.SetParent(contentTransform, false);
 			template.SetActive(true);
 
-			if (contentTransform.childCount > maxLogs) {
+			if (contentTransform.childCount > MaxLogs) {
 				// First child is the template
 				Destroy(contentTransform.GetChild(1).gameObject);
 			}
@@ -122,7 +122,6 @@ namespace HardCoded.VRigUnity {
 			var imageColor = evenMessage ? evenColor : oddColor;
 			switch (msg.level) {
 				case Logger.LogLevel.Fatal or Logger.LogLevel.Error: {
-					// loggerButton.HasErrors = true;
 					imageColor = errorColor;
 					break;
 				}
@@ -142,7 +141,7 @@ namespace HardCoded.VRigUnity {
 
 			TMP_TextInfo info = emptyText.GetTextInfo(text.text);
 			LayoutElement layout = template.GetComponent<LayoutElement>();
-			layout.minHeight = Math.Max(1, info.lineCount) * text.fontSize + 8;
+			layout.minHeight = Math.Max(1, info.lineCount) * (text.fontSize + 1) + 8;
 		}
 
 		void Update() {
@@ -190,8 +189,11 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 
-			// Fix escaping issues
-			return result; //result.Replace("\\", "\\\\");
+			if (result.Length > MaxMessageLength) {
+				result = result.Substring(0, MaxMessageLength) + " ... [message truncated " + result.Length + " characters]";
+			}
+
+			return result;
 		}
 
 		struct Message {

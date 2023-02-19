@@ -64,20 +64,20 @@ namespace HardCoded.VRigUnity {
 
 		private string GetDescription(int index) {
 			return index switch {
-				BoneSettings.FACE => "Face",
-				BoneSettings.NECK => "Neck",
-				BoneSettings.LEFT_ARM => "Left Arm",
-				BoneSettings.LEFT_WRIST => "Left Wrist",
-				BoneSettings.LEFT_FINGERS => "Left Fingers",
-				BoneSettings.RIGHT_ARM => "Right Arm",
-				BoneSettings.RIGHT_WRIST => "Right Wrist",
-				BoneSettings.RIGHT_FINGERS => "Right Fingers",
-				BoneSettings.CHEST => "Chest",
-				BoneSettings.HIPS => "Hips",
-				BoneSettings.LEFT_LEG => "Left Leg",
-				BoneSettings.LEFT_ANKLE => "Left Ankle",
-				BoneSettings.RIGHT_LEG => "Right Leg",
-				BoneSettings.RIGHT_ANKLE => "Right Ankle",
+				BoneSettings.FACE => Lang.BonesTabFace.Get(),
+				BoneSettings.NECK => Lang.BonesTabNeck.Get(),
+				BoneSettings.LEFT_ARM => Lang.BonesTabLeftArm.Get(),
+				BoneSettings.LEFT_WRIST => Lang.BonesTabLeftWrist.Get(),
+				BoneSettings.LEFT_FINGERS => Lang.BonesTabLeftFingers.Get(),
+				BoneSettings.RIGHT_ARM => Lang.BonesTabRightArm.Get(),
+				BoneSettings.RIGHT_WRIST => Lang.BonesTabRightWrist.Get(),
+				BoneSettings.RIGHT_FINGERS => Lang.BonesTabRightFingers.Get(),
+				BoneSettings.CHEST => Lang.BonesTabChest.Get(),
+				BoneSettings.HIPS => Lang.BonesTabHips.Get(),
+				BoneSettings.LEFT_LEG => Lang.BonesTabLeftLeg.Get(),
+				BoneSettings.LEFT_ANKLE => Lang.BonesTabLeftAnkle.Get(),
+				BoneSettings.RIGHT_LEG => Lang.BonesTabRightLeg.Get(),
+				BoneSettings.RIGHT_ANKLE => Lang.BonesTabRightAnkle.Get(),
 				_ => null
 			};
 		}
