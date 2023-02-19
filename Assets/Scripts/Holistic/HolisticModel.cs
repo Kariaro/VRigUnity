@@ -136,6 +136,12 @@ namespace HardCoded.VRigUnity {
 					trans.data.rotation = BoneSettings.GetDefaultRotation(bone).eulerAngles;
 				}
 			}
+
+			if (index == BoneSettings.FACE) {
+				BlendShapeProxy.ImmediatelySetValue(BlendShapes[BlendShapePreset.O], 0);
+				BlendShapeProxy.ImmediatelySetValue(BlendShapes[BlendShapePreset.Blink_L], 0);
+				BlendShapeProxy.ImmediatelySetValue(BlendShapes[BlendShapePreset.Blink_R], 0);
+			}
 		}
 
 		public void ResetVRMAnimator() {

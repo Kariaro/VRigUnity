@@ -298,10 +298,6 @@ namespace HardCoded.VRigUnity {
 					rEyeIris.Average().x * -30,
 					0
 				);
-			} else {
-				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], 0);
-				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_L], 0);
-				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.Blink_R], 0);
 			}
 		}
 	}
