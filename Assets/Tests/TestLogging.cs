@@ -1,25 +1,22 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using System.Linq;
 using System.Collections;
 using UnityEngine.TestTools;
 using Assets.Tests.Utils;
 using System.Threading;
 
 public class TestLogging {
-	private Type loggingWindowType;
+	private Type loggingTabType;
 	private Type loggerType;
 
 	[SetUp]
 	public void Setup() {
 		SceneUtils.Load();
 
-		var domain = AppDomain.CurrentDomain.GetAssemblies()
-			.Where(item => item.GetName().Name == "Assembly-CSharp")
-			.First();
+		var domain = TypeUtils.GetAssemblyCSharp();
 		
-		loggingWindowType = domain.GetType("HardCoded.VRigUnity.GUILoggerWindow");
+		loggingTabType = domain.GetType("HardCoded.VRigUnity.GUITabLogger");
 		loggerType = domain.GetType("HardCoded.VRigUnity.Logger");
 	}
 
@@ -31,13 +28,13 @@ public class TestLogging {
 	public IEnumerator TestLoggerWindow() {
 		yield return null;
 
-		object loggingWindow = UnityEngine.Object.FindObjectOfType(loggingWindowType, true);
+		object loggingTab = UnityEngine.Object.FindObjectOfType(loggingTabType, true);
 		
-		PropertyInfo totalLogs = loggingWindowType.GetProperty("TotalLogs");
+		PropertyInfo totalLogs = loggingTabType.GetProperty("TotalLogs");
 
-		int previousCount = (int) totalLogs.GetValue(loggingWindow);
+		int previousCount = (int) totalLogs.GetValue(loggingTab);
 		loggerType.GetMethod("Log", new[] { typeof(string) }).Invoke(null, new[] { "Test case logging" });
-		int newCount = (int) totalLogs.GetValue(loggingWindow);
+		int newCount = (int) totalLogs.GetValue(loggingTab);
 
 		Assert.AreNotEqual(previousCount, newCount, "Logging did not add a new message");
 
@@ -48,11 +45,11 @@ public class TestLogging {
 	public IEnumerator TestLoggerWindowThreaded() {
 		yield return null;
 
-		object loggingWindow = UnityEngine.Object.FindObjectOfType(loggingWindowType, true);
+		object loggingTab = UnityEngine.Object.FindObjectOfType(loggingTabType, true);
 		
-		PropertyInfo totalLogs = loggingWindowType.GetProperty("TotalLogs");
+		PropertyInfo totalLogs = loggingTabType.GetProperty("TotalLogs");
 
-		int previousCount = (int) totalLogs.GetValue(loggingWindow);
+		int previousCount = (int) totalLogs.GetValue(loggingTab);
 
 		Thread thread = new(() => {
 			loggerType.GetMethod("Log", new[] { typeof(string) }).Invoke(null, new[] { "Test case logging in a thread" });
@@ -62,12 +59,12 @@ public class TestLogging {
 		thread.Start();
 		thread.Join();
 
-		int newCount = (int) totalLogs.GetValue(loggingWindow);
+		int newCount = (int) totalLogs.GetValue(loggingTab);
 		Assert.AreEqual(previousCount, newCount, "Threaded messages are added next cycle");
 
 		yield return null;
 		
-		newCount = (int) totalLogs.GetValue(loggingWindow);
+		newCount = (int) totalLogs.GetValue(loggingTab);
 		Assert.AreNotEqual(previousCount, newCount, "Logging did not add a new message from a thread");
 
 		yield return null;

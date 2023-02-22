@@ -86,7 +86,7 @@ public class UnityCapture : MonoBehaviour {
 	}
 
 	void OnPostRender() {
-		if (!HardCoded.VRigUnity.Settings.VirtualCamera) {
+		if (!HardCoded.VRigUnity.Settings.Temporary.VirtualCamera) {
 			return;
 		}
 

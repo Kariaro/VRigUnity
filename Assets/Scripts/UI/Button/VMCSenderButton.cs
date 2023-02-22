@@ -8,9 +8,9 @@ namespace HardCoded.VRigUnity {
 		
 		[SerializeField] private RectTransform canvasRect;
 		[SerializeField] private CanvasGroup canvasGroup;
-
 		[SerializeField] private TMP_Text buttonText;
 		[SerializeField] private TMP_Text portText;
+
 		private Button toggleButton;
 		private Image buttonImage;
 		private bool isVMCStarted;
@@ -22,6 +22,7 @@ namespace HardCoded.VRigUnity {
 			buttonImage = GetComponent<Image>();
 			toggleButton = GetComponent<Button>();
 			InitializeContents();
+			Localization.OnLocalizationChangeEvent += UpdateLanguage;
 		}
 
 		void FixedUpdate() {
@@ -33,16 +34,13 @@ namespace HardCoded.VRigUnity {
 
 		private void InitializeContents() {
 			buttonImage.color = toggleOnColor;
-			isVMCStarted = false;
 
 			Settings.VMCSenderListener += (ip, port) => {
 				// Only display port changes when the VMC is closed
 				if (!isVMCStarted) {
-					portText.text = "Port " + port;
+					UpdateLanguage();
 				}
 			};
-
-			portText.text = "Port " + Settings.VMCSenderPort;
 			
 			toggleButton.onClick.RemoveAllListeners();
 			toggleButton.onClick.AddListener(delegate {
@@ -53,7 +51,6 @@ namespace HardCoded.VRigUnity {
 		private void SetVMC(bool enable) {
 			isVMCStarted = enable;
 			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
-			buttonText.text = enable ? "Stop Sender VMC" : "Start Sender VMC";
 
 			// Start/Stop the VMC instance
 			if (enable) {
@@ -65,7 +62,14 @@ namespace HardCoded.VRigUnity {
 			}
 
 			// Update port
-			portText.text = "Port " + Settings.VMCSenderPort;
+			UpdateLanguage();
+		}
+		
+		private void UpdateLanguage() {
+			buttonText.text = isVMCStarted
+				? Lang.VmcSenderStop.Get()
+				: Lang.VmcSenderStart.Get();
+			portText.text = Lang.VmcPort.Get() + " " + Settings.VMCSenderPort;
 		}
 	}
 }

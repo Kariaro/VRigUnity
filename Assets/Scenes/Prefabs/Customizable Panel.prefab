@@ -864,6 +864,7 @@ GameObject:
   - component: {fileID: 6150059031958070160}
   - component: {fileID: 9081379538754167437}
   - component: {fileID: 6559129603580074700}
+  - component: {fileID: 4026585524370895942}
   m_Layer: 5
   m_Name: HiddenModel
   m_TagString: Untagged
@@ -1004,6 +1005,20 @@ MonoBehaviour:
   outlineColor:
     serializedVersion: 2
     rgba: 4282466625
+--- !u!114 &4026585524370895942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6016000502095164162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc02ddada13070f4e84f878b700a26fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: text.model_hidden
+  text: {fileID: 9081379538754167437}
 --- !u!1 &6239501007556696493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,7 +1197,7 @@ GameObject:
   - component: {fileID: 6447137187690980418}
   - component: {fileID: 6447137187690980420}
   - component: {fileID: 6447137187690980421}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1343,7 +1358,7 @@ GameObject:
   - component: {fileID: 6447137188151484115}
   - component: {fileID: 6447137188151484117}
   - component: {fileID: 3743528749840115948}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: BackgroundColor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1567,7 +1582,7 @@ GameObject:
   - component: {fileID: 6447137188617013784}
   - component: {fileID: 6447137188617013789}
   - component: {fileID: 6447137188617013788}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Capture Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

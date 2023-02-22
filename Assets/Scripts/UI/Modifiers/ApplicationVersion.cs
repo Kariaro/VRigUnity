@@ -38,22 +38,12 @@ namespace HardCoded.VRigUnity {
 #endif
 
 #if UNITY_EDITOR
-		[NonSerialized]
-		private bool checkOnce;
-
-		[NonSerialized]
-		private DateTime fileTimestamp;
+		private readonly FileWatcher watcher = new(".version");
 
 		void Update() {
-			DateTime time = File.GetLastWriteTime(".version");
-			if (checkOnce && (time == fileTimestamp)) {
-				return;
+			if (watcher.IsUpdated) {
+				ValidateVersion();
 			}
-
-			fileTimestamp = time;
-			checkOnce = true;
-
-			ValidateVersion();
 		}
 
 		private void ValidateVersion() {

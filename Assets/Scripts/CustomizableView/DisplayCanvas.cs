@@ -96,8 +96,6 @@ namespace HardCoded.VRigUnity {
 			}
 
 			textureFrame.CopyTexture(webcamImage.texture);
-
-			//webcamImage.texture = SolutionUtils.GetImageSource().GetCurrentTexture();
 		}
 	}
 }

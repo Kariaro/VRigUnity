@@ -17,12 +17,23 @@ namespace HardCoded.VRigUnity {
 			BoneMask = BoneSettings.Default;
 		}
 
+		public static class Temporary {
+			public static bool VirtualCamera = false;
+		}
+
+		// Language Settings
+		public static Text _Language = new("language", "en_US");
+
+		public static string Language {
+			get => _Language.Get();
+			set => _Language.Set(value);
+		}
+
 		// Camera Settings
 		public static Text _CameraName = new("camera.name", "");
 		public static Bool _CameraFlipped = new("camera.flipped", false);
 		public static Text _CameraResolution = new("camera.resolution", "");
 		public static Bool _CameraCustomResolution = new("camera.resolution.custom", false);
-		public static Bool _VirtualCamera = new("camera.virtual", false);
 
 		public static string CameraName {
 			get => _CameraName.Get();
@@ -44,11 +55,6 @@ namespace HardCoded.VRigUnity {
 			set => _CameraCustomResolution.Set(value);
 		}
 
-		public static bool VirtualCamera {
-			get => _VirtualCamera.Get();
-			set => _VirtualCamera.Set(value);
-		}
-
 		// Tracking Settings
 		public static Text _TrackingBox = new("tracking.box", "0,0,5000,5000");
 		public static Bool _TrackingBoxEnabled = new("tracking.box.enable", false);
@@ -66,7 +72,6 @@ namespace HardCoded.VRigUnity {
 		// Bone Settings
 		public static Int _BoneMask = new("bone.mask", BoneSettings.Default);
 		public static Bool _UseLegRotation = new("bone.use.legs", false);
-		public static Bool _UseFullIK = new("bone.use.ik", false);
 		public static Float _HandTrackingThreshold = new("tracking.threshold.hand", 0f);
 		public static Float _TrackingInterpolation = new("tracking.interpolation", 0.1f);
 
@@ -78,11 +83,6 @@ namespace HardCoded.VRigUnity {
 		public static bool UseLegRotation {
 			get => _UseLegRotation.Get();
 			set => _UseLegRotation.Set(value);
-		}
-		
-		public static bool UseFullIK {
-			get => _UseFullIK.Get();
-			set => _UseFullIK.Set(value);
 		}
 
 		public static float HandTrackingThreshold {

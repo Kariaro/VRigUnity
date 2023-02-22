@@ -17,6 +17,8 @@ namespace HardCoded.VRigUnity {
 			buttonImage = GetComponent<Image>();
 			toggleButton = GetComponent<Button>();
 			InitializeContents();
+
+			Localization.OnLocalizationChangeEvent += UpdateLanguage;
 		}
 
 		private void InitializeContents() {
@@ -30,19 +32,25 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void SetCamera(bool enable) {
-			isCameraShowing = enable;
 			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
-			text.text = enable ? "Stop Camera" : "Start Camera";
-			
+			isCameraShowing = enable;
+			UpdateLanguage();
+
 			if (enable) {
 				SolutionUtils.GetSolution().Play((_, _) => {
 					// Error handling
 					SetCamera(false);
 				});
 			} else {
-				SolutionUtils.GetSolution().ResetVRMAnimator();
+				SolutionUtils.GetSolution().Model.ResetVRMAnimator();
 				SolutionUtils.GetSolution().Stop();
 			}
+		}
+
+		private void UpdateLanguage() {
+			text.text = isCameraShowing
+				? Lang.CameraStop.Get()
+				: Lang.CameraStart.Get();
 		}
 	}
 }

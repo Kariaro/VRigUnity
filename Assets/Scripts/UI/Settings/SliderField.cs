@@ -12,6 +12,8 @@ namespace HardCoded.VRigUnity {
 			slider.onValueChanged.AddListener(delegate {
 				UpdateText();
 			});
+
+			UpdateText();
 		}
 
 		void OnEnable() {

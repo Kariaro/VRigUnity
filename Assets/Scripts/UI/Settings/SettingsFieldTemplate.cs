@@ -56,9 +56,9 @@ namespace HardCoded.VRigUnity {
 			ApplyLayout(field, data.Width);
 
 			TMP_InputField inputField = field.GetComponent<TMP_InputField>();
-			inputField.text = hideIp ? "Ip Hidden" : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue);
+			inputField.text = hideIp ? Lang.IpHidden.Get() : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue);
 			inputField.onDeselect.AddListener(delegate {
-				inputField.SetTextWithoutNotify(hideIp ? "Ip Hidden" : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
+				inputField.SetTextWithoutNotify(hideIp ? Lang.IpHidden.Get() : SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
 			});
 			inputField.onSelect.AddListener(delegate {
 				inputField.SetTextWithoutNotify(SettingsUtil.NormalizeIpAddress(value.Invoke(), defaultValue));
@@ -66,6 +66,11 @@ namespace HardCoded.VRigUnity {
 			inputField.onValueChanged.AddListener(delegate {
 				string value = SettingsUtil.NormalizeIpAddress(inputField.text, defaultValue);
 				action.Invoke(inputField, value);
+			});
+			field.AddComponent<CustomLocalization>().Init(() => {
+				if (!inputField.isFocused) {
+					inputField.text = Lang.IpHidden.Get();
+				}
 			});
 			fieldObjects.Add(inputField);
 			return this;
@@ -161,7 +166,7 @@ namespace HardCoded.VRigUnity {
 			return this;
 		}
 
-		public SettingsFieldTemplate AddButton(string name, Action<Button> action, FieldData data) {
+		public SettingsFieldTemplate AddButton(Lang loc, Action<Button> action, FieldData data) {
 			GameObject field = CreateInstance(buttonTemplate);
 			field.name = "ButtonField";
 			field.SetActive(true);
@@ -170,6 +175,7 @@ namespace HardCoded.VRigUnity {
 
 			TMP_Text text = field.GetComponentInChildren<TMP_Text>();
 			text.text = name;
+			field.AddComponent<TextLocalization>().Init(loc, text);
 
 			Button button = field.GetComponent<Button>();
 			button.onClick.AddListener(delegate { action.Invoke(button); });
@@ -221,10 +227,10 @@ namespace HardCoded.VRigUnity {
 			field.name = "SliderIntField";
 
 			Slider sliderField = field.GetComponent<Slider>();
+			sliderField.wholeNumbers = true;
 			sliderField.minValue = min;
 			sliderField.maxValue = max;
 			sliderField.value = value;
-			sliderField.wholeNumbers = true;
 			sliderField.onValueChanged.AddListener(delegate { action.Invoke(sliderField, (int) sliderField.value); });
 			fieldObjects.Add(sliderField);
 			
@@ -250,19 +256,23 @@ namespace HardCoded.VRigUnity {
 			return result;
 		}
 
-		public void BuildDivider(string name, float height = 24) {
-			gameObject.name = "Divider(" + name + ")";
-			fieldName.text = name;
+		public void BuildDivider(Lang data, float height = 24) {
+			gameObject.name = "Divider(" + data.id + ")";
+			fieldName.text = data.Get();
 			fieldName.margin = new(-20, 0, 0, 0);
 			fieldName.fontStyle = FontStyles.Bold;
+			gameObject.AddComponent<TextLocalization>().Init(data, fieldName);
 			LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
 			layoutElement.minHeight = height;
+			layoutElement = fieldName.GetComponent<LayoutElement>();
+			layoutElement.preferredWidth = -1;
 			DestroyThis();
 		}
 
-		public SettingsField Build(string name) {
-			gameObject.name = "Field(" + name + ")";
-			fieldName.text = name;
+		public SettingsField Build(Lang data) {
+			gameObject.name = "Field(" + data.id + ")";
+			fieldName.text = data.Get();
+			gameObject.AddComponent<TextLocalization>().Init(data, fieldName);
 
 			SettingsField field = gameObject.AddComponent<SettingsField>();
 			field.AddFieldObjects(fieldObjects);
