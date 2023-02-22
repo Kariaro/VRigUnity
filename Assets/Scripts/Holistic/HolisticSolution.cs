@@ -90,7 +90,8 @@ namespace HardCoded.VRigUnity {
 				float area = MovementUtils.GetTriangleArea(a, b, c);
 				float perc = height / width;
 
-				mouthOpen = perc * 2 - 0.1f;
+				mouthOpen = (perc - 0.25f) * 3;
+				mouthOpen = Mathf.Clamp01(mouthOpen);
 
 				Vector3 converter(int i) {
 					Vector3 value = ConvertPoint(eventArgs.value, i);
