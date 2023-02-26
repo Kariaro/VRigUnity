@@ -61,12 +61,12 @@ namespace HardCoded.VRigUnity {
 
 			RigBuilder rigBuilder = gameObject.AddComponent<RigBuilder>();
 			
-			GameObject rigOffsetObject = new("RigLayerOffset");
+			GameObject rigOffsetObject = NewObject("RigLayerOffset");
 			rigOffsetObject.transform.SetParent(transform);			
 			Rig offsetRig = rigOffsetObject.AddComponent<Rig>();
 			rigBuilder.layers.Add(new RigLayer(offsetRig));
 			
-			GameObject rigObject = new("RigLayerHands");
+			GameObject rigObject = NewObject("RigLayerHands");
 			rigObject.transform.SetParent(transform);
 			Rig handRig = rigObject.AddComponent<Rig>();
 			rigBuilder.layers.Add(new RigLayer(handRig));
@@ -96,7 +96,7 @@ namespace HardCoded.VRigUnity {
 		private void SetupOffsets(Rig rig) {
 			_transforms.Clear();
 
-			GameObject offsets = new("Offsets");
+			GameObject offsets = NewObject("Offsets");
 			offsets.transform.SetParent(rig.transform);
 			
 			// Create OverrideTransforms for all bones
@@ -117,8 +117,12 @@ namespace HardCoded.VRigUnity {
 			rightHandConstraints[3] = _transforms[HumanBodyBones.RightShoulder];
 		}
 
+		private GameObject NewObject(string name) {
+			return new("vrigunity:object:" + name);
+		}
+
 		private IRigConstraint CreateBone(GameObject parent, HumanBodyBones bone, bool local = true) {
-			GameObject element = new(bone.ToString());
+			GameObject element = NewObject(bone.ToString());
 			element.transform.SetParent(parent.transform);
 
 			var offset = element.AddComponent<OverrideTransform>();
@@ -132,9 +136,9 @@ namespace HardCoded.VRigUnity {
 
 		private void SetupHands(Rig rig) {
 			{ // Left Hand
-				GameObject hand = new("LeftHandIK");
-				GameObject target = new("Left Target");
-				GameObject hint = new("Left Hint");
+				GameObject hand = NewObject("LeftHandIK");
+				GameObject target = NewObject("Left Target");
+				GameObject hint = NewObject("Left Hint");
 				hand.transform.SetParent(rig.transform);
 				target.transform.SetParent(hand.transform);
 				hint.transform.SetParent(hand.transform);
@@ -155,9 +159,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			{ // Right Hand
-				GameObject hand = new("RightHandIK");
-				GameObject target = new("Right Target");
-				GameObject hint = new("Right Hint");
+				GameObject hand = NewObject("RightHandIK");
+				GameObject target = NewObject("Right Target");
+				GameObject hint = NewObject("Right Hint");
 				hand.transform.SetParent(rig.transform);
 				target.transform.SetParent(hand.transform);
 				hint.transform.SetParent(hand.transform);
@@ -180,9 +184,9 @@ namespace HardCoded.VRigUnity {
 
 		private void SetupLegs(Rig rig) {
 			{ // Left Leg
-				GameObject leg = new("Left Leg");
-				GameObject target = new("Target");
-				GameObject hint = new("Hint");
+				GameObject leg = NewObject("Left Leg");
+				GameObject target = NewObject("Target");
+				GameObject hint = NewObject("Hint");
 				leg.transform.SetParent(rig.transform);
 				target.transform.SetParent(leg.transform);
 				hint.transform.SetParent(leg.transform);
@@ -202,9 +206,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			{ // Right Leg
-				GameObject leg = new("Right Leg");
-				GameObject target = new("Target");
-				GameObject hint = new("Hint");
+				GameObject leg = NewObject("Right Leg");
+				GameObject target = NewObject("Target");
+				GameObject hint = NewObject("Hint");
 				leg.transform.SetParent(rig.transform);
 				target.transform.SetParent(leg.transform);
 				hint.transform.SetParent(leg.transform);
