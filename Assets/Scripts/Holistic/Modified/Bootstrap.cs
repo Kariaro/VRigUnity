@@ -20,12 +20,30 @@ namespace HardCoded.VRigUnity {
 			return _assetManager;
 		}
 
+		private void ParseArguments() {
+			string[] arguments = Environment.GetCommandLineArgs();
+			for (int i = 1; i < arguments.Length; i++) {
+				string argument = arguments[i];
+
+				switch (arguments[i]) {
+					case "-resetSettings": {
+						Logger.Info(_TAG, "Application settings has been reset");
+						Settings.ResetSettings();
+						break;
+					}
+				}
+			}
+		}
+
 		void Awake() {
 			// Set target frame rate	
 			Application.targetFrameRate = 60;
 
 			// Log application version
 			Logger.Info(_TAG, $"Application version: {Application.version}");
+
+			// Parse application arguments
+			ParseArguments();
 
 			// Init settings
 			Settings.Init();
