@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       tag: ${{ inputs.tag }}
+      ref: ${{ github.event.ref }}
     secrets:
       unityLicense: ${{ secrets.UNITY_LICENSE }}
       githubToken: ${{ secrets.GITHUB_TOKEN }}
