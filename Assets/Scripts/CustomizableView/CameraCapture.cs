@@ -15,11 +15,14 @@ namespace HardCoded.VRigUnity {
 #  warning Virtual Camera has not been added to OSX yet
 #else
 		public const bool IsVirtualCameraSupported = false;
-#  error Virtual Camera is not supported on this system
+#  warning Virtual Camera is not supported on this system
 #endif
 
 		// Internal fields
 		private Camera m_mainCamera;
+
+		public int cameraWidth = 1280;
+		public int cameraHeight = 720;
 
 		void Start() {
 			// Find the game object with the main camera tag
@@ -33,10 +36,19 @@ namespace HardCoded.VRigUnity {
 			unityCapture.MirrorMode = UnityCapture.EMirrorMode.MirrorHorizontally;
 			unityCapture.HideWarnings = true;
 			unityCapture.mainCamera = m_mainCamera;
+			unityCapture.cameraWidth = cameraWidth;
+			unityCapture.cameraHeight = cameraHeight;
 #elif UNITY_STANDALONE_LINUX
 			// TODO: Linux
 #elif UNITY_STANDALONE_OSX
 			// TODO: OSX
+#endif
+		}
+
+		void Update() {
+#if UNITY_STANDALONE_WIN
+			unityCapture.cameraWidth = cameraWidth;
+			unityCapture.cameraHeight = cameraHeight;
 #endif
 		}
 
