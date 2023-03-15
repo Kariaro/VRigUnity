@@ -56,7 +56,7 @@ namespace HardCoded.VRigUnity {
 			transform.data.rotation = m_current.eulerAngles;
 		}
 
-		public void ApplyLocal(HolisticModel model) {
+		public void ApplyLocal(SceneModel model) {
 			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyLocal(transform);
 			}
@@ -72,7 +72,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void ApplyGlobal(HolisticModel model, bool localWhenLostFocus = false) {
+		public void ApplyGlobal(SceneModel model, bool localWhenLostFocus = false) {
 			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyGlobal(transform, localWhenLostFocus);
 			}
@@ -195,7 +195,7 @@ namespace HardCoded.VRigUnity {
 			ThumbTip .Update(time);
 		}
 
-		public void ApplyFingers(HolisticModel model) {
+		public void ApplyFingers(SceneModel model) {
 			IndexPip .ApplyLocal(model);
 			IndexDip .ApplyLocal(model);
 			IndexTip .ApplyLocal(model);

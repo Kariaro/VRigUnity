@@ -10,7 +10,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private GameObject defaultVrmModel;
 		[SerializeField] private GameObject defaultVrmPrefab;
 		[SerializeField] private RuntimeAnimatorController defaultController;
-		protected HolisticModel model;
+		protected SceneModel model;
 
 		[Header("UI")]
 		public GUIMain guiMain;
@@ -36,7 +36,7 @@ namespace HardCoded.VRigUnity {
 		// API Getters
 		private readonly long StartTicks = DateTime.Now.Ticks;
 		public float TimeNow => (float)((DateTime.Now.Ticks - StartTicks) / (double)TimeSpan.TicksPerSecond);
-		public HolisticModel Model => model;
+		public SceneModel Model => model;
 
 		void Awake() {
 			model = new(defaultVrmModel, defaultVrmPrefab, defaultController);

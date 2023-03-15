@@ -8,7 +8,7 @@ namespace HardCoded.VRigUnity {
 	/// <summary>
 	/// A simplification of the model handling. This class contains methods to change and update the model
 	/// </summary>
-	public class HolisticModel {
+	public class SceneModel {
 		// Cache
 		private readonly Dictionary<BlendShapePreset, BlendShapeKey> blendShapeCache = new();
 		private readonly Dictionary<HumanBodyBones, Transform> boneTransformCache = new();
@@ -48,9 +48,9 @@ namespace HardCoded.VRigUnity {
 		public Animator Animator { get; private set; }
 		public GameObject VrmModel { get; private set; }
 
-		public HolisticModel(GameObject model, GameObject defaultModelPrefab, RuntimeAnimatorController defaultController) {
+		public SceneModel(GameObject model, GameObject defaultModelPrefab, RuntimeAnimatorController defaultController) {
 			if (model == null || defaultModelPrefab == null || defaultController == null) {
-				throw new ArgumentNullException("HolisticModel requires non null parameters");
+				throw new ArgumentNullException("SceneModel requires non null parameters");
 			}
 
 			// Set default values
