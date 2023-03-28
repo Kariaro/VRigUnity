@@ -23,8 +23,6 @@ namespace HardCoded.VRigUnity {
 		private void ParseArguments() {
 			string[] arguments = Environment.GetCommandLineArgs();
 			for (int i = 1; i < arguments.Length; i++) {
-				string argument = arguments[i];
-
 				switch (arguments[i]) {
 					case "-resetSettings": {
 						Logger.Info(_TAG, "Application settings has been reset");

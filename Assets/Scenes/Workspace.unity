@@ -199,7 +199,7 @@ MonoBehaviour:
   _cpuConfig: {fileID: 4900000, guid: 0864f75e5b86882478f21cd54eac969d, type: 3}
   _gpuConfig: {fileID: 4900000, guid: df950e959f0bc1244a1eb45382ebcb67, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
-  _timeoutMicrosec: 100000
+  _timeoutMicrosec: 1000000
   modelComplexity: 1
 --- !u!114 &275874976
 MonoBehaviour:
