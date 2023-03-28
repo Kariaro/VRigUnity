@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class Groups {
+	public class DataGroups {
 		public class HandPoints {
 			// This uses the indexs MediaPipe.Hand
 			public readonly Vector3[] Data = new Vector3[21];
@@ -30,7 +30,7 @@ namespace HardCoded.VRigUnity {
 			public Vector3 PinkyTIP { get => Data[20]; set => Data[20] = value; }
 		}
 
-		public class HandRotation {
+		public class HandData {
 			public readonly int Length = 21;
 
 			// Easy setters
@@ -115,14 +115,14 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 		}
-
-		public class PoseRotation {
+		
+		public class PoseData {
 			public Quaternion chestRotation;
 			public Quaternion hipsRotation;
-			public Quaternion rUpperArm;
-			public Quaternion rLowerArm;
-			public Quaternion lUpperArm;
-			public Quaternion lLowerArm;
+			//public Quaternion rUpperArm;
+			//public Quaternion rLowerArm;
+			//public Quaternion lUpperArm;
+			//public Quaternion lLowerArm;
 			public Vector3 hipsPosition;
 
 			public Quaternion rUpperLeg;
@@ -140,6 +140,20 @@ namespace HardCoded.VRigUnity {
 
 			public bool hasLeftLeg;
 			public bool hasRightLeg;
+		}
+
+		public class FaceData {
+			// Mouth
+			public float mouthOpen;
+
+			// Eyes
+			public Vector2 lEyeIris;
+			public Vector2 rEyeIris;
+			public float lEyeOpen;
+			public float rEyeOpen;
+
+			// Neck
+			public Quaternion neckRotation;
 		}
 	}
 }

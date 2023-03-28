@@ -10,8 +10,8 @@ namespace HardCoded.VRigUnity {
 			return new(mark.X, mark.Y, mark.Z, mark.Visibility);
 		}
 
-		public static Groups.PoseRotation SolvePose(OutputEventArgs<LandmarkList> eventArgs) {
-			Groups.PoseRotation pose = new();
+		public static DataGroups.PoseData SolvePose(OutputEventArgs<LandmarkList> eventArgs) {
+			DataGroups.PoseData pose = new();
 
 			{
 				pose.rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
@@ -46,17 +46,9 @@ namespace HardCoded.VRigUnity {
 				{
 					pose.rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
 					pose.rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
-					Vector3 vRigA = Vector3.left;
 					Vector3 vRigB = pose.rElbow - pose.rShoulder;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					pose.rUpperArm = rot;
-
-					Vector3 vRigC = pose.rHand - pose.rElbow;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					pose.rLowerArm = rot;
 
 					if (pose.rHand.w < Settings.HandTrackingThreshold) {
-						pose.rLowerArm = pose.rUpperArm;
 						pose.rHand = (Vector3) pose.rElbow + vRigB;
 					}
 				}
@@ -64,17 +56,9 @@ namespace HardCoded.VRigUnity {
 				{
 					pose.lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
 					pose.lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
-					Vector3 vRigA = Vector3.right;
 					Vector3 vRigB = pose.lElbow - pose.lShoulder;
-					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
-					pose.lUpperArm = rot;
-
-					Vector3 vRigC = pose.lHand - pose.lElbow;
-					rot = Quaternion.FromToRotation(vRigA, vRigC);
-					pose.lLowerArm = rot;
 
 					if (pose.lHand.w < Settings.HandTrackingThreshold) {
-						pose.lLowerArm = pose.lUpperArm;
 						pose.lHand = (Vector3) pose.lElbow + vRigB;
 					}
 				}

@@ -19,17 +19,9 @@ namespace HardCoded.VRigUnity {
 
 		// Pose values
 		public readonly PoseValues Pose = new();
+		public readonly FaceValues Face = new();
 		public readonly HandValues RightHand = new(false);
 		public readonly HandValues LeftHand = new(true);
-		
-		private float mouthOpen = 0;
-
-		public FaceData.RollingAverage lEyeOpen = new(FaceConfig.EAR_FRAMES);
-		public FaceData.RollingAverage rEyeOpen = new(FaceConfig.EAR_FRAMES);
-
-		public FaceData.RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
-		public FaceData.RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
-
 		public bool TrackRightHand = true;
 		public bool TrackLeftHand = true;
 
@@ -52,11 +44,6 @@ namespace HardCoded.VRigUnity {
 			Canvas.SetupAnnotations();
 		}
 
-		private Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
-			NormalizedLandmark mark = list.Landmark[idx];
-			return new(mark.X * 2, mark.Y, mark.Z * 2, mark.Visibility);
-		}
-
 		protected override void SetupScreen(ImageSource imageSource) {
 			Canvas.SetupScreen(imageSource);
 		}
@@ -71,59 +58,13 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Quaternion neckRotation = Quaternion.identity;
-			float mouthOpen = 0;
-			float lEyeOpen = 0;
-			float rEyeOpen = 0;
-			Vector2 lEyeIris = Vector2.zero;
-			Vector2 rEyeIris = Vector2.zero;
-			
-			if (BoneSettings.Get(BoneSettings.FACE)) {
-				// Mouth
-				Vector3 a = ConvertPoint(eventArgs.value, 324);
-				Vector3 b = ConvertPoint(eventArgs.value, 78);
-				Vector3 c = ConvertPoint(eventArgs.value, 13);
-				Vector3 m = (a + b) / 2.0f;
-
-				float width = Vector3.Distance(a, b);
-				float height = Vector3.Distance(c, m);
-				float area = MovementUtils.GetTriangleArea(a, b, c);
-				float perc = height / width;
-
-				mouthOpen = (perc - 0.25f) * 3;
-				mouthOpen = Mathf.Clamp01(mouthOpen);
-
-				Vector3 converter(int i) {
-					Vector3 value = ConvertPoint(eventArgs.value, i);
-					value.x = -value.x;
-					return value;
-				}
-
-				// Eyes
-				lEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.LeftEyeEAR, converter));
-				rEyeOpen = FacePoints.CalculateEyeAspectRatio(Array.ConvertAll(FacePoints.RightEyeEAR, converter));
-				lEyeIris = FacePoints.CalculateIrisPosition(FacePoints.LeftEyeIrisPoint, converter);
-				rEyeIris = FacePoints.CalculateIrisPosition(FacePoints.RightEyeIrisPoint, converter);
-			}
-
-			{
-				Vector3 botHead = ConvertPoint(eventArgs.value, 152);
-				Vector3 topHead = ConvertPoint(eventArgs.value, 10);
-				Plane plane = new(ConvertPoint(eventArgs.value, 109), ConvertPoint(eventArgs.value, 338), botHead);
-
-				// Figure out their position on the eye socket plane
-				Vector3 forwardDir = plane.normal;
-				Vector3 faceUpDir = botHead - topHead;
-
-				neckRotation = Quaternion.LookRotation(forwardDir, faceUpDir);
-			}
-
-			Pose.Neck.Add(neckRotation, TimeNow);
-			this.mouthOpen = mouthOpen;
-			this.rEyeOpen.Add(rEyeOpen);
-			this.lEyeOpen.Add(lEyeOpen);
-			this.rEyeIris.Add(rEyeIris);
-			this.lEyeIris.Add(lEyeIris);
+			DataGroups.FaceData face = FaceResolver.Solve(eventArgs);
+			Face.mouthOpen = face.mouthOpen;
+			Face.lEyeIris.Add(face.lEyeIris);
+			Face.rEyeIris.Add(face.rEyeIris);
+			Face.lEyeOpen.Add(face.lEyeOpen);
+			Face.rEyeOpen.Add(face.rEyeOpen);
+			Pose.Neck.Add(face.neckRotation, TimeNow);
 		}
 
 		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
@@ -132,13 +73,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Groups.HandPoints handPoints = new();
-			int count = eventArgs.value.Landmark.Count;
-			for (int i = 0; i < count; i++) {
-				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
-			}
-			
-			Groups.HandRotation handGroup = HandResolver.SolveLeftHand(handPoints);
+			DataGroups.HandData handGroup = HandResolver.SolveLeftHand(eventArgs);
 			LeftHand.Update(handGroup, TimeNow);
 		}
 
@@ -147,14 +82,8 @@ namespace HardCoded.VRigUnity {
 			if (eventArgs.value == null || !TrackRightHand) {
 				return;
 			}
-			
-			Groups.HandPoints handPoints = new();
-			int count = eventArgs.value.Landmark.Count;
-			for (int i = 0; i < count; i++) {
-				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
-			}
 
-			Groups.HandRotation handGroup = HandResolver.SolveRightHand(handPoints);
+			DataGroups.HandData handGroup = HandResolver.SolveRightHand(eventArgs);
 			RightHand.Update(handGroup, TimeNow);
 		}
 
@@ -181,7 +110,7 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
-			Groups.PoseRotation pose = PoseResolver.SolvePose(eventArgs);
+			DataGroups.PoseData pose = PoseResolver.SolvePose(eventArgs);
 
 			float time = TimeNow;
 			Pose.Chest.Add(pose.chestRotation, time);
@@ -276,12 +205,12 @@ namespace HardCoded.VRigUnity {
 			}
 
 			if (BoneSettings.Get(BoneSettings.FACE)) {
-				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], mouthOpen);
+				model.BlendShapeProxy.ImmediatelySetValue(model.BlendShapes[BlendShapePreset.O], Face.mouthOpen);
 
 				float rEyeTest = model.BlendShapeProxy.GetValue(model.BlendShapes[BlendShapePreset.Blink_R]);
 				float lEyeTest = model.BlendShapeProxy.GetValue(model.BlendShapes[BlendShapePreset.Blink_L]);
-				float rEyeValue = (rEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
-				float lEyeValue = (lEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
+				float rEyeValue = (Face.rEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
+				float lEyeValue = (Face.lEyeOpen.Max() < FaceConfig.EAR_TRESHHOLD) ? 1 : 0;
 				rEyeValue = (rEyeValue + rEyeTest * 2) / 3.0f;
 				lEyeValue = (lEyeValue + lEyeTest * 2) / 3.0f;
 
@@ -290,13 +219,13 @@ namespace HardCoded.VRigUnity {
 
 				// TODO: Find a better eye tracking method
 				model.RigAnimator.Transforms[HumanBodyBones.LeftEye].data.rotation = new(
-					(lEyeIris.Average().y - 0.14f) * -30,
-					lEyeIris.Average().x * -30,
+					(Face.lEyeIris.Average().y - 0.14f) * -30,
+					Face.lEyeIris.Average().x * -30,
 					0
 				);
 				model.RigAnimator.Transforms[HumanBodyBones.RightEye].data.rotation = new(
-					(rEyeIris.Average().y - 0.14f) * -30,
-					rEyeIris.Average().x * -30,
+					(Face.rEyeIris.Average().y - 0.14f) * -30,
+					Face.rEyeIris.Average().x * -30,
 					0
 				);
 			}
