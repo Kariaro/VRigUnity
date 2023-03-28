@@ -119,10 +119,6 @@ namespace HardCoded.VRigUnity {
 		public class PoseData {
 			public Quaternion chestRotation;
 			public Quaternion hipsRotation;
-			//public Quaternion rUpperArm;
-			//public Quaternion rLowerArm;
-			//public Quaternion lUpperArm;
-			//public Quaternion lLowerArm;
 			public Vector3 hipsPosition;
 
 			public Quaternion rUpperLeg;
@@ -130,7 +126,7 @@ namespace HardCoded.VRigUnity {
 			public Quaternion lUpperLeg;
 			public Quaternion lLowerLeg;
 
-			// Experimental IK
+			// IK Positions
 			public Vector4 rShoulder;
 			public Vector4 rElbow;
 			public Vector4 rHand;
