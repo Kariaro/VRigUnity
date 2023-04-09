@@ -1,5 +1,3 @@
-using Mediapipe;
-using Mediapipe.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,26 +21,21 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		private static Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
-			NormalizedLandmark mark = list.Landmark[idx];
-			return new(mark.X * 2, mark.Y, mark.Z * 2, mark.Visibility);
-		}
-
-		public static DataGroups.HandData SolveRightHand(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+		public static DataGroups.HandData SolveRightHand(HolisticLandmarks landmarks) {
 			DataGroups.HandPoints handPoints = new();
-			int count = eventArgs.value.Landmark.Count;
+			int count = landmarks.Count;
 			for (int i = 0; i < count; i++) {
-				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
+				handPoints.Data[i] = landmarks[i];
 			}
 
 			return SolveRightHand(handPoints);
 		}
-		
-		public static DataGroups.HandData SolveLeftHand(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+
+		public static DataGroups.HandData SolveLeftHand(HolisticLandmarks landmarks) {
 			DataGroups.HandPoints handPoints = new();
-			int count = eventArgs.value.Landmark.Count;
+			int count = landmarks.Count;
 			for (int i = 0; i < count; i++) {
-				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
+				handPoints.Data[i] = landmarks[i];
 			}
 
 			return SolveLeftHand(handPoints);

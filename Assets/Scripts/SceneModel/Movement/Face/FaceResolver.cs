@@ -6,12 +6,7 @@ using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class FaceResolver {
-		private static Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
-			NormalizedLandmark mark = list.Landmark[idx];
-			return new(mark.X * 2, mark.Y, mark.Z * 2, mark.Visibility);
-		}
-
-		public static DataGroups.FaceData Solve(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+		public static DataGroups.FaceData Solve(HolisticLandmarks landmarks) {
 			DataGroups.FaceData data = new();
 
 			Quaternion neckRotation = Quaternion.identity;
@@ -23,9 +18,9 @@ namespace HardCoded.VRigUnity {
 			
 			if (BoneSettings.Get(BoneSettings.FACE)) {
 				// Mouth
-				Vector3 a = ConvertPoint(eventArgs.value, 324);
-				Vector3 b = ConvertPoint(eventArgs.value, 78);
-				Vector3 c = ConvertPoint(eventArgs.value, 13);
+				Vector3 a = landmarks[324];
+				Vector3 b = landmarks[78];
+				Vector3 c = landmarks[13];
 				Vector3 m = (a + b) / 2.0f;
 
 				float width = Vector3.Distance(a, b);
@@ -37,7 +32,7 @@ namespace HardCoded.VRigUnity {
 				mouthOpen = Mathf.Clamp01(mouthOpen);
 
 				Vector3 converter(int i) {
-					Vector3 value = ConvertPoint(eventArgs.value, i);
+					Vector3 value = landmarks[i];
 					value.x = -value.x;
 					return value;
 				}
@@ -50,9 +45,9 @@ namespace HardCoded.VRigUnity {
 			}
 
 			{
-				Vector3 botHead = ConvertPoint(eventArgs.value, 152);
-				Vector3 topHead = ConvertPoint(eventArgs.value, 10);
-				Plane plane = new(ConvertPoint(eventArgs.value, 109), ConvertPoint(eventArgs.value, 338), botHead);
+				Vector3 botHead = landmarks[152];
+				Vector3 topHead = landmarks[10];
+				Plane plane = new(landmarks[109], landmarks[338], botHead);
 
 				// Figure out their position on the eye socket plane
 				Vector3 forwardDir = plane.normal;

@@ -5,7 +5,7 @@ using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class HolisticSolution : Solution {
+	public class HolisticSolution : Solution, IHolisticCallback {
 		[Header("Rig")]
 		[SerializeField] private GameObject defaultVrmModel;
 		[SerializeField] private GameObject defaultVrmPrefab;
@@ -36,11 +36,8 @@ namespace HardCoded.VRigUnity {
 		}
 
 		protected override void OnStartRun() {
-			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+			HolisticConverter.Connect(graphRunner, this);
+			HolisticConverter.Connect(graphRunner, Canvas);
 			Canvas.SetupAnnotations();
 		}
 
@@ -52,13 +49,12 @@ namespace HardCoded.VRigUnity {
 			Canvas.ReadSync(textureFrame);
 		}
 
-		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			Canvas.OnFaceLandmarksOutput(eventArgs);
-			if (eventArgs.value == null) {
+		public virtual void OnFaceLandmarks(HolisticLandmarks landmarks) {
+			if (!landmarks.IsPresent) {
 				return;
 			}
 
-			DataGroups.FaceData face = FaceResolver.Solve(eventArgs);
+			DataGroups.FaceData face = FaceResolver.Solve(landmarks);
 			Face.mouthOpen = face.mouthOpen;
 			Face.lEyeIris.Add(face.lEyeIris);
 			Face.rEyeIris.Add(face.rEyeIris);
@@ -67,50 +63,46 @@ namespace HardCoded.VRigUnity {
 			Pose.Neck.Add(face.neckRotation, TimeNow);
 		}
 
-		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			Canvas.OnLeftHandLandmarksOutput(eventArgs);
-			if (eventArgs.value == null || !TrackLeftHand) {
+		public virtual void OnLeftHandLandmarks(HolisticLandmarks landmarks) {
+			if (!landmarks.IsPresent || !TrackLeftHand) {
 				return;
 			}
 
-			DataGroups.HandData handGroup = HandResolver.SolveLeftHand(eventArgs);
+			DataGroups.HandData handGroup = HandResolver.SolveLeftHand(landmarks);
 			LeftHand.Update(handGroup, TimeNow);
 		}
 
-		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			Canvas.OnRightHandLandmarksOutput(eventArgs);
-			if (eventArgs.value == null || !TrackRightHand) {
+		public virtual void OnRightHandLandmarks(HolisticLandmarks landmarks) {
+			if (!landmarks.IsPresent || !TrackRightHand) {
 				return;
 			}
 
-			DataGroups.HandData handGroup = HandResolver.SolveRightHand(eventArgs);
+			DataGroups.HandData handGroup = HandResolver.SolveRightHand(landmarks);
 			RightHand.Update(handGroup, TimeNow);
 		}
 
-		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			Canvas.OnPoseLandmarksOutput(eventArgs);
-
+		public virtual void OnPoseLandmarks(HolisticLandmarks landmarks) {
 			bool trackL = true;
 			bool trackR = true;
 
 			// Use these fields to get the value
-			if (eventArgs.value != null && Settings.UseTrackingBox) {
-				var leftWrist = eventArgs.value.Landmark[MediaPipe.Pose.LEFT_WRIST];
-				var rightWrist = eventArgs.value.Landmark[MediaPipe.Pose.RIGHT_WRIST];
-				trackR = TrackingBox.IsInside(rightWrist.X, 1 - rightWrist.Y);
-				trackL = TrackingBox.IsInside(leftWrist.X, 1 - leftWrist.Y);
+			if (landmarks.IsPresent && Settings.UseTrackingBox) {
+				var leftWrist = landmarks[MediaPipe.Pose.LEFT_WRIST];
+				var rightWrist = landmarks[MediaPipe.Pose.RIGHT_WRIST];
+				trackR = TrackingBox.IsInside(rightWrist.x, 1 - rightWrist.y);
+				trackL = TrackingBox.IsInside(leftWrist.x, 1 - leftWrist.y);
 			}
 			
 			TrackLeftHand = trackL;
 			TrackRightHand = trackR;
 		}
 
-		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {
-			if (eventArgs.value == null) {
+		public virtual void OnPoseWorldLandmarks(HolisticLandmarks landmarks) {
+			if (!landmarks.IsPresent) {
 				return;
 			}
 
-			DataGroups.PoseData pose = PoseResolver.SolvePose(eventArgs);
+			DataGroups.PoseData pose = PoseResolver.SolvePose(landmarks);
 
 			float time = TimeNow;
 			Pose.Chest.Add(pose.chestRotation, time);
