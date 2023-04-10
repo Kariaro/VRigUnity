@@ -56,7 +56,7 @@ namespace HardCoded.VRigUnity {
 			transform.data.rotation = m_current.eulerAngles;
 		}
 
-		public void ApplyLocal(HolisticModel model) {
+		public void ApplyLocal(SceneModel model) {
 			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyLocal(transform);
 			}
@@ -72,7 +72,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void ApplyGlobal(HolisticModel model, bool localWhenLostFocus = false) {
+		public void ApplyGlobal(SceneModel model, bool localWhenLostFocus = false) {
 			if (model.RigAnimator.Transforms.TryGetValue(m_bone, out var transform)) {
 				ApplyGlobal(transform, localWhenLostFocus);
 			}
@@ -157,7 +157,7 @@ namespace HardCoded.VRigUnity {
 			ThumbTip  = new(isLeft ? HumanBodyBones.LeftThumbDistal        : HumanBodyBones.RightThumbDistal       );
 		}
 
-		public void Update(Groups.HandRotation value, float time) {
+		public void Update(DataGroups.HandData value, float time) {
 			Wrist.Add(value.Wrist, time);
 			IndexPip.Add(value.IndexFingerMCP, time);
 			IndexDip.Add(value.IndexFingerPIP, time);
@@ -195,7 +195,7 @@ namespace HardCoded.VRigUnity {
 			ThumbTip .Update(time);
 		}
 
-		public void ApplyFingers(HolisticModel model) {
+		public void ApplyFingers(SceneModel model) {
 			IndexPip .ApplyLocal(model);
 			IndexDip .ApplyLocal(model);
 			IndexTip .ApplyLocal(model);
@@ -251,51 +251,60 @@ namespace HardCoded.VRigUnity {
 		}
 	}
 
-	public class FaceData {
-		public struct RollingAverage {
-			public float[] data;
-			private int dataIndex;
+	public class FaceValues {
+		// Mouth
+		public float mouthOpen = 0;
 
-			public RollingAverage(int size) {
-				data = new float[size];
-				dataIndex = 0;
-			}
+		// Eyes
+		public RollingAverageVector2 lEyeIris = new(FaceConfig.EAR_FRAMES);
+		public RollingAverageVector2 rEyeIris = new(FaceConfig.EAR_FRAMES);
+		public RollingAverage lEyeOpen = new(FaceConfig.EAR_FRAMES);
+		public RollingAverage rEyeOpen = new(FaceConfig.EAR_FRAMES);
+	}
 
-			public void Add(float value) {
-				data[dataIndex] = value;
-				dataIndex = (dataIndex + 1) % data.Length;
-			}
+	public struct RollingAverage {
+		public float[] data;
+		private int dataIndex;
 
-			public float Average() {
-				return data.Average();
-			}
-
-			public float Min() {
-				return data.Min();
-			}
-
-			public float Max() {
-				return data.Max();
-			}
+		public RollingAverage(int size) {
+			data = new float[size];
+			dataIndex = 0;
 		}
 
-		public struct RollingAverageVector2 {
-			public Vector2[] data;
-			private int dataIndex;
+		public void Add(float value) {
+			data[dataIndex] = value;
+			dataIndex = (dataIndex + 1) % data.Length;
+		}
 
-			public RollingAverageVector2(int size) {
-				data = new Vector2[size];
-				dataIndex = 0;
-			}
+		public float Average() {
+			return data.Average();
+		}
 
-			public void Add(Vector2 value) {
-				data[dataIndex] = value;
-				dataIndex = (dataIndex + 1) % data.Length;
-			}
+		public float Min() {
+			return data.Min();
+		}
 
-			public Vector2 Average() {
-				return data.Aggregate((a, b) => a + b) / (float)data.Length;
-			}
+		public float Max() {
+			return data.Max();
+		}
+	}
+
+	public struct RollingAverageVector2 {
+		public Vector2[] data;
+		private int dataIndex;
+
+		public RollingAverageVector2(int size) {
+			data = new Vector2[size];
+			dataIndex = 0;
+		}
+
+		public void Add(Vector2 value) {
+			data[dataIndex] = value;
+			dataIndex = (dataIndex + 1) % data.Length;
+		}
+
+		public Vector2 Average() {
+			return data.Aggregate((a, b) => a + b) / (float)data.Length;
 		}
 	}
 }

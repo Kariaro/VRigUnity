@@ -10,7 +10,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private int fps = 60;
 		[SerializeField] private bool renderUpdate;
 
-		private readonly Groups.HandPoints rightHandPoints = new();
+		private readonly DataGroups.HandPoints rightHandPoints = new();
 		private bool hasHandData;
 
 		// Used by 'FaceGizmos'

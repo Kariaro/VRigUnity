@@ -66,14 +66,14 @@ namespace HardCoded.VRigUnity {
 			lineHolder.AddConnection(points[MediaPipe.Hand.RING_FINGER_MCP], points[MediaPipe.Hand.PINKY_MCP]);
 		}
 
-		public void Apply(Groups.HandPoints handPoints, Vector3 origin, float scale = 1.0f) {
+		public void Apply(DataGroups.HandPoints handPoints, Vector3 origin, float scale = 1.0f) {
 			// Normalize on the wrist position
 			for (int i = 0; i < handPoints.Data.Length; i++) {
 				points[i].transform.position = (handPoints.Data[i] - handPoints.Wrist) * scale + origin;
 			}
 		}
 
-		public void Apply(Groups.HandRotation handRotations) {
+		public void Apply(DataGroups.HandData handRotations) {
 			// TODO: Does not seem to work?
 			for (int i = 0; i < handRotations.Length; i++) {
 				points[i].transform.rotation = handRotations[i];

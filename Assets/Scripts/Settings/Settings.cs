@@ -1,6 +1,6 @@
-﻿using System;
+﻿using HardCoded.VRigUnity.SettingsTypes;
+using System;
 using UnityEngine;
-using static HardCoded.VRigUnity.SettingsTypes;
 
 namespace HardCoded.VRigUnity {
 	public class Settings {
@@ -8,7 +8,7 @@ namespace HardCoded.VRigUnity {
 
 		// This must be called to initialize the system
 		public static void Init() {
-			foreach (IField field in DefinedSettings) {
+			foreach (IField field in IField.DefinedSettings) {
 				field.Init();
 				Logger.Info(_TAG, $"{field.Name()} '{field.RawValue()}'");
 			}

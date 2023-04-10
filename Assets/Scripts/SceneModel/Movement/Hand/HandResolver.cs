@@ -1,3 +1,5 @@
+using Mediapipe;
+using Mediapipe.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,9 +22,34 @@ namespace HardCoded.VRigUnity {
 				this.angle = angle;
 			}
 		}
+
+		private static Vector4 ConvertPoint(NormalizedLandmarkList list, int idx) {
+			NormalizedLandmark mark = list.Landmark[idx];
+			return new(mark.X * 2, mark.Y, mark.Z * 2, mark.Visibility);
+		}
+
+		public static DataGroups.HandData SolveRightHand(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			DataGroups.HandPoints handPoints = new();
+			int count = eventArgs.value.Landmark.Count;
+			for (int i = 0; i < count; i++) {
+				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
+			}
+
+			return SolveRightHand(handPoints);
+		}
 		
-		private static Groups.HandPoints SetGlobalOrigin(Groups.HandPoints hand) {
-			Groups.HandPoints result = new();
+		public static DataGroups.HandData SolveLeftHand(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
+			DataGroups.HandPoints handPoints = new();
+			int count = eventArgs.value.Landmark.Count;
+			for (int i = 0; i < count; i++) {
+				handPoints.Data[i] = ConvertPoint(eventArgs.value, i);
+			}
+
+			return SolveLeftHand(handPoints);
+		}
+		
+		private static DataGroups.HandPoints SetGlobalOrigin(DataGroups.HandPoints hand) {
+			DataGroups.HandPoints result = new();
 
 			for (int i = 0; i < hand.Data.Length; i++) {
 				result.Data[i] = hand.Data[i] - hand.Wrist;
@@ -31,7 +58,7 @@ namespace HardCoded.VRigUnity {
 			return result;
 		}
 
-		public static Groups.HandRotation SolveLeftHand(Groups.HandPoints hand) {
+		public static DataGroups.HandData SolveLeftHand(DataGroups.HandPoints hand) {
 			hand = SetGlobalOrigin(hand);
 
 			List<FingerAngle> angles = FingerAngles(hand, HandType.Left);
@@ -48,7 +75,7 @@ namespace HardCoded.VRigUnity {
 			return ConvertData(angles);
 		}
 
-		public static Groups.HandRotation SolveRightHand(Groups.HandPoints hand) {
+		public static DataGroups.HandData SolveRightHand(DataGroups.HandPoints hand) {
 			hand = SetGlobalOrigin(hand);
 
 			List<FingerAngle> angles = FingerAngles(hand, HandType.Right);
@@ -65,8 +92,8 @@ namespace HardCoded.VRigUnity {
 			return ConvertData(angles);
 		}
 
-		private static Groups.HandRotation ConvertData(List<FingerAngle> angles) {
-			Groups.HandRotation rotation = new();
+		private static DataGroups.HandData ConvertData(List<FingerAngle> angles) {
+			DataGroups.HandData rotation = new();
 			foreach (FingerAngle angle in angles) {
 				rotation[angle.idx] = Quaternion.Euler(angle.angle);
 			}
@@ -74,7 +101,7 @@ namespace HardCoded.VRigUnity {
 			return rotation;
 		}
 
-		private static List<FingerAngle> FingerAngles(Groups.HandPoints hand, HandType type) {
+		private static List<FingerAngle> FingerAngles(DataGroups.HandPoints hand, HandType type) {
 			List<FingerAngle> data = new();
 
 			if (hand == null) {
@@ -130,7 +157,7 @@ namespace HardCoded.VRigUnity {
 		/// <summary>
 		/// Calculate the X angles for each finger on the hand
 		/// </summary>
-		private static float[] GetXAngles(Groups.HandPoints hand) {
+		private static float[] GetXAngles(DataGroups.HandPoints hand) {
 			// Create an array that contains the position of all finger joints
 			Vector3[][] fingers = new Vector3[Fingers.Length][];
 			for (int i = 0; i < Fingers.Length; i++) {
@@ -174,7 +201,7 @@ namespace HardCoded.VRigUnity {
 #if UNITY_EDITOR
 					// Debug visualization code
 					if (ThreadObject.IsUnityThread()) {
-						Color[] color = { Color.white, Color.red, Color.green, Color.blue, Color.cyan };
+						UnityEngine.Color[] color = { UnityEngine.Color.white, UnityEngine.Color.red, UnityEngine.Color.green, UnityEngine.Color.blue, UnityEngine.Color.cyan };
 						
 						if (j + 1 < fingers[i].Length) {
 							Vector3 a = fingers[i][j];
@@ -193,7 +220,7 @@ namespace HardCoded.VRigUnity {
 			return data;
 		}
 
-		private static float[] GetZAngles(Groups.HandPoints hand) {
+		private static float[] GetZAngles(DataGroups.HandPoints hand) {
 			float[] data = new float[20];
 
 			// Calculate the tangent of the hand
@@ -236,7 +263,7 @@ namespace HardCoded.VRigUnity {
 #if UNITY_EDITOR
 				// Debug visualization code
 				if (ThreadObject.IsUnityThread()) {
-					Color[] color = { Color.red, Color.green, Color.blue, Color.cyan };
+					UnityEngine.Color[] color = { UnityEngine.Color.red, UnityEngine.Color.green, UnityEngine.Color.blue, UnityEngine.Color.cyan };
 					
 					Vector3 pt = plane.ClosestPointOnPlane(pips[i]);
 					Vector3 np = plane.normal * dist + pt;
