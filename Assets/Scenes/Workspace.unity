@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 275874967}
   - component: {fileID: 275874976}
   - component: {fileID: 275874975}
-  - component: {fileID: 275874970}
   - component: {fileID: 275874977}
   - component: {fileID: 275874973}
   m_Layer: 0
@@ -159,19 +158,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275874970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275874966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5da564da19cb6b7d8e4f97f269edc5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _poolSize: 10
 --- !u!114 &275874973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +185,7 @@ MonoBehaviour:
   _cpuConfig: {fileID: 4900000, guid: 0864f75e5b86882478f21cd54eac969d, type: 3}
   _gpuConfig: {fileID: 4900000, guid: df950e959f0bc1244a1eb45382ebcb67, type: 3}
   _openGlEsConfig: {fileID: 4900000, guid: 5950347c463a5354fa4459ac20f55f3c, type: 3}
-  _timeoutMicrosec: 1000000
+  _timeoutMicrosec: 100000
   modelComplexity: 1
 --- !u!114 &275874976
 MonoBehaviour:
@@ -214,7 +200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graphRunner: {fileID: 275874975}
-  textureFramePool: {fileID: 275874970}
   defaultVrmModel: {fileID: 1321532676}
   defaultVrmPrefab: {fileID: 4171595189632753852, guid: 594ce1711b5217f438c8a8137bb9627a, type: 3}
   defaultController: {fileID: 9100000, guid: 5d9fb0b38102bfa4381749fecd7d9df6, type: 2}

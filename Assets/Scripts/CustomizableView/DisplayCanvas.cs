@@ -59,20 +59,20 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public void ReadSync(TextureFrame textureFrame) {
+		public void ReadSync(Texture2D texture) {
 			if (!IsShowingWebcam) {
 				webcamImage.color = Color.clear;
 				return;
 			}
 
 			float w = (Screen.width / (float) Screen.height);
-			float d = (textureFrame.height / (float) textureFrame.width) * w * 0.5f;
+			float d = (texture.height / (float) texture.width) * w * 0.5f;
 
 			if (d < 0.5) {
 				webcamImage.rectTransform.anchorMin = new(0, 0.5f - d);
 				webcamImage.rectTransform.anchorMax = new(1, 0.5f + d);
 			} else {
-				d = ((textureFrame.width / (float) textureFrame.height) / w) * 0.5f;
+				d = ((texture.width / (float) texture.height) / w) * 0.5f;
 				webcamImage.rectTransform.anchorMin = new(0.5f - d, 0);
 				webcamImage.rectTransform.anchorMax = new(0.5f + d, 1);
 			}
@@ -85,17 +85,7 @@ namespace HardCoded.VRigUnity {
 			}
 
 			webcamImage.color = Color.white;
-			
-			// TODO: Compute how much cpu this uses
-			Texture2D tex = webcamImage.texture as Texture2D;
-			
-			// If the webcam image is not a texture2D
-			if (!(tex is Texture2D) || tex.width != textureFrame.width || tex.height != textureFrame.height) {
-				tex = new Texture2D(textureFrame.width, textureFrame.height, TextureFormat.RGBA32, false);
-				webcamImage.texture = tex;
-			}
-
-			textureFrame.CopyTexture(webcamImage.texture);
+			webcamImage.texture = texture;
 		}
 	}
 }

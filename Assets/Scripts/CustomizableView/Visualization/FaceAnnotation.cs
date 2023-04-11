@@ -77,7 +77,7 @@ namespace HardCoded.VRigUnity.Visuals {
 				return;
 			}
 
-			if (!landmarks.IsPresent || lines == null) {
+			if (!landmarks.IsPresent) {
 				connectionAnnotation.HideAll();
 				pointAnnotation.HideAll();
 				return;

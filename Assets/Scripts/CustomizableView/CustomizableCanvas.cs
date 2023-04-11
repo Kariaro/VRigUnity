@@ -54,8 +54,8 @@ namespace HardCoded.VRigUnity {
 			m_showAnnotations = show;
 		}
 
-		public void ReadSync(TextureFrame textureFrame) {
-			unityCanvas.ReadSync(textureFrame);
+		public void ReadSync(Texture2D texture) {
+			unityCanvas.ReadSync(texture);
 		}
 
 		void Update() {
@@ -70,12 +70,12 @@ namespace HardCoded.VRigUnity {
 			SetupAnnotationController(imageSource, Settings.CameraFlipped);
 		}
 
-		protected static void SetupAnnotationController(ImageSource imageSource, bool expectedToBeMirrored = false) {
+		protected static void SetupAnnotationController(WebCamSource imageSource, bool expectedToBeMirrored = false) {
 			// bool isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
 			// var rotationAngle = imageSource.Rotation.Reverse();
 		}
 
-		public void SetupScreen(ImageSource imageSource) {
+		public void SetupScreen(WebCamSource imageSource) {
 			annotationArea.sizeDelta = new Vector2(imageSource.TextureWidth, imageSource.TextureHeight);
 			annotationArea.localEulerAngles = imageSource.Rotation.Reverse().GetEulerAngles();
 		}

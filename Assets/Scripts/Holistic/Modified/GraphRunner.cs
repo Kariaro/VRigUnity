@@ -29,7 +29,7 @@ namespace HardCoded.VRigUnity {
 
 		private bool _isRunning = false;
 
-		public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.CPU : InferenceMode.GPU;
+		public InferenceMode inferenceMode => configType == ConfigType.CPU ? InferenceMode.Cpu : InferenceMode.Gpu;
 		public virtual ConfigType configType {
 			get {
 				if (GpuManager.IsInitialized) {
@@ -101,7 +101,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public abstract void StartRun(ImageSource imageSource);
+		public abstract void StartRun(WebCamSource imageSource);
 
 		protected void StartRun(SidePacket sidePacket) {
 			CalculatorGraph.StartRun(sidePacket).AssertOk();
@@ -139,18 +139,21 @@ namespace HardCoded.VRigUnity {
 			CalculatorGraph.AddPacketToInputStream(streamName, packet).AssertOk();
 		}
 
-		protected void AddTextureFrameToInputStream(string streamName, TextureFrame textureFrame) {
+		protected void AddTextureFrameToInputStream(string streamName, Texture2D texture) {
 			latestTimestamp = GetCurrentTimestamp();
 
+			/*
 			if (configType == ConfigType.OpenGLES) {
 				var gpuBuffer = textureFrame.BuildGpuBuffer(GpuManager.GlCalculatorHelper.GetGlContext());
 				AddPacketToInputStream(streamName, new GpuBufferPacket(gpuBuffer, latestTimestamp));
 				return;
 			}
+			*/
 
-			var imageFrame = textureFrame.BuildImageFrame();
-			textureFrame.Release();
-
+			var width = texture.width;
+			var height = texture.height;
+			var format = texture.format;
+			var imageFrame = new ImageFrame(format.ToImageFormat(), width, height, 4 * width, texture.GetRawTextureData<byte>());
 			AddPacketToInputStream(streamName, new ImageFramePacket(imageFrame, latestTimestamp));
 		}
 
@@ -180,7 +183,7 @@ namespace HardCoded.VRigUnity {
 					throw new InvalidOperationException("Failed to get the text config. Check if the config is set to GraphRunner");
 				}
 				var status = ConfigureCalculatorGraph(baseConfig);
-				return !status.Ok() || inferenceMode == InferenceMode.CPU ? status : CalculatorGraph.SetGpuResources(GpuManager.GpuResources);
+				return !status.Ok() || inferenceMode == InferenceMode.Cpu ? status : CalculatorGraph.SetGpuResources(GpuManager.GpuResources);
 			} catch (Exception e) {
 				return Status.FailedPrecondition(e.ToString());
 			}
@@ -188,7 +191,7 @@ namespace HardCoded.VRigUnity {
 
 		protected abstract Status ConfigureCalculatorGraph(CalculatorGraphConfig config);
 
-		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
+		protected void SetImageTransformationOptions(SidePacket sidePacket, WebCamSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
 
 			// TODO: Check if this code can be removed?

@@ -41,12 +41,12 @@ namespace HardCoded.VRigUnity {
 			Canvas.SetupAnnotations();
 		}
 
-		protected override void SetupScreen(ImageSource imageSource) {
+		protected override void SetupScreen(WebCamSource imageSource) {
 			Canvas.SetupScreen(imageSource);
 		}
 
-		protected override void RenderCurrentFrame(TextureFrame textureFrame) {
-			Canvas.ReadSync(textureFrame);
+		protected override void RenderCurrentFrame(Texture2D texture) {
+			Canvas.ReadSync(texture);
 		}
 
 		public virtual void OnFaceLandmarks(HolisticLandmarks landmarks) {
