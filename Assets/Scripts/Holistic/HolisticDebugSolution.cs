@@ -14,44 +14,29 @@ namespace HardCoded.VRigUnity {
 		private bool hasHandData;
 
 		// Used by 'FaceGizmos'
-		public NormalizedLandmarkList facePoints;
+		public HolisticLandmarks facePoints;
 		
 		// Used for custom mesh
 		public GameObject meshObject;
 
-		protected override void OnStartRun() {
-			base.OnStartRun();
-			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
+		public override void OnFaceLandmarks(HolisticLandmarks landmarks) {
+			base.OnFaceLandmarks(landmarks);
+
+			if (landmarks.IsPresent) {
+				facePoints = landmarks;
+			}
 		}
 
-		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (eventArgs.value == null) {
-				return;
+		public override void OnRightHandLandmarks(HolisticLandmarks landmarks) {
+			base.OnRightHandLandmarks(landmarks);
+			
+			if (landmarks.IsPresent) {
+				for (int i = 0; i < landmarks.Count; i++) {
+					rightHandPoints.Data[i] = -landmarks[i];
+				}
+
+				hasHandData = true;
 			}
-
-			facePoints = eventArgs.value;
-		}
-
-		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {}
-		
-		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (eventArgs.value == null) {
-				return;
-			}
-
-			int count = eventArgs.value.Landmark.Count;
-			for (int i = 0; i < count; i++) {
-				NormalizedLandmark mark = eventArgs.value.Landmark[i];
-				rightHandPoints.Data[i] = new(-mark.X * 2, -mark.Y, -mark.Z * 2);
-			}
-
-			hasHandData = true;
 		}
 
 		public override void Update() {

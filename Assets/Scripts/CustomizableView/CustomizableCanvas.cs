@@ -1,9 +1,9 @@
-using Mediapipe;
+using HardCoded.VRigUnity.Visuals;
 using Mediapipe.Unity;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class CustomizableCanvas : MonoBehaviour {
+	public class CustomizableCanvas : MonoBehaviour, IHolisticCallback {
 		[Header("Camera")]
 
 		// This is the camera that will be streamed outwards
@@ -22,8 +22,8 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Annotations")]
 		[SerializeField] private GameObject annotationObject;
-		[SerializeField] private RectTransform annotationArea;
-		[SerializeField] private HolisticLandmarkListAnnotationController holisticAnnotationController;
+		[SerializeField] public RectTransform annotationArea;
+		public Visualization visualization;
 		private bool m_showAnnotations;
 
 		void Start() {
@@ -54,8 +54,8 @@ namespace HardCoded.VRigUnity {
 			m_showAnnotations = show;
 		}
 
-		public void ReadSync(TextureFrame textureFrame) {
-			unityCanvas.ReadSync(textureFrame);
+		public void ReadSync(Texture2D texture) {
+			unityCanvas.ReadSync(texture);
 		}
 
 		void Update() {
@@ -67,42 +67,57 @@ namespace HardCoded.VRigUnity {
 		// Annotations
 		public void SetupAnnotations() {
 			var imageSource = SolutionUtils.GetImageSource();
-			SetupAnnotationController(holisticAnnotationController, imageSource, Settings.CameraFlipped);
+			SetupAnnotationController(imageSource, Settings.CameraFlipped);
 		}
 
-		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
-			annotationController.rotationAngle = imageSource.Rotation.Reverse();
+		protected static void SetupAnnotationController(WebCamSource imageSource, bool expectedToBeMirrored = false) {
+			// bool isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
+			// var rotationAngle = imageSource.Rotation.Reverse();
 		}
 
-		public void SetupScreen(ImageSource imageSource) {
-			// NOTE: Without this line the screen does not update its size and no annotations are drawn
+		public void SetupScreen(WebCamSource imageSource) {
 			annotationArea.sizeDelta = new Vector2(imageSource.TextureWidth, imageSource.TextureHeight);
 			annotationArea.localEulerAngles = imageSource.Rotation.Reverse().GetEulerAngles();
 		}
+		
+		public HolisticLandmarks faceLandmarks      = HolisticLandmarks.NotPresent;
+		public HolisticLandmarks leftHandLandmarks  = HolisticLandmarks.NotPresent;
+		public HolisticLandmarks rightHandLandmarks = HolisticLandmarks.NotPresent;
+		public HolisticLandmarks poseLandmarks      = HolisticLandmarks.NotPresent;
+		public HolisticLandmarks poseWorldLandmarks = HolisticLandmarks.NotPresent;
 
-		public void OnPoseLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
-			}
+		public void OnFaceLandmarks(HolisticLandmarks landmarks) {
+			faceLandmarks = landmarks;
 		}
 
-		public void OnFaceLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
-			}
+		public void OnLeftHandLandmarks(HolisticLandmarks landmarks) {
+			leftHandLandmarks = landmarks;
 		}
 
-		public void OnLeftHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
-			}
+		public void OnRightHandLandmarks(HolisticLandmarks landmarks) {
+			rightHandLandmarks = landmarks;
 		}
 
-		public void OnRightHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
+		public void OnPoseLandmarks(HolisticLandmarks landmarks) {
+			poseLandmarks = landmarks;
+		}
+
+		public void OnPoseWorldLandmarks(HolisticLandmarks landmarks) {
+			poseWorldLandmarks = landmarks;
+		}
+
+		void LateUpdate() {
+			if (!m_showAnnotations || !visualization.IsPrepared) {
+				return;
 			}
+
+			visualization.DrawLandmarks(
+				faceLandmarks,
+				leftHandLandmarks,
+				rightHandLandmarks,
+				poseLandmarks,
+				poseWorldLandmarks
+			);
 		}
 	}
 }

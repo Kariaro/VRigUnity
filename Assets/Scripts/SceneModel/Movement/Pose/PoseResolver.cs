@@ -1,23 +1,16 @@
-using Mediapipe;
-using Mediapipe.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
 	public class PoseResolver {
-		private static Vector4 ConvertPoint(LandmarkList list, int idx) {
-			Landmark mark = list.Landmark[idx];
-			return new(mark.X, mark.Y, mark.Z, mark.Visibility);
-		}
-
-		public static DataGroups.PoseData SolvePose(OutputEventArgs<LandmarkList> eventArgs) {
+		public static DataGroups.PoseData SolvePose(HolisticLandmarks landmarks) {
 			DataGroups.PoseData pose = new();
 
 			{
-				pose.rShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_SHOULDER);
-				pose.lShoulder = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_SHOULDER);
-				Vector4 rHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_HIP);
-				Vector4 lHip = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_HIP);
+				pose.rShoulder = landmarks[MediaPipe.Pose.RIGHT_SHOULDER];
+				pose.lShoulder = landmarks[MediaPipe.Pose.LEFT_SHOULDER];
+				Vector4 rHip = landmarks[MediaPipe.Pose.RIGHT_HIP];
+				Vector4 lHip = landmarks[MediaPipe.Pose.LEFT_HIP];
 
 				{
 					Vector3 vRigA = Vector3.left;
@@ -44,8 +37,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					pose.rElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ELBOW);
-					pose.rHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_WRIST);
+					pose.rElbow = landmarks[MediaPipe.Pose.RIGHT_ELBOW];
+					pose.rHand = landmarks[MediaPipe.Pose.RIGHT_WRIST];
 					Vector3 vRigB = pose.rElbow - pose.rShoulder;
 
 					if (pose.rHand.w < Settings.HandTrackingThreshold) {
@@ -54,8 +47,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					pose.lElbow = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ELBOW);
-					pose.lHand = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_WRIST);
+					pose.lElbow = landmarks[MediaPipe.Pose.LEFT_ELBOW];
+					pose.lHand = landmarks[MediaPipe.Pose.LEFT_WRIST];
 					Vector3 vRigB = pose.lElbow - pose.lShoulder;
 
 					if (pose.lHand.w < Settings.HandTrackingThreshold) {
@@ -65,8 +58,8 @@ namespace HardCoded.VRigUnity {
 
 				// Legs
 				{
-					Vector4 rKnee = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_KNEE);
-					Vector4 rAnkle = ConvertPoint(eventArgs.value, MediaPipe.Pose.RIGHT_ANKLE);
+					Vector4 rKnee = landmarks[MediaPipe.Pose.RIGHT_KNEE];
+					Vector4 rAnkle = landmarks[MediaPipe.Pose.RIGHT_ANKLE];
 					Vector3 vRigA = Vector3.up;
 					Vector3 vRigB = rKnee - rHip;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);
@@ -80,8 +73,8 @@ namespace HardCoded.VRigUnity {
 				}
 
 				{
-					Vector4 lKnee = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_KNEE);
-					Vector4 lAnkle = ConvertPoint(eventArgs.value, MediaPipe.Pose.LEFT_ANKLE);
+					Vector4 lKnee = landmarks[MediaPipe.Pose.LEFT_KNEE];
+					Vector4 lAnkle = landmarks[MediaPipe.Pose.LEFT_ANKLE];
 					Vector3 vRigA = Vector3.up;
 					Vector3 vRigB = lKnee - lHip;
 					Quaternion rot = Quaternion.FromToRotation(vRigA, vRigB);

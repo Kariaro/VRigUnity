@@ -68,7 +68,7 @@ namespace HardCoded.VRigUnity {
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _rightHandLandmarksStream;
 		private OutputStream<LandmarkListPacket, LandmarkList> _poseWorldLandmarksStream;
 
-		public override void StartRun(ImageSource imageSource) {
+		public override void StartRun(WebCamSource imageSource) {
 			StartRun(BuildSidePacket(imageSource));
 		}
 
@@ -87,8 +87,8 @@ namespace HardCoded.VRigUnity {
 			base.Stop();
 		}
 
-		public void AddTextureFrameToInputStream(TextureFrame textureFrame) {
-			AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+		public void AddTextureFrameToInputStream(Texture2D texture) {
+			AddTextureFrameToInputStream(_InputStreamName, texture);
 		}
 
 		protected override IList<WaitForResult> RequestDependentAssets() {
@@ -157,7 +157,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		private SidePacket BuildSidePacket(ImageSource imageSource) {
+		private SidePacket BuildSidePacket(WebCamSource imageSource) {
 			var sidePacket = new SidePacket();
 
 			SetImageTransformationOptions(sidePacket, imageSource);
