@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.Collections;
 using UnityEngine;
 using System;

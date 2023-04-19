@@ -65,6 +65,17 @@ namespace HardCoded.VRigUnity {
 				return;
 			}
 
+			FileInfo fi = new(path);
+			if (fi.Exists && fi.Length > 100_000_000) {
+				WarningDialog.Instance.Open(Lang.WarningDialogLargeModelSize, delegate {
+					LoadVrmModelInternal(path);
+				});
+			} else {
+				LoadVrmModelInternal(path);
+			}
+		}
+
+		private void LoadVrmModelInternal(string path) {
 			Logger.Log($"Load VRM Model: '{path}'");
 
 			var data = new GlbFileParser(path).Parse();
