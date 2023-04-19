@@ -1,4 +1,5 @@
 using UnityEngine;
+using static HardCoded.VRigUnity.LandmarkCallback;
 
 namespace HardCoded.VRigUnity.Visuals {
 	public class Visualization : MonoBehaviour {
@@ -60,47 +61,28 @@ namespace HardCoded.VRigUnity.Visuals {
 			);
 		}
 
-		private HolisticLandmarks prevFaceLandmarks;
-		private HolisticLandmarks prevLeftHandLandmarks;
-		private HolisticLandmarks prevRightHandLandmarks;
-		private HolisticLandmarks prevPoseLandmarks;
-
 		public void DrawLandmarks(HolisticLandmarks faceLandmarks,
 			HolisticLandmarks leftHandLandmarks,
 			HolisticLandmarks rightHandLandmarks,
 			HolisticLandmarks poseLandmarks,
-			HolisticLandmarks poseWorldLandmarks) {
-
-			const int FACE = 1;
-			const int L_HAND = 2;
-			const int R_HAND = 4;
-			const int POSE = 8;
-			int mask = 0;
-
-			mask |= (faceLandmarks == prevFaceLandmarks) ? 0 : FACE;
-			mask |= (leftHandLandmarks == prevLeftHandLandmarks) ? 0 : L_HAND;
-			mask |= (rightHandLandmarks == prevRightHandLandmarks) ? 0 : R_HAND;
-			mask |= (poseLandmarks == prevPoseLandmarks) ? 0 : POSE;
+			HolisticLandmarks poseWorldLandmarks,
+			int flags) {
 			
-			if ((mask & FACE) != 0) {
+			if ((flags & DIRTY_FACE) != 0) {
 				face.Apply(faceLandmarks);
 				iris.Apply(faceLandmarks);
-				prevFaceLandmarks = faceLandmarks;
 			}
 
-			if ((mask & L_HAND) != 0) {
+			if ((flags & DIRTY_LEFT_HAND) != 0) {
 				leftHand.Apply(leftHandLandmarks);
-				prevLeftHandLandmarks = leftHandLandmarks;
 			}
 
-			if ((mask & R_HAND) != 0) {
+			if ((flags & DIRTY_RIGHT_HAND) != 0) {
 				rightHand.Apply(rightHandLandmarks);
-				prevRightHandLandmarks = rightHandLandmarks;
 			}
 
-			if ((mask & (FACE | POSE | L_HAND | R_HAND)) != 0) {
+			if ((flags & (DIRTY_FACE | DIRTY_POSE | DIRTY_LEFT_HAND | DIRTY_RIGHT_HAND)) != 0) {
 				pose.Apply(poseLandmarks, faceLandmarks, leftHandLandmarks, rightHandLandmarks);
-				prevPoseLandmarks = poseLandmarks;
 			}
 		}
 	}

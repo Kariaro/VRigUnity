@@ -3,7 +3,7 @@ using Mediapipe.Unity;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class CustomizableCanvas : MonoBehaviour, IHolisticCallback {
+	public class CustomizableCanvas : MonoBehaviour {
 		[Header("Camera")]
 
 		// This is the camera that will be streamed outwards
@@ -70,53 +70,33 @@ namespace HardCoded.VRigUnity {
 			SetupAnnotationController(imageSource, Settings.CameraFlipped);
 		}
 
-		protected static void SetupAnnotationController(WebCamSource imageSource, bool expectedToBeMirrored = false) {
+		protected static void SetupAnnotationController(ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// bool isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
 			// var rotationAngle = imageSource.Rotation.Reverse();
 		}
 
-		public void SetupScreen(WebCamSource imageSource) {
+		public void SetupScreen(ImageSource imageSource) {
 			annotationArea.sizeDelta = new Vector2(imageSource.TextureWidth, imageSource.TextureHeight);
 			annotationArea.localEulerAngles = imageSource.Rotation.Reverse().GetEulerAngles();
 		}
-		
-		public HolisticLandmarks faceLandmarks      = HolisticLandmarks.NotPresent;
-		public HolisticLandmarks leftHandLandmarks  = HolisticLandmarks.NotPresent;
-		public HolisticLandmarks rightHandLandmarks = HolisticLandmarks.NotPresent;
-		public HolisticLandmarks poseLandmarks      = HolisticLandmarks.NotPresent;
-		public HolisticLandmarks poseWorldLandmarks = HolisticLandmarks.NotPresent;
 
-		public void OnFaceLandmarks(HolisticLandmarks landmarks) {
-			faceLandmarks = landmarks;
-		}
-
-		public void OnLeftHandLandmarks(HolisticLandmarks landmarks) {
-			leftHandLandmarks = landmarks;
-		}
-
-		public void OnRightHandLandmarks(HolisticLandmarks landmarks) {
-			rightHandLandmarks = landmarks;
-		}
-
-		public void OnPoseLandmarks(HolisticLandmarks landmarks) {
-			poseLandmarks = landmarks;
-		}
-
-		public void OnPoseWorldLandmarks(HolisticLandmarks landmarks) {
-			poseWorldLandmarks = landmarks;
-		}
-
-		void LateUpdate() {
+		public void OnLandmarks(HolisticLandmarks face,
+			HolisticLandmarks leftHand,
+			HolisticLandmarks rightHand,
+			HolisticLandmarks pose,
+			HolisticLandmarks poseWorld,
+			int flags) {
 			if (!m_showAnnotations || !visualization.IsPrepared) {
 				return;
 			}
 
 			visualization.DrawLandmarks(
-				faceLandmarks,
-				leftHandLandmarks,
-				rightHandLandmarks,
-				poseLandmarks,
-				poseWorldLandmarks
+				face,
+				leftHand,
+				rightHand,
+				pose,
+				poseWorld,
+				flags
 			);
 		}
 	}

@@ -68,7 +68,7 @@ namespace HardCoded.VRigUnity {
 		private OutputStream<NormalizedLandmarkListPacket, NormalizedLandmarkList> _rightHandLandmarksStream;
 		private OutputStream<LandmarkListPacket, LandmarkList> _poseWorldLandmarksStream;
 
-		public override void StartRun(WebCamSource imageSource) {
+		public override void StartRun(ImageSource imageSource) {
 			StartRun(BuildSidePacket(imageSource));
 		}
 
@@ -157,7 +157,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		private SidePacket BuildSidePacket(WebCamSource imageSource) {
+		private SidePacket BuildSidePacket(ImageSource imageSource) {
 			var sidePacket = new SidePacket();
 
 			SetImageTransformationOptions(sidePacket, imageSource);
