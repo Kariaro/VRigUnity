@@ -153,7 +153,7 @@ namespace HardCoded.VRigUnity {
 
 				WarningDialogCancel = new("ui.warning.cancel", "Cancel"),
 				WarningDialogContinue = new("ui.warning.continue", "Continue"),
-				WarningDialogLargeModelSize = new("ui.warning.large_model", "Model size is above 100MB, loading this model could take a while")
+				WarningDialogLargeModelSize = new("ui.warning.large_model", "Model size is above {0}, loading this model could take a while")
 
 		;
 		
@@ -167,6 +167,10 @@ namespace HardCoded.VRigUnity {
 
 		public static Lang Extend(Lang text, Func<Lang, string> func) {
 			return new LangExtend(text, func);
+		}
+
+		public static Lang Format(Lang text, params object[] args) {
+			return new LangFormated(text, args);
 		}
 
 		public static List<Lang> Elements => _localizationList;
@@ -207,6 +211,20 @@ namespace HardCoded.VRigUnity {
 
 			public override string Get() {
 				return func.Invoke(parent);
+			}
+		}
+
+		class LangFormated : Lang {
+			private readonly Lang parent;
+			private readonly object[] args;
+
+			public LangFormated(Lang parent, params object[] args) : base(parent) {
+				this.args = args;
+				this.parent = parent;
+			}
+
+			public override string Get() {
+				return String.Format(parent.Get(), args);
 			}
 		}
 	}

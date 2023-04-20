@@ -15832,8 +15832,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogTitleField: {fileID: 8650984500867210783}
-  continueText: {fileID: 79785327389257149}
-  cancelText: {fileID: 8834494656085088451}
   continueButton: {fileID: 4036914172722276600}
   cancelButton: {fileID: 7511809991003922344}
 --- !u!1 &8874478322207321168

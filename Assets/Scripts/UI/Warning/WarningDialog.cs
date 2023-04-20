@@ -20,8 +20,6 @@ namespace HardCoded.VRigUnity {
 
 		[SerializeField] private TMP_Text dialogTitleField;
 		[SerializeField] private Lang dialogTitle;
-		[SerializeField] private TMP_Text continueText;
-		[SerializeField] private TMP_Text cancelText;
 		[SerializeField] private Button continueButton;
 		[SerializeField] private Button cancelButton;
 
@@ -49,8 +47,6 @@ namespace HardCoded.VRigUnity {
 			if (dialogTitle != null) {
 				dialogTitleField.text = dialogTitle.Get();
 			}
-			continueText.text = Lang.WarningDialogContinue.Get();
-			cancelText.text = Lang.WarningDialogCancel.Get();
 		}
 	}
 }

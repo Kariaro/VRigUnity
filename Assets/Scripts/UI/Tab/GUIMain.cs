@@ -67,7 +67,7 @@ namespace HardCoded.VRigUnity {
 
 			FileInfo fi = new(path);
 			if (fi.Exists && fi.Length > 100_000_000) {
-				WarningDialog.Instance.Open(Lang.WarningDialogLargeModelSize, delegate {
+				WarningDialog.Instance.Open(Lang.Format(Lang.WarningDialogLargeModelSize, "100MB"), delegate {
 					LoadVrmModelInternal(path);
 				});
 			} else {
