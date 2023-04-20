@@ -1,16 +1,15 @@
-using Mediapipe;
-using Mediapipe.Unity;
 using System;
 using UnityEngine;
 using VRM;
 
 namespace HardCoded.VRigUnity {
-	public class HolisticSolution : Solution, IHolisticCallback {
+	public class HolisticSolution : Solution {
 		[Header("Rig")]
 		[SerializeField] private GameObject defaultVrmModel;
 		[SerializeField] private GameObject defaultVrmPrefab;
 		[SerializeField] private RuntimeAnimatorController defaultController;
 		protected SceneModel model;
+		protected LandmarkCallback callback;
 
 		[Header("UI")]
 		public GUIMain guiMain;
@@ -31,17 +30,21 @@ namespace HardCoded.VRigUnity {
 		public SceneModel Model => model;
 
 		void Awake() {
+			callback = gameObject.AddComponent<LandmarkCallback>();
 			model = new(defaultVrmModel, defaultVrmPrefab, defaultController);
 			model.IsVisible = Settings.ShowModel;
 		}
 
 		protected override void OnStartRun() {
-			HolisticConverter.Connect(graphRunner, this);
-			HolisticConverter.Connect(graphRunner, Canvas);
+			callback.ClearData();
+			HolisticConverter.Connect(graphRunner, callback);
+
+			callback.OnUpdateEvent += OnLandmarks;
+			callback.OnUpdateEvent += Canvas.OnLandmarks;
 			Canvas.SetupAnnotations();
 		}
 
-		protected override void SetupScreen(WebCamSource imageSource) {
+		protected override void SetupScreen(ImageSource imageSource) {
 			Canvas.SetupScreen(imageSource);
 		}
 
@@ -49,7 +52,7 @@ namespace HardCoded.VRigUnity {
 			Canvas.ReadSync(texture);
 		}
 
-		public virtual void OnFaceLandmarks(HolisticLandmarks landmarks) {
+		private void OnFaceLandmarks(HolisticLandmarks landmarks) {
 			if (!landmarks.IsPresent) {
 				return;
 			}
@@ -63,7 +66,7 @@ namespace HardCoded.VRigUnity {
 			Pose.Neck.Add(face.neckRotation, TimeNow);
 		}
 
-		public virtual void OnLeftHandLandmarks(HolisticLandmarks landmarks) {
+		private void OnLeftHandLandmarks(HolisticLandmarks landmarks) {
 			if (!landmarks.IsPresent || !TrackLeftHand) {
 				return;
 			}
@@ -72,7 +75,7 @@ namespace HardCoded.VRigUnity {
 			LeftHand.Update(handGroup, TimeNow);
 		}
 
-		public virtual void OnRightHandLandmarks(HolisticLandmarks landmarks) {
+		private void OnRightHandLandmarks(HolisticLandmarks landmarks) {
 			if (!landmarks.IsPresent || !TrackRightHand) {
 				return;
 			}
@@ -81,7 +84,7 @@ namespace HardCoded.VRigUnity {
 			RightHand.Update(handGroup, TimeNow);
 		}
 
-		public virtual void OnPoseLandmarks(HolisticLandmarks landmarks) {
+		private void OnPoseLandmarks(HolisticLandmarks landmarks) {
 			bool trackL = true;
 			bool trackR = true;
 
@@ -97,7 +100,7 @@ namespace HardCoded.VRigUnity {
 			TrackRightHand = trackR;
 		}
 
-		public virtual void OnPoseWorldLandmarks(HolisticLandmarks landmarks) {
+		private void OnPoseWorldLandmarks(HolisticLandmarks landmarks) {
 			if (!landmarks.IsPresent) {
 				return;
 			}
@@ -127,6 +130,24 @@ namespace HardCoded.VRigUnity {
 			Pose.LeftShoulder.Add(pose.lShoulder, time);
 			Pose.LeftElbow.Add(pose.lElbow, time);
 			Pose.LeftHand.Add(pose.lHand, time);
+		}
+
+		/// <summary>
+		/// It is important that this function calls all the landmark
+		/// functions. This function runns on the Unity thread and should
+		/// idealy be called from FixedUpdate
+		/// </summary>
+		public virtual void OnLandmarks(HolisticLandmarks face,
+			HolisticLandmarks leftHand,
+			HolisticLandmarks rightHand,
+			HolisticLandmarks pose,
+			HolisticLandmarks poseWorld,
+			int flags) {
+			OnFaceLandmarks(face);
+			OnLeftHandLandmarks(leftHand);
+			OnRightHandLandmarks(rightHand);
+			OnPoseLandmarks(pose);
+			OnPoseWorldLandmarks(poseWorld);
 		}
 
 		public virtual void Update() {

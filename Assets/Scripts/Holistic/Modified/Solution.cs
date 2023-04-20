@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.Collections;
 using UnityEngine;
 using System;
@@ -9,7 +8,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] protected HolisticGraph graphRunner;
 		
 		private Coroutine runtimeCoroutine;
-		private WebCamSource imageSource;
+		private ImageSource imageSource;
 		private Bootstrap bootstrap;
 
 		public bool IsPaused { get; private set; } = true;
@@ -44,9 +43,7 @@ namespace HardCoded.VRigUnity {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
 
 			// Update image source
-			imageSource.SelectSourceFromName(Settings.CameraName);
-			imageSource.SelectResolutionFromString(Settings.CameraResolution);
-			imageSource.IsHorizontallyFlipped = Settings.CameraFlipped;
+			imageSource.UpdateFromSettings();
 
 			Exception wrapped = null;
 			yield return CorutineUtils.HandleExceptions(imageSource.Play(), error => wrapped = error);
@@ -76,7 +73,7 @@ namespace HardCoded.VRigUnity {
 					yield return waitWhilePausing;
 				}
 				
-				WebCamTexture tex = imageSource.CurrentTexture as WebCamTexture;
+				Texture tex = imageSource.CurrentTexture;
 				if (texture2D == null || texture2D.width != tex.width || texture2D.height != tex.height) {
 					texture2D = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
 				}
@@ -88,7 +85,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		protected abstract void SetupScreen(WebCamSource imageSource);
+		protected abstract void SetupScreen(ImageSource imageSource);
 
 		protected abstract void RenderCurrentFrame(Texture2D texture);
 

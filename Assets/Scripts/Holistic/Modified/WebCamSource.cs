@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace HardCoded.VRigUnity {
-	public class WebCamSource : MonoBehaviour {
+	public class WebCamSource : ImageSource {
 		private const string _TAG = nameof(WebCamSource);
 		private static readonly object _PermissionLock = new();
 		private static bool _IsPermitted = false;
@@ -27,17 +27,15 @@ namespace HardCoded.VRigUnity {
 		};
 		public ResolutionStruct DefaultResolution => AvailableResolutions[6];
 
-		public virtual Texture CurrentTexture => webCamTexture;
-		public virtual ResolutionStruct Resolution { get; protected set; }
-		public virtual int TextureWidth => IsPrepared ? webCamTexture.width : 0;
-		public virtual int TextureHeight => IsPrepared ? webCamTexture.height : 0;
-		public virtual bool IsPrepared => webCamTexture != null;
-		public virtual bool IsPlaying => webCamTexture != null && webCamTexture.isPlaying;
-		public virtual bool IsVerticallyFlipped => IsPrepared && webCamTexture.videoVerticallyMirrored;
-		public virtual bool IsHorizontallyFlipped { get; set; } = false;
-		public virtual RotationAngle Rotation => IsPrepared ? (RotationAngle) webCamTexture.videoRotationAngle : RotationAngle.Rotation0;
-		public virtual string SourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
-		public virtual string[] SourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
+		public override Texture CurrentTexture => webCamTexture;
+		public override int TextureWidth => IsPrepared ? webCamTexture.width : 0;
+		public override int TextureHeight => IsPrepared ? webCamTexture.height : 0;
+		public override bool IsPrepared => webCamTexture != null;
+		public override bool IsPlaying => webCamTexture != null && webCamTexture.isPlaying;
+		public override bool IsVerticallyFlipped { get => IsPrepared && webCamTexture.videoVerticallyMirrored; set {} }
+		public override RotationAngle Rotation => IsPrepared ? (RotationAngle) webCamTexture.videoRotationAngle : RotationAngle.Rotation0;
+		public override string SourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
+		public override string[] SourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
 
 		private WebCamDevice? _webCamDevice;
 		private WebCamDevice? webCamDevice {
@@ -76,6 +74,10 @@ namespace HardCoded.VRigUnity {
 			yield return UpdateSources();
 		}
 
+		public override ResolutionStruct[] GetResolutions() {
+			return AvailableResolutions;
+		}
+
 		public IEnumerator UpdateSources() {
 			yield return GetPermission();
 
@@ -112,7 +114,7 @@ namespace HardCoded.VRigUnity {
 			webCamDevice = availableSources[sourceId];
 		}
 
-		public virtual IEnumerator Play() {
+		public override IEnumerator Play() {
 			yield return new WaitUntil(() => isInitialized);
 			if (!_IsPermitted) {
 				throw new InvalidOperationException("Not permitted to access cameras");
@@ -123,7 +125,13 @@ namespace HardCoded.VRigUnity {
 			yield return WaitForWebCamTexture();
 		}
 
-		public virtual void Stop() {
+		public override void UpdateFromSettings() {
+			SelectSourceFromName(Settings.CameraName);
+			SelectResolutionFromString(Settings.CameraResolution);
+			IsHorizontallyFlipped = Settings.CameraFlipped;
+		}
+
+		public override void Stop() {
 			if (webCamTexture != null) {
 				webCamTexture.Stop();
 			}

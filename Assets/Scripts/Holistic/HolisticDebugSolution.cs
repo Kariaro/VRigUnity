@@ -19,20 +19,21 @@ namespace HardCoded.VRigUnity {
 		// Used for custom mesh
 		public GameObject meshObject;
 
-		public override void OnFaceLandmarks(HolisticLandmarks landmarks) {
-			base.OnFaceLandmarks(landmarks);
-
-			if (landmarks.IsPresent) {
-				facePoints = landmarks;
-			}
-		}
-
-		public override void OnRightHandLandmarks(HolisticLandmarks landmarks) {
-			base.OnRightHandLandmarks(landmarks);
+		public override void OnLandmarks(HolisticLandmarks face,
+			HolisticLandmarks leftHand,
+			HolisticLandmarks rightHand,
+			HolisticLandmarks pose,
+			HolisticLandmarks poseWorld,
+			int flags) {
+			base.OnLandmarks(face, leftHand, rightHand, pose, poseWorld, flags);
 			
-			if (landmarks.IsPresent) {
-				for (int i = 0; i < landmarks.Count; i++) {
-					rightHandPoints.Data[i] = -landmarks[i];
+			if (face.IsPresent) {
+				facePoints = face;
+			}
+
+			if (rightHand.IsPresent) {
+				for (int i = 0; i < rightHand.Count; i++) {
+					rightHandPoints.Data[i] = -rightHand[i];
 				}
 
 				hasHandData = true;

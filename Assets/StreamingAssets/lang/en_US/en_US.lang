@@ -77,3 +77,6 @@ tab.bones.right_leg=Right Leg
 tab.bones.right_ankle=Right Ankle
 tab.logger.label=Logger
 tab.logger.open_logs=Open Logs
+ui.warning.cancel=Cancel
+ui.warning.continue=Continue
+ui.warning.large_model=Model size is above {0}, loading this model could take a while

@@ -101,7 +101,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public abstract void StartRun(WebCamSource imageSource);
+		public abstract void StartRun(ImageSource imageSource);
 
 		protected void StartRun(SidePacket sidePacket) {
 			CalculatorGraph.StartRun(sidePacket).AssertOk();
@@ -191,7 +191,7 @@ namespace HardCoded.VRigUnity {
 
 		protected abstract Status ConfigureCalculatorGraph(CalculatorGraphConfig config);
 
-		protected void SetImageTransformationOptions(SidePacket sidePacket, WebCamSource imageSource, bool expectedToBeMirrored = false) {
+		protected void SetImageTransformationOptions(SidePacket sidePacket, ImageSource imageSource, bool expectedToBeMirrored = false) {
 			// NOTE: The origin is left-bottom corner in Unity, and right-top corner in MediaPipe.
 
 			// TODO: Check if this code can be removed?
