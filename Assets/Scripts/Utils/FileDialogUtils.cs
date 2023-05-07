@@ -68,5 +68,57 @@ namespace HardCoded.VRigUnity {
 				}
 			}
 		}
+
+		public static void SaveFilePanel(MonoBehaviour behaviour, string title, string file, string extension, Action<string[]> callback) {
+			try {
+				callback.Invoke(SFB_SaveFilePanel(title, file, extension));
+			} catch (DllNotFoundException) {
+				behaviour.StartCoroutine(ShowSaveDialog(title, file, extension, callback));
+			}
+		}
+
+		private static string[] SFB_SaveFilePanel(string title, string file, string extension) {
+			string directory = "";
+			if (File.Exists(file)) {
+				directory = Path.GetDirectoryName(file);
+			}
+			
+			string result = SFB.StandaloneFileBrowser.SaveFilePanel(title, directory, "", extension);
+			if (result == string.Empty) {
+				return new string[0];
+			}
+			return new string[] { result };
+		}
+
+		private static IEnumerator ShowSaveDialog(string title, string file, string extension, Action<string[]> callback) {
+			if (!IsWaiting) {
+				// Make sure we are doing one file browser at a time
+				IsWaiting = true;
+
+				try {
+					string directory = null;
+					if (File.Exists(file)) {
+						directory = Path.GetDirectoryName(file);
+					}
+					
+					if (extension != null) {
+						SimpleFileBrowser.FileBrowser.Filter[] filters = new SimpleFileBrowser.FileBrowser.Filter[1];
+						filters[0] = new SimpleFileBrowser.FileBrowser.Filter(extension, extension);
+						SimpleFileBrowser.FileBrowser.SetFilters(true, filters);
+						SimpleFileBrowser.FileBrowser.SetDefaultFilter(extension);
+					}
+
+					yield return SimpleFileBrowser.FileBrowser.WaitForSaveDialog(
+						SimpleFileBrowser.FileBrowser.PickMode.Files, false, null, directory, title, "Save"
+					);
+
+					if (SimpleFileBrowser.FileBrowser.Success) {
+						callback.Invoke(SimpleFileBrowser.FileBrowser.Result);
+					}
+				} finally {
+					IsWaiting = false;
+				}
+			}
+		}
 	}
 }

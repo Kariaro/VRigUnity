@@ -3,36 +3,25 @@ using TMPro;
 using UnityEngine.UI;
 
 namespace HardCoded.VRigUnity {
-	public class CameraButton : MonoBehaviour {
-		private TMP_Text text;
-		private Button toggleButton;
-		private Image buttonImage;
+	public class CameraButton : AbstractBaseButton {
 		private bool isCameraShowing;
 
-		[SerializeField] Color toggleOnColor  = new(0.08009967f, 0.6792453f, 0.3454931f); // 0x14AD58
-		[SerializeField] Color toggleOffColor = new(0.6981132f, 0, 0.03523935f); // 0xB30009
+		// on  = #14AD58
+		// off = #B30009
 
-		void Start() {
-			text = GetComponentInChildren<TMP_Text>();
-			buttonImage = GetComponent<Image>();
-			toggleButton = GetComponent<Button>();
-			InitializeContents();
+		protected override void InitializeContent() {
+			buttonImage.color = toggleOn;
+			isCameraShowing = false;
 
 			Localization.OnLocalizationChangeEvent += UpdateLanguage;
 		}
 
-		private void InitializeContents() {
-			buttonImage.color = toggleOnColor;
-			isCameraShowing = false;
-
-			toggleButton.onClick.RemoveAllListeners();
-			toggleButton.onClick.AddListener(delegate {
-				SetCamera(!isCameraShowing);
-			});
+		protected override void OnClick() {
+			SetCamera(!isCameraShowing);
 		}
 
 		private void SetCamera(bool enable) {
-			buttonImage.color = enable ? toggleOffColor : toggleOnColor;
+			buttonImage.color = enable ? toggleOff : toggleOn;
 			isCameraShowing = enable;
 			UpdateLanguage();
 
@@ -48,7 +37,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		private void UpdateLanguage() {
-			text.text = isCameraShowing
+			buttonText.text = isCameraShowing
 				? Lang.CameraStop.Get()
 				: Lang.CameraStart.Get();
 		}

@@ -1,5 +1,7 @@
 camera.start=Start Camera
 camera.stop=Stop Camera
+mocap_recording.start=Record Mocap
+mocap_recording.stop=Stop Recording
 visuals.on=Visuals On
 visuals.off=Visuals Off
 vmc_receiver.start=Start Receiver VMC
