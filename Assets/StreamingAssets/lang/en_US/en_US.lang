@@ -1,5 +1,7 @@
 camera.start=Start Camera
 camera.stop=Stop Camera
+mocap_recording.start=Record Mocap
+mocap_recording.stop=Stop Recording
 visuals.on=Visuals On
 visuals.off=Visuals Off
 vmc_receiver.start=Start Receiver VMC
@@ -77,3 +79,6 @@ tab.bones.right_leg=Right Leg
 tab.bones.right_ankle=Right Ankle
 tab.logger.label=Logger
 tab.logger.open_logs=Open Logs
+ui.warning.cancel=Cancel
+ui.warning.continue=Continue
+ui.warning.large_model=Model size is above {0}, loading this model could take a while

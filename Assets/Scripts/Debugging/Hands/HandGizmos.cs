@@ -46,7 +46,7 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] [Range(0, 1)] private float alpha = 0.25f;
 		[SerializeField] private bool rightHand = true;
 		[SerializeField] private bool leftHand = true;
-		private HolisticModel vrmModel;
+		private SceneModel vrmModel;
 
 		void Start() {
 			vrmModel = SolutionUtils.GetSolution().Model;

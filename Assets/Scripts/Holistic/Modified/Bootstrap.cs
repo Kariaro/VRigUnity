@@ -23,8 +23,6 @@ namespace HardCoded.VRigUnity {
 		private void ParseArguments() {
 			string[] arguments = Environment.GetCommandLineArgs();
 			for (int i = 1; i < arguments.Length; i++) {
-				string argument = arguments[i];
-
 				switch (arguments[i]) {
 					case "-resetSettings": {
 						Logger.Info(_TAG, "Application settings has been reset");
@@ -71,7 +69,7 @@ namespace HardCoded.VRigUnity {
 			_assetManager = new AssetManager();
 
 			DecideInferenceMode();
-			if (InferenceMode == InferenceMode.GPU) {
+			if (InferenceMode == InferenceMode.Gpu) {
 				Logger.Info(_TAG, "Initializing GPU resources...");
 				yield return GpuManager.Initialize();
 
@@ -88,9 +86,9 @@ namespace HardCoded.VRigUnity {
 
 		private void DecideInferenceMode() {
 #if UNITY_ANDROID || UNITY_IOS
-			InferenceMode = InferenceMode.GPU;
+			InferenceMode = InferenceMode.Gpu;
 #else
-			InferenceMode = InferenceMode.CPU;
+			InferenceMode = InferenceMode.Cpu;
 #endif
 		}
 

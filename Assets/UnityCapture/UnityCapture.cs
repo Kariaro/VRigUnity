@@ -41,13 +41,27 @@ public class UnityCapture : MonoBehaviour {
 	public enum EMirrorMode { Disabled = 0, MirrorHorizontally = 1 }
 	public enum ECaptureSendResult { SUCCESS = 0, WARNING_FRAMESKIP = 1, WARNING_CAPTUREINACTIVE = 2, ERROR_UNSUPPORTEDGRAPHICSDEVICE = 100, ERROR_PARAMETER = 101, ERROR_TOOLARGERESOLUTION = 102, ERROR_TEXTUREFORMAT = 103, ERROR_READTEXTURE = 104, ERROR_INVALIDCAPTUREINSTANCEPTR = 200 };
 
-	[SerializeField] [Tooltip("Capture device index")] public ECaptureDevice CaptureDevice = ECaptureDevice.CaptureDevice1;
-	[SerializeField] [Tooltip("Scale image if Unity and capture resolution don't match (can introduce frame dropping, not recommended)")] public EResizeMode ResizeMode = EResizeMode.Disabled;
-	[SerializeField] [Tooltip("How many milliseconds to wait for a new frame until sending is considered to be stopped")] public int Timeout = 1000;
-	[SerializeField] [Tooltip("Mirror captured output image")] public EMirrorMode MirrorMode = EMirrorMode.Disabled;
-	[SerializeField] [Tooltip("Introduce a frame of latency in favor of frame rate")] public bool DoubleBuffering = false;
-	[SerializeField] [Tooltip("Check to disable output of warnings")] public bool HideWarnings = false;
-	[SerializeField] public Camera mainCamera;
+	[Tooltip("Capture device index")]
+	public ECaptureDevice CaptureDevice = ECaptureDevice.CaptureDevice1;
+
+	[Tooltip("Scale image if Unity and capture resolution don't match (can introduce frame dropping, not recommended)")]
+	public EResizeMode ResizeMode = EResizeMode.Disabled;
+
+	[Tooltip("How many milliseconds to wait for a new frame until sending is considered to be stopped")]
+	public int Timeout = 1000;
+
+	[Tooltip("Mirror captured output image")]
+	public EMirrorMode MirrorMode = EMirrorMode.Disabled;
+
+	[Tooltip("Introduce a frame of latency in favor of frame rate")]
+	public bool DoubleBuffering = false;
+
+	[Tooltip("Check to disable output of warnings")]
+	public bool HideWarnings = false;
+
+	public Camera mainCamera;
+	[HideInInspector] public int cameraWidth = 1280;
+	[HideInInspector] public int cameraHeight = 720;
 	Camera captureCamera;
 
 	void Awake() {
@@ -74,13 +88,13 @@ public class UnityCapture : MonoBehaviour {
 	private RenderTexture renderTexture;
 	void OnPreRender() {
 		if (renderTexture == null
-		|| renderTexture.width != mainCamera.pixelWidth
-		|| renderTexture.height != mainCamera.pixelHeight) {
+		|| renderTexture.width != cameraWidth
+		|| renderTexture.height != cameraHeight) {
 			if (renderTexture != null) {
 				renderTexture.Release();
 			}
 
-			renderTexture = new RenderTexture(mainCamera.pixelWidth, mainCamera.pixelHeight, 32, RenderTextureFormat.ARGB32);
+			renderTexture = new RenderTexture(cameraWidth, cameraHeight, 32, RenderTextureFormat.ARGB32);
 			captureCamera.targetTexture = renderTexture;
 		}
 	}

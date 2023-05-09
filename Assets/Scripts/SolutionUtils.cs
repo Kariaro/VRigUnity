@@ -28,6 +28,7 @@ namespace HardCoded.VRigUnity {
 			return _bootstrap;
 		}
 
+		// TODO: In the future image sources might not always be the webcam
 		public static WebCamSource GetImageSource() {
 			if (_webCamSource == null) {
 				_webCamSource = GetSolution().GetComponent<WebCamSource>();

@@ -1,4 +1,3 @@
-using Mediapipe.Unity;
 using System.Collections;
 using UnityEngine;
 using System;
@@ -7,10 +6,9 @@ namespace HardCoded.VRigUnity {
 	public abstract class Solution : MonoBehaviour {
 		protected virtual string TAG => GetType().Name;
 		[SerializeField] protected HolisticGraph graphRunner;
-		[SerializeField] protected TextureFramePool textureFramePool;
 		
 		private Coroutine runtimeCoroutine;
-		private WebCamSource imageSource;
+		private ImageSource imageSource;
 		private Bootstrap bootstrap;
 
 		public bool IsPaused { get; private set; } = true;
@@ -45,9 +43,7 @@ namespace HardCoded.VRigUnity {
 			var graphInitRequest = graphRunner.WaitForInitAsync();
 
 			// Update image source
-			imageSource.SelectSourceFromName(Settings.CameraName);
-			imageSource.SelectResolutionFromString(Settings.CameraResolution);
-			imageSource.IsHorizontallyFlipped = Settings.CameraFlipped;
+			imageSource.UpdateFromSettings();
 
 			Exception wrapped = null;
 			yield return CorutineUtils.HandleExceptions(imageSource.Play(), error => wrapped = error);
@@ -58,7 +54,6 @@ namespace HardCoded.VRigUnity {
 				yield break;
 			}
 
-			textureFramePool.ResizeTexture(imageSource.TextureWidth, imageSource.TextureHeight, TextureFormat.RGBA32);
 			SetupScreen(imageSource);
 
 			yield return graphInitRequest;
@@ -70,31 +65,29 @@ namespace HardCoded.VRigUnity {
 
 			OnStartRun();
 			graphRunner.StartRun(imageSource);
-
+			
+			Texture2D texture2D = null;
 			var waitWhilePausing = new WaitWhile(() => IsPaused);
 			while (true) {
 				if (IsPaused) {
 					yield return waitWhilePausing;
 				}
-
-				if (!textureFramePool.TryGetTextureFrame(out var textureFrame)) {
-					yield return new WaitForEndOfFrame();
-					continue;
+				
+				Texture tex = imageSource.CurrentTexture;
+				if (texture2D == null || texture2D.width != tex.width || texture2D.height != tex.height) {
+					texture2D = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
 				}
-
-				// Copy current image to TextureFrame
-				WebCamTexture tex = imageSource.GetCurrentTexture() as WebCamTexture;
-				textureFrame.ReadTextureFromOnCPU(tex);
-				graphRunner.AddTextureFrameToInputStream(textureFrame);
+				Graphics.CopyTexture(tex, texture2D);
+				graphRunner.AddTextureFrameToInputStream(texture2D);
 				
 				yield return new WaitForEndOfFrame();
-				RenderCurrentFrame(textureFrame);
+				RenderCurrentFrame(texture2D);
 			}
 		}
 
 		protected abstract void SetupScreen(ImageSource imageSource);
 
-		protected abstract void RenderCurrentFrame(TextureFrame textureFrame);
+		protected abstract void RenderCurrentFrame(Texture2D texture);
 
 		protected abstract void OnStartRun();
 	}

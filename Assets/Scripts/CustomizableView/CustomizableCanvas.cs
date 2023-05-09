@@ -1,4 +1,4 @@
-using Mediapipe;
+using HardCoded.VRigUnity.Visuals;
 using Mediapipe.Unity;
 using UnityEngine;
 
@@ -22,8 +22,8 @@ namespace HardCoded.VRigUnity {
 
 		[Header("Annotations")]
 		[SerializeField] private GameObject annotationObject;
-		[SerializeField] private RectTransform annotationArea;
-		[SerializeField] private HolisticLandmarkListAnnotationController holisticAnnotationController;
+		[SerializeField] public RectTransform annotationArea;
+		public Visualization visualization;
 		private bool m_showAnnotations;
 
 		void Start() {
@@ -54,8 +54,8 @@ namespace HardCoded.VRigUnity {
 			m_showAnnotations = show;
 		}
 
-		public void ReadSync(TextureFrame textureFrame) {
-			unityCanvas.ReadSync(textureFrame);
+		public void ReadSync(Texture2D texture) {
+			unityCanvas.ReadSync(texture);
 		}
 
 		void Update() {
@@ -67,42 +67,37 @@ namespace HardCoded.VRigUnity {
 		// Annotations
 		public void SetupAnnotations() {
 			var imageSource = SolutionUtils.GetImageSource();
-			SetupAnnotationController(holisticAnnotationController, imageSource, Settings.CameraFlipped);
+			SetupAnnotationController(imageSource, Settings.CameraFlipped);
 		}
 
-		protected static void SetupAnnotationController<T>(AnnotationController<T> annotationController, ImageSource imageSource, bool expectedToBeMirrored = false) where T : HierarchicalAnnotation {
-			annotationController.isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
-			annotationController.rotationAngle = imageSource.Rotation.Reverse();
+		protected static void SetupAnnotationController(ImageSource imageSource, bool expectedToBeMirrored = false) {
+			// bool isMirrored = expectedToBeMirrored ^ imageSource.IsHorizontallyFlipped ^ imageSource.IsFrontFacing ^ true;
+			// var rotationAngle = imageSource.Rotation.Reverse();
 		}
 
 		public void SetupScreen(ImageSource imageSource) {
-			// NOTE: Without this line the screen does not update its size and no annotations are drawn
 			annotationArea.sizeDelta = new Vector2(imageSource.TextureWidth, imageSource.TextureHeight);
 			annotationArea.localEulerAngles = imageSource.Rotation.Reverse().GetEulerAngles();
 		}
 
-		public void OnPoseLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawPoseLandmarkListLater(eventArgs.value);
+		public void OnLandmarks(HolisticLandmarks face,
+			HolisticLandmarks leftHand,
+			HolisticLandmarks rightHand,
+			HolisticLandmarks pose,
+			HolisticLandmarks poseWorld,
+			int flags) {
+			if (!m_showAnnotations || !visualization.IsPrepared) {
+				return;
 			}
-		}
 
-		public void OnFaceLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawFaceLandmarkListLater(eventArgs.value);
-			}
-		}
-
-		public void OnLeftHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawLeftHandLandmarkListLater(eventArgs.value);
-			}
-		}
-
-		public void OnRightHandLandmarksOutput(OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (m_showAnnotations) {
-				holisticAnnotationController.DrawRightHandLandmarkListLater(eventArgs.value);
-			}
+			visualization.DrawLandmarks(
+				face,
+				leftHand,
+				rightHand,
+				pose,
+				poseWorld,
+				flags
+			);
 		}
 	}
 }

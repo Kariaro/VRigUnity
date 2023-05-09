@@ -87,8 +87,8 @@ namespace HardCoded.VRigUnity {
 			base.Stop();
 		}
 
-		public void AddTextureFrameToInputStream(TextureFrame textureFrame) {
-			AddTextureFrameToInputStream(_InputStreamName, textureFrame);
+		public void AddTextureFrameToInputStream(Texture2D texture) {
+			AddTextureFrameToInputStream(_InputStreamName, texture);
 		}
 
 		protected override IList<WaitForResult> RequestDependentAssets() {

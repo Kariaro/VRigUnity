@@ -27,7 +27,7 @@ namespace HardCoded.VRigUnity {
 			CreateSetting(Lang.AdvancedTabVmcSender, builder => {
 				return builder
 					.AddIpAddressField((_, value) => Settings.VMCSenderAddress = value, true, "127.0.0.1", () => Settings.VMCSenderAddress, new(136, ""))
-					.AddNumberInput((_, value) => Settings.VMCSenderPort = value, 0, 65535, Settings.VMCSenderPort, 3333, FieldData.None);	
+					.AddNumberInput((_, value) => Settings.VMCSenderPort = value, 0, 65535, 3333, Settings.VMCSenderPort, FieldData.None);	
 			});
 			CreateSetting(Lang.AdvancedTabVmcReceiverPort, builder => {
 				return builder.AddNumberInput((_, value) => Settings.VMCReceiverPort = value, 0, 65535, 3333, Settings.VMCReceiverPort, FieldData.None);	
