@@ -12,9 +12,6 @@ namespace HardCoded.VRigUnity {
 				field.Init();
 				Logger.Info(_TAG, $"{field.Name()} '{field.RawValue()}'");
 			}
-
-			// Reset bone mask because it's experimental
-			BoneMask = BoneSettings.Default;
 		}
 
 		public static class Temporary {
