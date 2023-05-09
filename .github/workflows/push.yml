@@ -1,11 +1,24 @@
 name: Push Checks
 
 on:
-  pull_request: {}
+  push: {}
+  pull_request_target:
+     types: labeled
 jobs:
+  check-test-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:run')
+    steps:
+      - uses: actions-ecosystem/action-remove-labels@v1
+        if: contains(github.event.pull_request.labels.*.name, 'ci:run')
+        with:
+          labels: ci:run
   builds:
     name: Builds
     uses: ./.github/workflows/build.yml
+    needs: check-test-trigger
+    with:
+      ref: ${{ github.event.pull_request.head.sha }}
     secrets:
       unityLicense: ${{ secrets.UNITY_LICENSE }}
       githubToken: ${{ secrets.GITHUB_TOKEN }}
