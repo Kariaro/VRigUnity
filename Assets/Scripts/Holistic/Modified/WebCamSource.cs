@@ -7,8 +7,13 @@ using UnityEngine;
 namespace HardCoded.VRigUnity {
 	public class WebCamSource : ImageSource {
 		private const string _TAG = nameof(WebCamSource);
+		private static readonly object _PermissionLock = new();
+		private static bool _IsPermitted = false;
 
-		private ResolutionStruct[] _defaultAvailableResolutions = new ResolutionStruct[] {
+		/// <summary>
+		/// Default resolutions
+		/// </summary>
+		public readonly ResolutionStruct[] AvailableResolutions = new ResolutionStruct[] {
 			new(1920, 1080, 30),
 			new(1600, 896, 30),
 			new(1280, 720, 30),
@@ -20,27 +25,17 @@ namespace HardCoded.VRigUnity {
 			new(320, 180, 30), // 320x240 -> 16:19 better
 			new(176, 144, 30),
 		};
+		public ResolutionStruct DefaultResolution => AvailableResolutions[6];
 
-		private static readonly object _PermissionLock = new();
-		private static bool _IsPermitted = false;
-
-		private WebCamTexture _webCamTexture;
-		private WebCamTexture webCamTexture {
-			get => _webCamTexture;
-			set {
-				if (_webCamTexture != null) {
-					_webCamTexture.Stop();
-				}
-				_webCamTexture = value;
-			}
-		}
-
-		public override int TextureWidth => !IsPrepared ? 0 : webCamTexture.width;
-		public override int TextureHeight => !IsPrepared ? 0 : webCamTexture.height;
-
-		public override bool IsVerticallyFlipped => IsPrepared && webCamTexture.videoVerticallyMirrored;
-		public override bool IsFrontFacing => IsPrepared && (webCamDevice is WebCamDevice valueOfWebCamDevice) && valueOfWebCamDevice.isFrontFacing;
-		public override RotationAngle Rotation => !IsPrepared ? RotationAngle.Rotation0 : (RotationAngle)webCamTexture.videoRotationAngle;
+		public override Texture CurrentTexture => webCamTexture;
+		public override int TextureWidth => IsPrepared ? webCamTexture.width : 0;
+		public override int TextureHeight => IsPrepared ? webCamTexture.height : 0;
+		public override bool IsPrepared => webCamTexture != null;
+		public override bool IsPlaying => webCamTexture != null && webCamTexture.isPlaying;
+		public override bool IsVerticallyFlipped { get => IsPrepared && webCamTexture.videoVerticallyMirrored; set {} }
+		public override RotationAngle Rotation => IsPrepared ? (RotationAngle) webCamTexture.videoRotationAngle : RotationAngle.Rotation0;
+		public override string SourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
+		public override string[] SourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
 
 		private WebCamDevice? _webCamDevice;
 		private WebCamDevice? webCamDevice {
@@ -56,10 +51,9 @@ namespace HardCoded.VRigUnity {
 					return;
 				}
 				_webCamDevice = value;
-				Resolution = GetDefaultResolution();
+				Resolution = DefaultResolution;
 			}
 		}
-		public override string SourceName => (webCamDevice is WebCamDevice valueOfWebCamDevice) ? valueOfWebCamDevice.name : null;
 
 		private WebCamDevice[] _availableSources;
 		private WebCamDevice[] availableSources {
@@ -73,32 +67,31 @@ namespace HardCoded.VRigUnity {
 			set => _availableSources = value;
 		}
 
-		public override string[] SourceCandidateNames => availableSources?.Select(device => device.name).ToArray();
+		private WebCamTexture webCamTexture;
+		private bool isInitialized;
 
-		public override ResolutionStruct[] AvailableResolutions => webCamDevice == null ? null : _defaultAvailableResolutions;
-		public override bool IsPrepared => webCamTexture != null;
-		public override bool IsPlaying => webCamTexture != null && webCamTexture.isPlaying;
-		private bool _isInitialized;
-
-		private IEnumerator Start() {
+		protected virtual IEnumerator Start() {
 			yield return UpdateSources();
+		}
+
+		public override ResolutionStruct[] GetResolutions() {
+			return AvailableResolutions;
 		}
 
 		public IEnumerator UpdateSources() {
 			yield return GetPermission();
 
 			if (!_IsPermitted) {
-				_isInitialized = true;
+				isInitialized = true;
 				yield break;
 			}
 
 			availableSources = WebCamTexture.devices;
-
 			if (availableSources != null && availableSources.Length > 0) {
 				webCamDevice = availableSources[0];
 			}
 
-			_isInitialized = true;
+			isInitialized = true;
 		}
 
 		private IEnumerator GetPermission() {
@@ -113,7 +106,7 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		public override void SelectSource(int sourceId) {
+		public virtual void SelectSource(int sourceId) {
 			if (sourceId < 0 || sourceId >= availableSources.Length) {
 				throw new ArgumentException($"Invalid source ID: {sourceId}");
 			}
@@ -122,7 +115,7 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public override IEnumerator Play() {
-			yield return new WaitUntil(() => _isInitialized);
+			yield return new WaitUntil(() => isInitialized);
 			if (!_IsPermitted) {
 				throw new InvalidOperationException("Not permitted to access cameras");
 			}
@@ -132,25 +125,17 @@ namespace HardCoded.VRigUnity {
 			yield return WaitForWebCamTexture();
 		}
 
+		public override void UpdateFromSettings() {
+			SelectSourceFromName(Settings.CameraName);
+			SelectResolutionFromString(Settings.CameraResolution);
+			IsHorizontallyFlipped = Settings.CameraFlipped;
+		}
+
 		public override void Stop() {
 			if (webCamTexture != null) {
 				webCamTexture.Stop();
 			}
-
 			webCamTexture = null;
-		}
-
-		public override Texture GetCurrentTexture() {
-			return webCamTexture;
-		}
-
-		private ResolutionStruct GetDefaultResolution() {
-			var resolutions = AvailableResolutions;
-			if (resolutions == null || resolutions.Length == 0) {
-				return new ResolutionStruct();
-			}
-
-			return _defaultAvailableResolutions[6];
 		}
 
 		private void InitializeWebCamTexture() {
@@ -193,6 +178,15 @@ namespace HardCoded.VRigUnity {
 			}
 
 			return index;
+		}
+
+		public void SelectResolution(int resolutionId) {
+			var resolutions = AvailableResolutions;
+			if (resolutionId < 0 || resolutionId >= resolutions.Length) {
+				throw new ArgumentException($"Invalid resolution ID: {resolutionId}");
+			}
+
+			Resolution = resolutions[resolutionId];
 		}
 	}
 }

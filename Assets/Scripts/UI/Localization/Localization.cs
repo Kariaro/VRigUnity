@@ -66,6 +66,8 @@ namespace HardCoded.VRigUnity {
 		public static readonly Lang
 				CameraStart = new("camera.start", "Start Camera"),
 				CameraStop = new("camera.stop", "Stop Camera"),
+				MocapRecordingStart = new("mocap_recording.start", "Record Mocap"),
+				MocapRecordingStop = new("mocap_recording.stop", "Stop Recording"),
 				VisualsOn = new("visuals.on", "Visuals On"),
 				VisualsOff = new("visuals.off", "Visuals Off"),
 				VmcReceiverStart = new("vmc_receiver.start", "Start Receiver VMC"),
@@ -149,7 +151,11 @@ namespace HardCoded.VRigUnity {
 				BonesTabRightAnkle = new("tab.bones.right_ankle", "Right Ankle"),
 
 				LoggerTabLabel = new("tab.logger.label", "Logger"),
-				LoggerTabOpenLogs = new("tab.logger.open_logs", "Open Logs")
+				LoggerTabOpenLogs = new("tab.logger.open_logs", "Open Logs"),
+
+				WarningDialogCancel = new("ui.warning.cancel", "Cancel"),
+				WarningDialogContinue = new("ui.warning.continue", "Continue"),
+				WarningDialogLargeModelSize = new("ui.warning.large_model", "Model size is above {0}, loading this model could take a while")
 
 		;
 		
@@ -163,6 +169,10 @@ namespace HardCoded.VRigUnity {
 
 		public static Lang Extend(Lang text, Func<Lang, string> func) {
 			return new LangExtend(text, func);
+		}
+
+		public static Lang Format(Lang text, params object[] args) {
+			return new LangFormated(text, args);
 		}
 
 		public static List<Lang> Elements => _localizationList;
@@ -203,6 +213,20 @@ namespace HardCoded.VRigUnity {
 
 			public override string Get() {
 				return func.Invoke(parent);
+			}
+		}
+
+		class LangFormated : Lang {
+			private readonly Lang parent;
+			private readonly object[] args;
+
+			public LangFormated(Lang parent, params object[] args) : base(parent) {
+				this.args = args;
+				this.parent = parent;
+			}
+
+			public override string Get() {
+				return String.Format(parent.Get(), args);
 			}
 		}
 	}

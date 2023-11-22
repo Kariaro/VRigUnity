@@ -56,29 +56,24 @@ namespace HardCoded.VRigUnity {
 
 			var facePoints = solution.facePoints;
 			if (facePoints != null) {
-				int count = facePoints.Landmark.Count;
+				int count = facePoints.Count;
 
 				Vector3 average = Vector3.zero;
 				for (int i = 0; i < count; i++) {
-					var item = facePoints.Landmark[i];
-					average.x += item.X * 2;
-					average.y += item.Y;
-					average.z += item.Z * 2;
+					average += (Vector3) facePoints[i];
 				}
-				average.x /= count;
-				average.y /= count;
-				average.z /= count;
+				average /= count;
 
 				Camera mainCamera = Camera.main;
-
 				for (int i = 0; i < points.Length; i++) {
+					var point = points[i].gameObject;
 					if (i > count) {
-						points[i].gameObject.SetActive(false);
+						point.SetActive(false);
 					} else {
-						var item = facePoints.Landmark[i];
-						points[i].gameObject.SetActive(true);
-						points[i].transform.localPosition = new Vector3(-item.X * 2, -item.Y, -item.Z * 2) + average;
-						points[i].transform.LookAt(mainCamera.transform.position, mainCamera.transform.up);
+						Vector3 item = facePoints[i];
+						point.SetActive(true);
+						point.transform.localPosition = average - item;
+						point.transform.LookAt(mainCamera.transform.position, mainCamera.transform.up);
 					}
 				}
 			}

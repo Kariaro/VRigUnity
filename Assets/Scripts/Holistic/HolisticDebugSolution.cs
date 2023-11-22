@@ -10,48 +10,34 @@ namespace HardCoded.VRigUnity {
 		[SerializeField] private int fps = 60;
 		[SerializeField] private bool renderUpdate;
 
-		private readonly Groups.HandPoints rightHandPoints = new();
+		private readonly DataGroups.HandPoints rightHandPoints = new();
 		private bool hasHandData;
 
 		// Used by 'FaceGizmos'
-		public NormalizedLandmarkList facePoints;
+		public HolisticLandmarks facePoints;
 		
 		// Used for custom mesh
 		public GameObject meshObject;
 
-		protected override void OnStartRun() {
-			base.OnStartRun();
-			graphRunner.OnFaceLandmarksOutput += OnFaceLandmarksOutput;
-			graphRunner.OnPoseLandmarksOutput += OnPoseLandmarksOutput;
-			graphRunner.OnLeftHandLandmarksOutput += OnLeftHandLandmarksOutput;
-			graphRunner.OnRightHandLandmarksOutput += OnRightHandLandmarksOutput;
-			graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
-		}
-
-		private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnFaceLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (eventArgs.value == null) {
-				return;
+		public override void OnLandmarks(HolisticLandmarks face,
+			HolisticLandmarks leftHand,
+			HolisticLandmarks rightHand,
+			HolisticLandmarks pose,
+			HolisticLandmarks poseWorld,
+			int flags) {
+			base.OnLandmarks(face, leftHand, rightHand, pose, poseWorld, flags);
+			
+			if (face.IsPresent) {
+				facePoints = face;
 			}
 
-			facePoints = eventArgs.value;
-		}
+			if (rightHand.IsPresent) {
+				for (int i = 0; i < rightHand.Count; i++) {
+					rightHandPoints.Data[i] = -rightHand[i];
+				}
 
-		private void OnLeftHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {}
-		private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs) {}
-		
-		private void OnRightHandLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs) {
-			if (eventArgs.value == null) {
-				return;
+				hasHandData = true;
 			}
-
-			int count = eventArgs.value.Landmark.Count;
-			for (int i = 0; i < count; i++) {
-				NormalizedLandmark mark = eventArgs.value.Landmark[i];
-				rightHandPoints.Data[i] = new(-mark.X * 2, -mark.Y, -mark.Z * 2);
-			}
-
-			hasHandData = true;
 		}
 
 		public override void Update() {

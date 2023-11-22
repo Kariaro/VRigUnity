@@ -6,6 +6,8 @@ on:
       tag:
         type: string
         default: v0.10.1-macos11
+      ref:
+        type: string
     secrets:
       unityLicense:
         required: true
@@ -25,6 +27,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
 
       - name: Download libs
         run: bash download_libs.sh "${{ inputs.tag }}"

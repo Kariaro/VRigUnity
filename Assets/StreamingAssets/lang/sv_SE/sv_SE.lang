@@ -1,5 +1,7 @@
 camera.start=Starta Kamera
 camera.stop=Stäng av Kamera
+mocap_recording.start=Spela in Mocap
+mocap_recording.stop=Avsluta inspelning
 visuals.on=Visa Debug Vy
 visuals.off=Göm Debug Vy
 vmc_receiver.start=Starta Mottagare
@@ -77,3 +79,6 @@ tab.bones.right_leg=Höger Ben
 tab.bones.right_ankle=Höger Fot
 tab.logger.label=Logg
 tab.logger.open_logs=Öppna Logg
+ui.warning.cancel=Avbryt
+ui.warning.continue=Fortsätt
+ui.warning.large_model=Modellens storlek är över {0}, det kan ta tid att ladda den här modellen
