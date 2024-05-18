@@ -70,6 +70,11 @@ namespace HardCoded.VRigUnity {
 		}
 
 		public static void SaveFilePanel(MonoBehaviour behaviour, string title, string file, string extension, Action<string[]> callback) {
+			SaveFilePanel(behaviour, title, file, new CustomExtensionFilter("*." + extension, extension), callback);
+		}
+
+
+		public static void SaveFilePanel(MonoBehaviour behaviour, string title, string file, CustomExtensionFilter extension, Action<string[]> callback) {
 			try {
 				callback.Invoke(SFB_SaveFilePanel(title, file, extension));
 			} catch (DllNotFoundException) {
@@ -77,20 +82,26 @@ namespace HardCoded.VRigUnity {
 			}
 		}
 
-		private static string[] SFB_SaveFilePanel(string title, string file, string extension) {
+		private static string[] SFB_SaveFilePanel(string title, string file, CustomExtensionFilter extension) {
 			string directory = "";
 			if (File.Exists(file)) {
 				directory = Path.GetDirectoryName(file);
 			}
 			
-			string result = SFB.StandaloneFileBrowser.SaveFilePanel(title, directory, "", extension);
+			var extensions = new [] {
+				new SFB.ExtensionFilter(extension.Name, extension.Extensions)
+			};
+			// Known Issue: SaveFilePanel() method from SFB does not read title param.
+			string result = SFB.StandaloneFileBrowser.SaveFilePanel(title, directory, "", extensions);
 			if (result == string.Empty) {
 				return new string[0];
+			} else if (!result.EndsWith("." + extension.Extensions[0])) {
+				result += "." + extension.Extensions[0];
 			}
 			return new string[] { result };
 		}
 
-		private static IEnumerator ShowSaveDialog(string title, string file, string extension, Action<string[]> callback) {
+		private static IEnumerator ShowSaveDialog(string title, string file, CustomExtensionFilter extension, Action<string[]> callback) {
 			if (!IsWaiting) {
 				// Make sure we are doing one file browser at a time
 				IsWaiting = true;
@@ -101,12 +112,11 @@ namespace HardCoded.VRigUnity {
 						directory = Path.GetDirectoryName(file);
 					}
 					
-					if (extension != null) {
-						SimpleFileBrowser.FileBrowser.Filter[] filters = new SimpleFileBrowser.FileBrowser.Filter[1];
-						filters[0] = new SimpleFileBrowser.FileBrowser.Filter(extension, extension);
-						SimpleFileBrowser.FileBrowser.SetFilters(true, filters);
-						SimpleFileBrowser.FileBrowser.SetDefaultFilter(extension);
-					}
+					var filters = new [] {
+						new SimpleFileBrowser.FileBrowser.Filter(extension.Name, extension.Extensions)
+					};
+					SimpleFileBrowser.FileBrowser.SetFilters(true, filters);
+					SimpleFileBrowser.FileBrowser.SetDefaultFilter(extension.Extensions[0]);
 
 					yield return SimpleFileBrowser.FileBrowser.WaitForSaveDialog(
 						SimpleFileBrowser.FileBrowser.PickMode.Files, false, null, directory, title, "Save"
