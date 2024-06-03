@@ -24,8 +24,9 @@ namespace HardCoded.VRigUnity {
 			if (isRecording) {
 				collection = new();
 			} else {
+				var extension = new FileDialogUtils.CustomExtensionFilter(Lang.DialogBvhFiles.Get(), "bvh");
 				BVH.BVHExporter.MocapCollection localCollection = collection;
-				FileDialogUtils.SaveFilePanel(this, "Save BVH", "", "bvh", paths => {
+				FileDialogUtils.SaveFilePanel(this, Lang.DialogSaveFile.Get(), "", extension, paths => {
 					if (paths.Length > 0) {
 						string filePath = paths[0];
 						string data = BVH.BVHExporter.GenerateData(SolutionUtils.GetSolution().Model.Animator, localCollection);

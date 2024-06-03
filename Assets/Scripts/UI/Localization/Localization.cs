@@ -80,9 +80,11 @@ namespace HardCoded.VRigUnity {
 
 				DialogImageFiles = new("dialog.image_files", "Image Files"),
 				DialogVrmFiles = new("dialog.vrm_files", "VRM Files"),
+				DialogBvhFiles = new("dialog.bvh_files", "BVH Files"),
 				DialogAllFiles = new("dialog.all_files", "All Files"),
 				DialogOpenImage = new("dialog.open_image", "Open Image"),
 				DialogOpenFile = new("dialog.open_file", "Open File"),
+				DialogSaveFile = new("dialog.save_file", "Save File"),
 
 				IpHidden = new("text.ip_hidden", "Ip Hidden"),
 				ModelHidden = new("text.model_hidden", "Model Is Hidden"),
